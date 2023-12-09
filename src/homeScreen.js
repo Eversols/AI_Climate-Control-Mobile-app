@@ -10,7 +10,6 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import {useNavigation} from '@react-navigation/native';
 import MapView, {Marker} from 'react-native-maps';
-import {WebView} from 'react-native-webview';
 import Mapbox, {UserLocation, Camera} from '@rnmapbox/maps';
 
 Mapbox.setAccessToken(
