@@ -15,21 +15,27 @@ import Profile from './src/profile';
 import PestScreen3 from './src/pestScreen3';
 import Dashboard from './src/dashboard';
 import Dashboard2 from './src/dashboard2';
+import LoginScreen from './src/LoginScreen';
+import ForgotPasswordScreen from './src/forgetPassword';
+import AuthenticationCodeScreen from './src/authenticationCode';
+import NewPasswordScreen from './src/newPassword';
+
 const Stack = createNativeStackNavigator();
+
 const AppNavigator = () => {
     return (
-        <Stack.Navigator initialRouteName='bottom_navigation'>
-            <Stack.Screen
-                options={{ headerShown: false }}
-                name="bottom_navigation"
-                component={BottomNavigation}
-            />
+        <Stack.Navigator initialRouteName='Login'>
+            <Stack.Screen name="bottom_navigation" component={BottomNavigation} options={{ headerShown: false }} />
             <Stack.Screen name='pestScreen1' component={PestScreen1} options={{ headerShown: false }} />
             <Stack.Screen name='pestScreen2' component={PestScreen2} options={{ headerShown: false }} />
             <Stack.Screen name='pestScreen3' component={PestScreen3} options={{ headerShown: false }} />
             <Stack.Screen name='profile' component={Profile} options={{ headerShown: false }} />
             <Stack.Screen name='dashboard' component={Dashboard} options={{ headerShown: false }} />
             <Stack.Screen name='dashboard2' component={Dashboard2} options={{ headerShown: false }} />
+            <Stack.Screen name='Login' component={LoginScreen} options={{ headerShown: false }} />
+            <Stack.Screen name='forgetPassword' component={ForgotPasswordScreen} options={{ headerShown: false }} />
+            <Stack.Screen name='authenticationCode' component={AuthenticationCodeScreen} />
+            <Stack.Screen name='newPassword' component={NewPasswordScreen} />
             <Stack.Screen name='Signup' component={SignupScreen} options={{ headerShown: false }} />
             <Stack.Screen name='Home' component={HomeScreen} options={{ headerShown: false }} />
             <Stack.Screen name='farmSection' component={FarmSection} options={{ headerShown: false }} />
@@ -41,4 +47,5 @@ const AppNavigator = () => {
         </Stack.Navigator>
     );
 };
+
 export default AppNavigator;
