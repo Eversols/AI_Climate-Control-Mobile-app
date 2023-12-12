@@ -3,6 +3,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import Svg, { Path, Rect } from 'react-native-svg';
 import HomeScreen from './homeScreen';
+import PestScreen1 from './pestScreen1';
+import Profile from './profile';
 
 const Tab = createBottomTabNavigator();
 
@@ -58,8 +60,8 @@ const BottomNavigation = () => {
       />
 
       <Tab.Screen
-        name="Home2"
-        component={HomeScreen}
+        name="pestScreen1"
+        component={PestScreen1}
         options={{
           tabBarIcon: ({ color, size, focused }) => (
 
@@ -86,8 +88,8 @@ const BottomNavigation = () => {
       />
 
       <Tab.Screen
-        name="Home1"
-        component={HomeScreen}
+        name="profile"
+        component={Profile}
         options={{
           tabBarIcon: ({ color, size, focused }) => (
             <>

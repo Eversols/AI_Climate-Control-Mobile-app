@@ -9,6 +9,9 @@ import UserPanel from './src/userPanel';
 import UserPanel2 from './src/userPanel2';
 import VisionCameraScreen from './src/visionCamera';
 import BottomNavigation from './src/BottomNavigation';
+import PestScreen1 from './src/pestScreen1';
+import PestScreen2 from './src/pestScreen2';
+import Profile from './src/profile';
 const Stack = createNativeStackNavigator();
 const AppNavigator = () => {
     return (
@@ -18,6 +21,9 @@ const AppNavigator = () => {
                 name="bottom_navigation"
                 component={BottomNavigation}
             />
+            <Stack.Screen name='pestScreen1' component={PestScreen1} options={{ headerShown: false }} />
+            <Stack.Screen name='pestScreen2' component={PestScreen2} options={{ headerShown: false }} />
+            <Stack.Screen name='profile' component={Profile} options={{ headerShown: false }} />
             <Stack.Screen name='Signup' component={SignupScreen} options={{ headerShown: false }} />
             <Stack.Screen name='Home' component={HomeScreen} options={{ headerShown: false }} />
             <Stack.Screen name='farmSection' component={FarmSection} options={{ headerShown: false }} />
