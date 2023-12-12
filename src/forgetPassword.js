@@ -1,18 +1,12 @@
 import React, { useState } from 'react';
 import { View, Text, ImageBackground, StyleSheet, TouchableOpacity, TextInput, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import CountryPicker from 'react-native-country-picker-modal'; // Import CountryPicker
+import CountryPicker from 'react-native-country-picker-modal'; 
 import CustomComponent from './component/customComponent';
 const ForgotPasswordScreen = () => {
   const navigation = useNavigation();
   const [code, setCode] = useState('');
-  const [selectedCountry, setSelectedCountry] = useState(null); // Add state for the selected country
-
-  const handleNextPress = () => {
-    // Handle the next button press
-    console.log('Next Pressed with Code:', code);
-    // You can add logic to verify the code and navigate to the next screen
-  };
+  const [selectedCountry, setSelectedCountry] = useState(null); 
 
   return (
     <ImageBackground source={require('../assets/images/image122.png')} style={styles.backgroundImage}>
@@ -22,15 +16,14 @@ const ForgotPasswordScreen = () => {
         <Text style={styles.subtitle}>Enter your phone number then we will send you a code to reset your password</Text>
 
         <CustomComponent style={styles.countryPickerContainer}>
-          {/* Use CountryPicker instead of CustomComponent */}
           <CountryPicker
             {...{
               withFilter: true,
               withFlag: true,
               withCountryNameButton: true,
               withAlphaFilter: true,
-              onSelect: (country) => setSelectedCountry(country), // Handle country selection
-              countryCode: selectedCountry ? selectedCountry.cca2 : 'US', // Set the initial country code
+              onSelect: (country) => setSelectedCountry(country), 
+              countryCode: selectedCountry ? selectedCountry.cca2 : 'US', 
             }}
           >
             <Text style={styles.countryPickerText}>

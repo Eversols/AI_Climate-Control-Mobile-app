@@ -9,7 +9,6 @@ const AuthenticationCodeScreen = () => {
 
   const handleCodeChange = (index, value) => {
     if (value && index < codeInputs.length - 1) {
-      // Move to the next input field
       const nextInput = this[`inputRef_${index + 1}`];
       nextInput && nextInput.focus();
     }
@@ -53,7 +52,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    paddingTop: 60, // Adjusted paddingTop for a small space from the top
+    paddingTop: 60, 
     // justifyContent: 'center',
   },
   title: {

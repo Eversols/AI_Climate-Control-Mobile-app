@@ -12,7 +12,6 @@ const CreateAccountScreen = () => {
           <TextInput
             style={styles.input}
             placeholder="Enter Email"
-            // Add necessary props or styling
           />
         </CustomComponent>
 
@@ -21,7 +20,6 @@ const CreateAccountScreen = () => {
           <TextInput
             style={styles.input}
             placeholder="Enter Name"
-            // Add necessary props or styling
           />
         </CustomComponent>
 
@@ -31,7 +29,6 @@ const CreateAccountScreen = () => {
             style={styles.input}
             placeholder="Password"
             secureTextEntry
-            // Add necessary props or styling
           />
         </CustomComponent>
 
@@ -41,7 +38,6 @@ const CreateAccountScreen = () => {
             style={styles.input}
             placeholder="Enter Confirm Password"
             secureTextEntry
-            // Add necessary props or styling
           />
         </CustomComponent>
 
@@ -50,11 +46,10 @@ const CreateAccountScreen = () => {
           <TextInput
             style={styles.input}
             placeholder="Enter your Occupation"
-            // Add necessary props or styling
           />
         </CustomComponent>
 
-        <TouchableOpacity style={styles.signUpButton} onPress={() => {/* Handle sign-up press */}}>
+        <TouchableOpacity style={styles.signUpButton}>
           <Text style={styles.signUpButtonText}>Sign Up</Text>
         </TouchableOpacity>
 

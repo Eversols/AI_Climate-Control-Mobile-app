@@ -5,12 +5,10 @@ const AccountSuccessScreen = () => {
   return (
     <ImageBackground source={require('../assets/images/image131.png')} style={styles.backgroundImage}>
       <View style={styles.container}>
-        {/* Centered image with blurred background */}
         <View style={styles.centeredImageContainer}>
           <Image source={require('../assets/images/Group1000007856.png')} style={styles.centeredImage} />
         </View>
 
-        {/* Text indicating successful account addition */}
         <Text style={styles.successText}>Your account has been successfully added</Text>
         <TouchableOpacity style={styles.nextButton} onPress={()=> navigation.navigate('newPassword')}>
           <Text>Next</Text>

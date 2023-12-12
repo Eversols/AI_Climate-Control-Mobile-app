@@ -6,17 +6,6 @@ const NewPasswordScreen = () => {
     const [password, setPassword] = useState('');
     const [reEnterPassword, setReEnterPassword] = useState('');
 
-    const handleNext = () => {
-        // Add logic to handle the next button press, e.g., validate passwords
-        if (password === reEnterPassword) {
-            // Passwords match, proceed to the next step
-            console.log('Passwords match!');
-        } else {
-            // Passwords do not match, show an error message or take appropriate action
-            console.log('Passwords do not match!');
-        }
-    };
-
     return (
         <ImageBackground source={require('../assets/images/1509.png')} style={styles.backgroundImage}>
             <View style={styles.container}>
@@ -52,7 +41,7 @@ const NewPasswordScreen = () => {
                     />
                 </CustomComponent>
                 </View>
-                <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
+                <TouchableOpacity style={styles.nextButton}>
                     <Text>Next</Text>
                 </TouchableOpacity>
             </View>
