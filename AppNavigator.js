@@ -1,5 +1,5 @@
 import React from 'react'
-import {createNativeStackNavigator} from '@react-navigation/native-stack'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import SignupScreen from './src/signup';
 import HomeScreen from './src/homeScreen';
 import FarmSection from './src/farmSection';
@@ -8,10 +8,21 @@ import UsedPesticides from './src/usedPesticides';
 import UserPanel from './src/userPanel';
 import UserPanel2 from './src/userPanel2';
 import VisionCameraScreen from './src/visionCamera';
+import LoginScreen from './src/LoginScreen';
+import ForgotPasswordScreen from './src/forgetPassword';
+import AuthenticationCodeScreen from './src/authenticationCode';
+import NewPasswordScreen from './src/newPassword';
 const Stack = createNativeStackNavigator();
 const AppNavigator = () => {
     return (
-        <Stack.Navigator initialRouteName='Home'>
+        // <Stack.Navigator initialRouteName='Home'>
+        <Stack.Navigator initialRouteName='Login'>
+            <Stack.Screen name='Login' component={LoginScreen} options={{ headerShown: false }} />
+            <Stack.Screen name='forgetPassword' component={ForgotPasswordScreen} options={{headerShown:false}}/>
+            <Stack.Screen name='authenticationCode' component={AuthenticationCodeScreen}/>
+            <Stack.Screen name='newPassword' component={NewPasswordScreen}/>
+
+            
             <Stack.Screen name='Signup' component={SignupScreen} options={{ headerShown: false }} />
             <Stack.Screen name='Home' component={HomeScreen} options={{ headerShown: false }} />
             <Stack.Screen name='farmSection' component={FarmSection} options={{ headerShown: false }} />
@@ -19,7 +30,7 @@ const AppNavigator = () => {
             <Stack.Screen name='usedPesticides' component={UsedPesticides} options={{ headerShown: false }} />
             <Stack.Screen name='userPanel' component={UserPanel} options={{ headerShown: false }} />
             <Stack.Screen name='userPanel2' component={UserPanel2} options={{ headerShown: false }} />
-            <Stack.Screen name='VisionCameraScreen' component={VisionCameraScreen} options={{headerShown: false}}/>
+            <Stack.Screen name='VisionCameraScreen' component={VisionCameraScreen} options={{ headerShown: false }} />
         </Stack.Navigator>
     );
 };
