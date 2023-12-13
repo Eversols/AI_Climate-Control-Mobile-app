@@ -12,6 +12,9 @@ import BottomNavigation from './src/BottomNavigation';
 import PestScreen1 from './src/pestScreen1';
 import PestScreen2 from './src/pestScreen2';
 import Profile from './src/profile';
+import PestScreen3 from './src/pestScreen3';
+import Dashboard from './src/dashboard';
+import Dashboard2 from './src/dashboard2';
 import LoginScreen from './src/LoginScreen';
 import ForgotPasswordScreen from './src/forgetPassword';
 import AuthenticationCodeScreen from './src/authenticationCode';
@@ -27,7 +30,10 @@ const AppNavigator = () => {
             <Stack.Screen name="bottom_navigation" component={BottomNavigation} options={{ headerShown: false }} />
             <Stack.Screen name='pestScreen1' component={PestScreen1} options={{ headerShown: false }} />
             <Stack.Screen name='pestScreen2' component={PestScreen2} options={{ headerShown: false }} />
+            <Stack.Screen name='pestScreen3' component={PestScreen3} options={{ headerShown: false }} />
             <Stack.Screen name='profile' component={Profile} options={{ headerShown: false }} />
+            <Stack.Screen name='dashboard' component={Dashboard} options={{ headerShown: false }} />
+            <Stack.Screen name='dashboard2' component={Dashboard2} options={{ headerShown: false }} />
             <Stack.Screen name='Login' component={LoginScreen} options={{ headerShown: false }} />
             <Stack.Screen name='forgetPassword' component={ForgotPasswordScreen} options={{ headerShown: false }} />
             <Stack.Screen name='authenticationCode' component={AuthenticationCodeScreen} options={{ headerTransparent: true, headerTitle: 'Authentication Code' }} />
