@@ -1,40 +1,46 @@
 import React, { useState } from 'react';
-import { View, Text, ImageBackground, StyleSheet, TouchableOpacity, TextInput, Image } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import CountryPicker from 'react-native-country-picker-modal'; 
+import { View, Text, ImageBackground, StyleSheet, TouchableOpacity } from 'react-native';
+import PhoneInput from 'react-native-phone-number-input';
 import CustomComponent from './component/customComponent';
+import { useNavigation } from '@react-navigation/native';
+
 const ForgotPasswordScreen = () => {
   const navigation = useNavigation();
-  const [code, setCode] = useState('');
-  const [selectedCountry, setSelectedCountry] = useState(null); 
+
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const phoneInput = React.useRef(null);
 
   return (
-    <ImageBackground source={require('../assets/images/image122.png')} style={styles.backgroundImage}>
+    <ImageBackground source={require('../assets/images/image122.png')} style={styles.backgroundImage} blurRadius={5}>
+      <View style={styles.overlay} />
       <View style={styles.container}>
         <Text style={styles.titleText}>Forget Password</Text>
         <Text style={styles.title}>Forgot Password</Text>
-        <Text style={styles.subtitle}>Enter your phone number then we will send you a code to reset your password</Text>
+        <Text style={styles.subtitle}>Enter your phone number, then we will send you a code to reset your password</Text>
 
-        <CustomComponent style={styles.countryPickerContainer}>
-          <CountryPicker
-            {...{
-              withFilter: true,
-              withFlag: true,
-              withCountryNameButton: true,
-              withAlphaFilter: true,
-              onSelect: (country) => setSelectedCountry(country), 
-              countryCode: selectedCountry ? selectedCountry.cca2 : 'US', 
-            }}
-          >
-            <Text style={styles.countryPickerText}>
-              {/* {selectedCountry ? selectedCountry.name : 'Select Country'} */}
-              Your phone number
-            </Text>
-          </CountryPicker>
+        <CustomComponent style={styles.phoneInputContainer}>
+        <PhoneInput
+            ref={phoneInput}
+            defaultValue={phoneNumber}
+            defaultCode="US"
+            layout="first"
+            onChangeText={(text) => setPhoneNumber(text)}
+            withDarkTheme
+            withShadow
+            // autoFocus
+            // style={{ color: 'black', fontSize: 16, paddingVertical: 10 }}
+            // textContainerStyle={styles.customTextContainerStyle}
+            placeholder="Your phone number"
+            containerStyle={{borderRadius:40,color:'transparent', height:60, backgroundColor: 'rgba(255, 255, 255, 0.4)'}}
+            textContainerStyle={{backgroundColor:'transparent',paddingVertical:10,borderRadius:40}}
+          />
         </CustomComponent>
 
-        <TouchableOpacity style={styles.nextButton} onPress={() => navigation.navigate('authenticationCode')}>
-          <Text style={styles.nextButtonText}>Next</Text>
+        <TouchableOpacity
+          style={[styles.btn, { width: '65%' }]}
+          onPress={() => { navigation.navigate('authenticationCode') }}
+        >
+          <Text style={{ fontWeight: '700', fontSize: 18, color: '#000' }}>Next</Text>
         </TouchableOpacity>
       </View>
     </ImageBackground>
@@ -49,42 +55,54 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    // justifyContent: 'center',
   },
-  titleText:{
-    fontSize:28,
-    fontWeight:'600',
-    alignItems:'center',
-    justifyContent:"center",
-    color:'black',
+
+  titleText: {
+    fontSize: 24,
+    fontWeight: '600',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: 'black',
+    marginVertical: 30,
+    textAlign: 'center',
+  },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
   },
   title: {
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: '400',
     color: 'black',
     marginBottom: 10,
+    marginTop: 25,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 14,
     color: 'black',
     marginBottom: 20,
   },
-  countryPickerContainer: {
+  phoneInputContainer: {
     marginBottom: 20,
+    backgroundColor: 'transparent', 
+    borderRadius: 30, // Adjust border radius to match the button
+    // borderWidth: 1,
+    // borderColor: '#FFFFFF',
+    paddingHorizontal: 15,
+    paddingVertical: 5, // Adjust padding to match the button
   },
-  countryPickerText: {
-    // color: 'white',
-  },
-  nextButton: {
-    backgroundColor: 'white',
+  btn: {
+    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    alignSelf: 'center',
+    marginTop: 30,
+    borderRadius: 30,
+    borderWidth: 1,
     padding: 15,
-    alignItems: 'center',
-    borderRadius: 8,
-  },
-  nextButtonText: {
-    color: 'black',
-    fontSize: 16,
-    fontWeight: 'bold',
+    width: '90%',
+    borderColor: '#FFFFFF',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 40,
   },
 });
 

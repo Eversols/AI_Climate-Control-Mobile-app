@@ -1,62 +1,86 @@
 import React from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ImageBackground } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, ImageBackground, ScrollView } from 'react-native';
 import CustomComponent from './component/customComponent';
+import { useNavigation } from '@react-navigation/native';
 
 const CreateAccountScreen = () => {
+  const navigation = useNavigation();
+
   return (
     <ImageBackground source={require('../assets/images/1509(1).png')} style={styles.backgroundImage}>
-      <View style={styles.container}>
-        <Text style={styles.title}>Create Account</Text>
-        <Text>Email Address</Text>
-        <CustomComponent>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter Email"
-          />
-        </CustomComponent>
+      <View style={styles.overlay}/>
+      <ScrollView>
+        <View style={styles.container}>
+          <Text style={styles.title}>Create Account</Text>
 
-        <Text>Name</Text>
-        <CustomComponent>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter Name"
-          />
-        </CustomComponent>
+          <Text style={styles.label}>Email Address</Text>
+          <CustomComponent style={styles.socialContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter Email"
+              placeholderTextColor={'black'}
 
-        <Text>Password</Text>
-        <CustomComponent>
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            secureTextEntry
-          />
-        </CustomComponent>
+            />
+          </CustomComponent>
 
-        <Text>Confirm Password</Text>
-        <CustomComponent>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter Confirm Password"
-            secureTextEntry
-          />
-        </CustomComponent>
+          <Text style={styles.label}>Name</Text>
+          <CustomComponent style={styles.socialContainer}>
 
-        <Text>Occupation</Text>
-        <CustomComponent>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter your Occupation"
-          />
-        </CustomComponent>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter Name"
+              placeholderTextColor={'black'}
 
-        <TouchableOpacity style={styles.signUpButton}>
-          <Text style={styles.signUpButtonText}>Sign Up</Text>
-        </TouchableOpacity>
+            />
+          </CustomComponent>
 
-        <Text style={styles.resendText}>
-        Already have an Account?  <Text style={styles.resendLink}>Log in</Text>
-        </Text>
-      </View>
+          <Text style={styles.label}>Password</Text>
+          <CustomComponent style={styles.socialContainer}>
+
+            <TextInput
+              style={styles.input}
+              placeholder="Enter Password"
+              placeholderTextColor={'black'}
+
+              secureTextEntry
+            />
+          </CustomComponent>
+
+          <Text style={styles.label}>Confirm Password</Text>
+          <CustomComponent style={styles.socialContainer}>
+
+            <TextInput
+              style={styles.input}
+              placeholder="Confirm Password"
+              placeholderTextColor={'black'}
+
+              secureTextEntry
+            />
+          </CustomComponent>
+
+          <Text style={styles.label}>Occupation</Text>
+          <CustomComponent style={styles.socialContainer}>
+
+            <TextInput
+              style={styles.input}
+              placeholder="Enter your Occupation"
+              placeholderTextColor={'black'}
+            />
+          </CustomComponent>
+
+          <TouchableOpacity
+            style={[styles.btn, { width: "65%" }]}
+            onPress={() => navigation.navigate('accountSuccess')}
+          >
+            <Text style={{ fontWeight: "700", fontSize: 18, color: "#000" }}>Sign Up</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+            <Text style={styles.resendText}>
+              Already have an Account? <Text style={styles.resendLink}>Log in</Text>
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
     </ImageBackground>
   );
 };
@@ -73,34 +97,56 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 50,
-    color: 'white',
+    fontWeight: '600',
+    marginVertical: 20,
+    textAlign: 'center',
+    color: 'black',
   },
   input: {
-    backgroundColor: 'white',
     padding: 10,
     borderRadius: 5,
-    marginBottom: 20,
+    width: '90%',
+    // marginVertical: 5,
+    // backgroundColor: 'rgba(255, 255, 255, 0.4)',
   },
-  signUpButton: {
-    backgroundColor: 'blue',
-    padding: 15,
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  signUpButtonText: {
+  label: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: 'white',
+    lineHeight: 35,
+    color: 'black',
+  },
+  socialContainer: {
+    flexDirection: 'row',
+    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    borderWidth: 1,
+    borderColor: "#FFFFFF",
+  },
+  btn: {
+    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    alignSelf: "center",
+    marginTop: 30,
+    borderRadius: 30,
+    borderWidth: 1,
+    padding: 15,
+    width: "90%",
+    borderColor: "#FFFFFF",
+    flexDirection: "row",
+    justifyContent: "center",
+    marginBottom: 20,
   },
   resendText: {
     fontSize: 16,
     textAlign: 'center',
-    color: 'white',
+    color:'black',
   },
   resendLink: {
     textDecorationLine: 'underline',
+    fontWeight: '700',
+    color:'black',
+
+  },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)', // Adjust the opacity as needed
   },
 });
 

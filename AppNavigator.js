@@ -16,6 +16,8 @@ import LoginScreen from './src/LoginScreen';
 import ForgotPasswordScreen from './src/forgetPassword';
 import AuthenticationCodeScreen from './src/authenticationCode';
 import NewPasswordScreen from './src/newPassword';
+import CreateAccountScreen from './src/createAccount';
+import AccountSuccessScreen from './src/accountSuccessScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -28,8 +30,11 @@ const AppNavigator = () => {
             <Stack.Screen name='profile' component={Profile} options={{ headerShown: false }} />
             <Stack.Screen name='Login' component={LoginScreen} options={{ headerShown: false }} />
             <Stack.Screen name='forgetPassword' component={ForgotPasswordScreen} options={{ headerShown: false }} />
-            <Stack.Screen name='authenticationCode' component={AuthenticationCodeScreen} />
-            <Stack.Screen name='newPassword' component={NewPasswordScreen} />
+            <Stack.Screen name='authenticationCode' component={AuthenticationCodeScreen} options={{ headerTransparent: true, headerTitle: 'Authentication Code' }} />
+            <Stack.Screen name='createAccount' component={CreateAccountScreen} options={{headerShown:false}}/>
+            <Stack.Screen name='accountSuccess' component={AccountSuccessScreen} options={{headerShown:false}}/>
+
+            <Stack.Screen name='newPassword' component={NewPasswordScreen} options={{ headerTransparent: true, headerTitle: "New Password" }} />
             <Stack.Screen name='Signup' component={SignupScreen} options={{ headerShown: false }} />
             <Stack.Screen name='Home' component={HomeScreen} options={{ headerShown: false }} />
             <Stack.Screen name='farmSection' component={FarmSection} options={{ headerShown: false }} />

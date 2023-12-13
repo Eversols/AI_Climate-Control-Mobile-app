@@ -10,7 +10,9 @@ const LoginScreen = () => {
   const [checked, setChecked] = useState(false);
 
   return (
-    <ImageBackground source={require('../assets/images/image119.png')} style={styles.backgroundImage}>
+    <ImageBackground source={require('../assets/images/image119.png')} style={styles.backgroundImage} blurRadius={5}>
+     
+     <View style={styles.overlay}/>
       <ScrollView>
         <View style={styles.container}>
           <CustomComponent style={styles.logoContainer}>
@@ -18,7 +20,7 @@ const LoginScreen = () => {
           </CustomComponent>
           <Text style={styles.label}>Email Address</Text>
           <CustomComponent style={styles.inputContainer}>
-            <TextInput style={styles.input} placeholder="Email" />
+              <TextInput style={styles.input} placeholder="Email"/>
           </CustomComponent>
           <Text style={styles.label}>Password</Text>
           <CustomComponent style={styles.inputContainer}>
@@ -30,6 +32,7 @@ const LoginScreen = () => {
                 value="remember"
                 status={checked ? 'checked' : 'unchecked'}
                 onPress={() => setChecked(!checked)}
+                color='black'
               />
               <Text style={styles.checkboxText}>Remember Me</Text>
             </View>
@@ -42,7 +45,7 @@ const LoginScreen = () => {
             style={[styles.btn, { width: "65%" }]}
             // onPress={handleLoginPress}
           >
-            <Text style={{ fontWeight: "700", fontSize: 18, color: "#000" }}>Login</Text>
+            <Text style={{ fontWeight: "700", fontSize: 18, color: "#000" }}>Log In</Text>
           </TouchableOpacity>
           <View style={styles.socialRow}>
             <CustomComponent onPress={() => console.log('Connect with Google pressed')} style={styles.socialContainer}>
@@ -98,6 +101,11 @@ const styles = StyleSheet.create({
   backgroundImage: {
     flex: 1,
     resizeMode: 'cover',
+    
+  },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)', // Adjust the opacity as needed
   },
   container: {
     flex: 1,
@@ -108,12 +116,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'rgba(255, 255, 255, 0.4)',
-
-    width: windowWidth * 0.5,
-    height: windowHeight * 0.2,
+    width:150,
+    height:100,
+    // width: windowWidth * 0.5,
+    // height: windowHeight * 0.2,
     alignSelf: 'center',
     borderRadius: 8,
     marginBottom: 20,
+    marginTop:15,
   },
   logoText: {
     fontSize: 24,
@@ -122,12 +132,14 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    lineHeight: 35,
+    lineHeight: 30,
+    color:'black',
   },
   inputContainer: {
     marginBottom: 10,
     backgroundColor: 'rgba(255, 255, 255, 0.4)',
-
+    borderWidth:1,
+    borderColor: "#FFFFFF",
   },
   input: {
     height: 40,
@@ -154,6 +166,8 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   socialContainer: {
+    borderWidth:1,
+    borderColor: "#FFFFFF",
     flex: 1,
     flexDirection: 'row',
     backgroundColor: 'rgba(255, 255, 255, 0.4)',
@@ -168,6 +182,9 @@ const styles = StyleSheet.create({
   },
   socialText: {
     paddingVertical: 10,
+    color:'black',
+    fontSize:16,
+
   },
   signupContainer: {
     flexDirection: 'row',
@@ -177,17 +194,20 @@ const styles = StyleSheet.create({
   },
   signupText: {
     marginRight: 5,
-    fontSize: 16,
+    fontSize: 14,
+    color:'black',
   },
   signupLink: {
     textDecorationLine: 'underline',
     fontWeight: '600',
+    fontSize: 14,
+    color:'black',
   },
   checkboxContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginVertical: 5,
+    // marginVertical: 2,
   },
   checkboxRow: {
     flexDirection: 'row',
@@ -195,13 +215,17 @@ const styles = StyleSheet.create({
   },
   checkboxText: {
     marginLeft: 8,
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: '500',
+    color:'black',
+
   },
   forgotPasswordLink: {
     textDecorationLine: 'underline',
     fontWeight: '500',
-    fontSize: 12,
+    fontSize: 13,
+    color:'black',
+
 
   },
 });
