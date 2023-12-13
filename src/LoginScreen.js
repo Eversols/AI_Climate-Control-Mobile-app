@@ -11,8 +11,8 @@ const LoginScreen = () => {
 
   return (
     <ImageBackground source={require('../assets/images/image119.png')} style={styles.backgroundImage} blurRadius={5}>
-     
-     <View style={styles.overlay}/>
+
+      <View style={styles.overlay} />
       <ScrollView>
         <View style={styles.container}>
           <CustomComponent style={styles.logoContainer}>
@@ -20,7 +20,7 @@ const LoginScreen = () => {
           </CustomComponent>
           <Text style={styles.label}>Email Address</Text>
           <CustomComponent style={styles.inputContainer}>
-              <TextInput style={styles.input} placeholder="Email"/>
+            <TextInput style={styles.input} placeholder="Email" />
           </CustomComponent>
           <Text style={styles.label}>Password</Text>
           <CustomComponent style={styles.inputContainer}>
@@ -43,12 +43,12 @@ const LoginScreen = () => {
 
           <TouchableOpacity
             style={[styles.btn, { width: "65%" }]}
-            // onPress={handleLoginPress}
+          // onPress={handleLoginPress}
           >
             <Text style={{ fontWeight: "700", fontSize: 18, color: "#000" }}>Log In</Text>
           </TouchableOpacity>
           <View style={styles.socialRow}>
-            <CustomComponent onPress={() => console.log('Connect with Google pressed')} style={styles.socialContainer}>
+            <TouchableOpacity style={styles.socialContainer}>
               {/* <Image source={require('../assets/images/Group1000007855.png')} style={styles.socialImage} /> */}
               <Svg width="29" height="28" viewBox="0 0 29 28" fill="none" xmlns="http://www.w3.org/2000/svg" style={styles.socialImage}>
                 <Path d="M25.3031 13.366C25.3031 12.3633 25.2185 11.6316 25.0355 10.8728H13.1343V15.3985H20.12C19.9792 16.5232 19.2187 18.2169 17.5285 19.3551L17.5048 19.5066L21.2678 22.3111L21.5285 22.3361C23.9228 20.2088 25.3031 17.0787 25.3031 13.366Z" fill="#4285F4" />
@@ -58,29 +58,27 @@ const LoginScreen = () => {
               </Svg>
 
               <Text style={styles.socialText}>Connect with Google</Text>
-            </CustomComponent>
+            </TouchableOpacity>
           </View>
           <View style={styles.socialRow}>
-            <CustomComponent onPress={() => console.log('Connect with Apple ID pressed')} style={styles.socialContainer}>
-              {/* <Image source={require('../assets/images/Vector.png')} style={styles.socialImage} />
-             */}
-              <Svg width="24" height="28" viewBox="0 0 24 28" fill="none" xmlns="http://www.w3.org/2000/svg" style={styles.socialImage}>
-                <Path d="M19.9966 26.8766C18.4459 28.3542 16.7527 28.1209 15.1229 27.421C13.3981 26.7055 11.8157 26.6744 9.99598 27.421C7.71736 28.3853 6.51476 28.1053 5.15392 26.8766C-2.56807 19.0532 -1.42876 7.1391 7.3376 6.7036C9.4738 6.81247 10.9612 7.85456 12.2113 7.94789C14.0785 7.5746 15.8666 6.5014 17.8604 6.64138C20.2498 6.82803 22.0537 7.76124 23.2405 9.44103C18.3035 12.3496 19.4744 18.7421 24 20.5307C23.098 22.8638 21.9271 25.1813 19.9808 26.8922L19.9966 26.8766ZM12.0531 6.61028C11.8157 3.14183 14.6798 0.279965 17.9712 0C18.43 4.01283 14.2684 6.99912 12.0531 6.61028Z" fill="white" />
-              </Svg>
+            {/* <CustomComponent onPress={() => console.log('Connect with Apple ID pressed')} style={styles.socialContainer}> */}
+              <TouchableOpacity style={styles.socialContainer}>
+                <Svg width="24" height="28" viewBox="0 0 24 28" fill="none" xmlns="http://www.w3.org/2000/svg" style={styles.socialImage}>
+                  <Path d="M19.9966 26.8766C18.4459 28.3542 16.7527 28.1209 15.1229 27.421C13.3981 26.7055 11.8157 26.6744 9.99598 27.421C7.71736 28.3853 6.51476 28.1053 5.15392 26.8766C-2.56807 19.0532 -1.42876 7.1391 7.3376 6.7036C9.4738 6.81247 10.9612 7.85456 12.2113 7.94789C14.0785 7.5746 15.8666 6.5014 17.8604 6.64138C20.2498 6.82803 22.0537 7.76124 23.2405 9.44103C18.3035 12.3496 19.4744 18.7421 24 20.5307C23.098 22.8638 21.9271 25.1813 19.9808 26.8922L19.9966 26.8766ZM12.0531 6.61028C11.8157 3.14183 14.6798 0.279965 17.9712 0C18.43 4.01283 14.2684 6.99912 12.0531 6.61028Z" fill="white" />
+                </Svg>
+                <Text style={styles.socialText}>Connect with Apple ID</Text>
+              </TouchableOpacity>
+            {/* </CustomComponent> */}
+          </View>
+          <View style={styles.socialRow}>
+          <TouchableOpacity style={styles.socialContainer}>
 
-              <Text style={styles.socialText}>Connect with Apple ID</Text>
-            </CustomComponent>
-          </View>
-          <View style={styles.socialRow}>
-            <CustomComponent onPress={() => console.log('Connect with Facebook pressed')} style={styles.socialContainer}>
-              {/* <Image source={require('../assets/images/Vector(1).png')} style={styles.socialImage} />
-             */}
               <Svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={styles.socialImage}>
                 <Path d="M24 12.0743C24 5.40402 18.6248 0 12 0C5.37075 0 0 5.40402 0 12.0743C0 18.0994 4.38675 23.0952 10.125 24V15.5653H7.07775V12.0751H10.125V9.41345C10.125 6.38808 11.9138 4.71729 14.6558 4.71729C15.969 4.71729 17.3438 4.95274 17.3438 4.95274V7.92378H15.828C14.34 7.92378 13.875 8.85577 13.875 9.8104V12.0743H17.2028L16.668 15.5646H13.875V23.9992C19.6087 23.0944 24 18.0987 24 12.0736V12.0743Z" fill="#4285F4" />
               </Svg>
 
               <Text style={styles.socialText}>Connect with Facebook</Text>
-            </CustomComponent>
+            </TouchableOpacity>
           </View>
           <View style={styles.signupContainer}>
             <Text style={styles.signupText}>Don't have an account?</Text>
@@ -101,11 +99,11 @@ const styles = StyleSheet.create({
   backgroundImage: {
     flex: 1,
     resizeMode: 'cover',
-    
+
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)', // Adjust the opacity as needed
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
   },
   container: {
     flex: 1,
@@ -116,14 +114,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'rgba(255, 255, 255, 0.4)',
-    width:150,
-    height:100,
+    width: 150,
+    height: 100,
     // width: windowWidth * 0.5,
     // height: windowHeight * 0.2,
     alignSelf: 'center',
     borderRadius: 8,
     marginBottom: 20,
-    marginTop:15,
+    marginTop: 15,
   },
   logoText: {
     fontSize: 24,
@@ -133,12 +131,12 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     lineHeight: 30,
-    color:'black',
+    color: 'black',
   },
   inputContainer: {
     marginBottom: 10,
     backgroundColor: 'rgba(255, 255, 255, 0.4)',
-    borderWidth:1,
+    borderWidth: 1,
     borderColor: "#FFFFFF",
   },
   input: {
@@ -166,11 +164,12 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   socialContainer: {
-    borderWidth:1,
+    borderWidth: 1,
     borderColor: "#FFFFFF",
     flex: 1,
     flexDirection: 'row',
     backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    borderRadius:40,
   },
   socialImage: {
     width: 20,
@@ -182,8 +181,8 @@ const styles = StyleSheet.create({
   },
   socialText: {
     paddingVertical: 10,
-    color:'black',
-    fontSize:16,
+    color: 'black',
+    fontSize: 16,
 
   },
   signupContainer: {
@@ -195,13 +194,13 @@ const styles = StyleSheet.create({
   signupText: {
     marginRight: 5,
     fontSize: 14,
-    color:'black',
+    color: 'black',
   },
   signupLink: {
     textDecorationLine: 'underline',
     fontWeight: '600',
     fontSize: 14,
-    color:'black',
+    color: 'black',
   },
   checkboxContainer: {
     flexDirection: 'row',
@@ -217,14 +216,14 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     fontSize: 13,
     fontWeight: '500',
-    color:'black',
+    color: 'black',
 
   },
   forgotPasswordLink: {
     textDecorationLine: 'underline',
     fontWeight: '500',
     fontSize: 13,
-    color:'black',
+    color: 'black',
 
 
   },

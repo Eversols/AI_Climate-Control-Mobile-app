@@ -31,8 +31,8 @@ const ForgotPasswordScreen = () => {
             // style={{ color: 'black', fontSize: 16, paddingVertical: 10 }}
             // textContainerStyle={styles.customTextContainerStyle}
             placeholder="Your phone number"
-            containerStyle={{borderRadius:40,color:'transparent', height:60, backgroundColor: 'rgba(255, 255, 255, 0.4)'}}
-            textContainerStyle={{backgroundColor:'transparent',paddingVertical:10,borderRadius:40}}
+            containerStyle={{borderRadius:40,color:'transparent', height:50,width:'100%', backgroundColor: 'rgba(255, 255, 255, 0.4)'}}
+            textContainerStyle={{backgroundColor:'transparent',paddingVertical:5,borderRadius:40}}
           />
         </CustomComponent>
 

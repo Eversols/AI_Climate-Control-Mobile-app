@@ -1,16 +1,21 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import CodeInput from 'react-native-confirmation-code-input';
+import { useClearByFocusCell, CodeField } from 'react-native-confirmation-code-field';
+import CodeInputField from './component/codeInputField';
+
+const CELL_COUNT = 6;
 
 const AuthenticationCodeScreen = () => {
   const navigation = useNavigation();
   const codeInputRef = useRef();
+  const [value, setValue] = useState('');
+  const [props, getCellOnLayoutHandler] = useClearByFocusCell({
+    value,
+    setValue,
+  });
 
-  const handleCodeChange = (code) => {
-   
-    console.log(code);
-  };
+
 
   return (
     <ImageBackground source={require('../assets/images/image124.png')} style={styles.backgroundImage} blurRadius={5}>
@@ -18,20 +23,9 @@ const AuthenticationCodeScreen = () => {
       <View style={styles.container}>
         <Text style={styles.title}>Enter authentication code</Text>
         <Text style={styles.subtitle}>Enter the 6-digit code that we have sent via the phone number +34 409-3049-3245</Text>
-        <CodeInput
-          ref={codeInputRef}
-          variant="clear"
-          autoFocus={true}
-          codeLength={6}
-          // ignoreCase={true}
-          inputProps={{ keyboardType: 'numeric' }}
-          onFulfill={handleCodeChange}
-          containerStyle={styles.codeContainer}
-          codeInputStyle={styles.codeInput}
-          codeInputLineContainerStyle={styles.codeInputContainer}
-          codeInputLineViewStyle={styles.codeInputLine}
-          // secureTextEntry
-        />
+
+        <CodeInputField />
+
         <Text style={styles.resendText}>
           Don't have a code? <Text style={styles.resendLink}>Re-send</Text>
         </Text>
@@ -56,7 +50,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    paddingTop: 60, 
+    paddingTop: 60,
   },
   title: {
     fontSize: 20,
@@ -77,7 +71,10 @@ const styles = StyleSheet.create({
   },
   codeInputContainer: {
     height: 50,
-    
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderBottomColor: 'black',
+    borderBottomWidth: 1,
   },
   codeInput: {
     fontSize: 20,
@@ -88,6 +85,11 @@ const styles = StyleSheet.create({
   codeInputLine: {
     height: 2,
     backgroundColor: 'black',
+    width: '100%',
+  },
+  focusCell: {
+    borderBottomColor: 'black',
+    borderBottomWidth: 2,
   },
   resendText: {
     fontSize: 14,
