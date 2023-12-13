@@ -14,8 +14,9 @@ import {
 // import MapView, { Marker } from 'react-native-maps';
 import { Defs, G, Filter, Path, Rect, Svg } from 'react-native-svg';
 import DropDown from './components/dropDown';
+import TextDropDown from './components/textDropDown';
 
-const PestScreen3 = ({ title }) => {
+const PestScreen3 = ({navigation }) => {
   // const navigation = useNavigation();
 
   return (
@@ -40,13 +41,13 @@ const PestScreen3 = ({ title }) => {
           <DropDown btnTitle={"Choose Pest"} />
 
 
-          <DropDown btnTitle={"Insect Information"} />
+          <TextDropDown btnTitle={"Insect Information"} />
 
-          <DropDown btnTitle={"Upload Information"} />
+          <TextDropDown btnTitle={"Upload Information"} />
 
           <DropDown btnTitle={"Recommended Pesticide"} />
-          <DropDown btnTitle={"Send Feedback"} />
-          <TouchableOpacity onPress={() => navigation.navigate("pestScreen3")} style={[styles.btn, { width: "70%", }]}>
+          <TextDropDown btnTitle={"Send Feedback"} />
+          <TouchableOpacity onPress={() => navigation.navigate("profile")} style={[styles.btn, { width: "70%", }]}>
             <Text style={{ fontWeight: "700", fontSize: 18, color: "#000" }}>Submit</Text>
           </TouchableOpacity>
 

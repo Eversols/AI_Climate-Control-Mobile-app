@@ -16,7 +16,7 @@ const AccountSuccessScreen = () => {
         <Text style={{ fontSize: 20, textAlign: 'center', color: 'black' }}>Your account has been successfully added</Text>
         <TouchableOpacity
           style={[styles.btn, { width: "65%" }]}
-        onPress={() => navigation.navigate('Home')}
+        onPress={() => navigation.navigate('bottom_navigation')}
         >
           <Text style={{ fontWeight: "700", fontSize: 18, color: "#000" }}>Done</Text>
         </TouchableOpacity>

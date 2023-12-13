@@ -43,7 +43,7 @@ const LoginScreen = () => {
 
           <TouchableOpacity
             style={[styles.btn, { width: "65%" }]}
-          // onPress={handleLoginPress}
+          onPress={() => navigation.navigate('forgetPassword')}
           >
             <Text style={{ fontWeight: "700", fontSize: 18, color: "#000" }}>Log In</Text>
           </TouchableOpacity>
