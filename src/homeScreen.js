@@ -70,11 +70,19 @@ const HomeScreen = () => {
 
 
 
+      <TouchableOpacity style={{ position: "absolute", right: 15, bottom: 170 }}>
+            <Svg width="63" height="63" viewBox="0 0 63 63" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <G filter="url(#filter0_bd_229_642)">
+                <Rect x="4" width="55" height="55" rx="27.5" fill="white" />
+              </G>
+              <Path d="M32 12V42M47 26.9893H17M44.8571 26.9893C44.8566 30.4 43.5021 33.6711 41.0914 36.0838C38.6806 38.4966 35.4107 39.8537 32 39.8571C24.9007 39.8571 19.1429 34.0843 19.1429 26.9893C19.1446 23.5807 20.5 20.3123 22.911 17.9028C25.3221 15.4934 28.5914 14.1401 32 14.1407C35.4084 14.1407 38.6774 15.4941 41.0883 17.9035C43.4993 20.3128 44.8549 23.5808 44.8571 26.9893Z" stroke="black" stroke-width="2" stroke-linecap="square" />
 
+            </Svg>
+          </TouchableOpacity>
 
-      <View style={{ position: "absolute", zIndex: 100, bottom: 250 }}>
+      <View style={{ position: "absolute", zIndex: 100, bottom: 180 }}>
         <View style={{ flexDirection: "row", justifyContent: "center", width: Dimensions.get("screen").width }}>
-          <TouchableOpacity style={styles.mapBtn} onPress={() => {
+          {/* <TouchableOpacity style={styles.mapBtn} onPress={() => {
             setLocheigth(-260)
             refRBSheet.current.open()
           }}>
@@ -85,20 +93,37 @@ const HomeScreen = () => {
                 <Path d="M1 1L7.5 7L14 1" stroke="black" stroke-width="2" stroke-linecap="round" />
               </Svg>
             </View>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
 
-          <TouchableOpacity style={{ position: "absolute", right: 15, top: locheigth }}>
-            <Svg width="63" height="63" viewBox="0 0 63 63" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <G filter="url(#filter0_bd_229_642)">
-                <Rect x="4" width="55" height="55" rx="27.5" fill="white" />
-              </G>
-              <Path d="M32 12V42M47 26.9893H17M44.8571 26.9893C44.8566 30.4 43.5021 33.6711 41.0914 36.0838C38.6806 38.4966 35.4107 39.8537 32 39.8571C24.9007 39.8571 19.1429 34.0843 19.1429 26.9893C19.1446 23.5807 20.5 20.3123 22.911 17.9028C25.3221 15.4934 28.5914 14.1401 32 14.1407C35.4084 14.1407 38.6774 15.4941 41.0883 17.9035C43.4993 20.3128 44.8549 23.5808 44.8571 26.9893Z" stroke="black" stroke-width="2" stroke-linecap="square" />
-
-            </Svg>
-          </TouchableOpacity>
+       
         </View>
-        <RBSheet
+        <View style={{ alignItems:'center'}}>
+          
+        <SelectList
+          setSelected={() => console.log("sasd")}
+          placeholder="Farms"
+          // defaultOption={{ key: values?.gender || "", value: values?.gender || "" }}
+          data={[
+            { key: 'Farm 1', value: 'Farm 1' },
+            { key: 'Farm 2', value: 'Farm 2' },
+            { key: 'Farm 3', value: 'Farm 3' },
+          ]}
+          boxStyles={[styles.input, styles.shadow]}
+          
+          dropdownStyles={[{
+            height: 200,
+            width: 250,
+            backgroundColor: 'rgba(255,255,255,0.4)',
+            borderWidth: 1,
+            borderColor: 'rgba(255,255,255,0.4)',
+            borderRadius: 15,
+            marginTop: 20
+          }]}
+          save="value"
+        />
+        </View>
+        {/* <RBSheet
           ref={refRBSheet}
           closeOnDragDown={true}
           onClose={() => setLocheigth(80)}
@@ -148,7 +173,7 @@ const HomeScreen = () => {
 
 
           </View>
-        </RBSheet>
+        </RBSheet> */}
       </View>
     </View >
 
@@ -200,18 +225,19 @@ const styles = StyleSheet.create({
   },
   input: {
     width: 150,
+
     position: "relative",
-    height: 45,
-    backgroundColor: '#fff',
+    height: 40,
+    backgroundColor: 'rgba(255,255,255,0.4)',
     borderWidth: 1,
-    borderColor: "#C0C0C0",
+    borderColor: 'rgba(255,255,255,0.4)',
     borderRadius: 30,
     marginTop: 20,
     padding: 15,
     flexDirection: "row",
     alignItems: "center",
     alignSelf: "center",
-    justifyContent: "space-between",
+    // justifyContent: "space-between",
   },
   cardTitle: {
     fontSize: 28,
