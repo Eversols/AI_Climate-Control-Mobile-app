@@ -15,7 +15,7 @@ import RBSheet from "react-native-raw-bottom-sheet";
 import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 // import MapView, { Marker } from 'react-native-maps';
-import Mapbox, { UserLocation, Camera } from '@rnmapbox/maps';
+// import Mapbox, { UserLocation, Camera } from '@rnmapbox/maps';
 import { Defs, G, Filter, Path, Rect, Svg } from 'react-native-svg';
 import { SelectList } from 'react-native-dropdown-select-list';
 
