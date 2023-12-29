@@ -6,40 +6,42 @@ import MapView, { Marker, PROVIDER_GOOGLE, Polygon } from 'react-native-maps';
 import Svg, { Path, Rect, G, Defs, ClipPath, Line } from 'react-native-svg';
 import { BlurView } from '@react-native-community/blur';
 import CustomComponent from './component/customComponent';
-
 const HomeScreen = () => {
-  const [isAddFarmVisible, setAddFarmVisible] = useState(false);
-  const [showSearchButton, setShowSearchButton] = useState(false);
+  const [isAddFarmVisible, setAddFarmVisible] = useState(true);
+  const [farmStep,setFarm]=useState(0)
+  const [showSearchButton, setShowSearchButton] = useState(true);
   const [showContinueButton, setShowContinueButton] = useState(false);
 
   const [isAddPolygonMode, setAddPolygonMode] = useState(false);
   const [polygonCoordinates, setPolygonCoordinates] = useState([]);
 
+
   useEffect(() => {
-    setAddFarmVisible(false);
-    setShowSearchButton(false);
+    
+    // setShowSearchButton(false);
     setShowContinueButton(false);
   }, []);
 
   const handleAddFarmPress = () => {
+    setFarm(1)
     setAddFarmVisible(true);
     setShowSearchButton(false);
     setShowContinueButton(false);
   };
 
   const handleOKPress = () => {
-    setAddFarmVisible(false);
-    setShowSearchButton(true);
+    setFarm(0)
     setShowContinueButton(true);
   };
   const handleAddPolygonPress = () => {
     // console.log('Add Polygon ');
     setAddFarmVisible(false);
+    
     setShowSearchButton(false);
     setShowContinueButton(false);
-    setAddPolygonMode(true);
+    setAddPolygonMode(!isAddPolygonMode);
     setPolygonCoordinates([]); 
-    setPolygonButtonPressed(true); 
+    setPolygonButtonPressed(!isPolygonButtonPressed); 
   };
 
   const [isPolygonButtonPressed, setPolygonButtonPressed] = useState(false);
@@ -59,22 +61,15 @@ const HomeScreen = () => {
   };
 
 
-  const thepolygonCoordinates = [
-    { latitude: 31.5497, longitude: 74.3436 }, // Lahore
-    { latitude: 31.5204, longitude: 74.3387 }, // Some other point in Lahore
-    { latitude: 31.5104, longitude: 74.3387 }, // Some other point in Lahore
-    { latitude: 31.5204, longitude: 74.3587 }, // Some other point in Lahore
-    { latitude: 31.5497, longitude: 74.3865 }, // Another point in Lahore
-    { latitude: 31.5497, longitude: 74.3444 }, // Another point in Lahore
-  ];
+ 
   const renderFarmIcons = (onAddPolygonPress) => {
     const farmIcons = [
       (
         // <TouchableOpacity onPress={handleAddPolygonPress}>
         <TouchableOpacity
           onPress={handleAddPolygonPress}
-          onPressIn={() => setPolygonButtonPressed(true)} 
-          onPressOut={() => setPolygonButtonPressed(false)} 
+          // onPressIn={() => setPolygonButtonPressed(true)} 
+          // onPressOut={() => setPolygonButtonPressed(false)} 
         >
           
             {isPolygonButtonPressed ? (
@@ -192,24 +187,7 @@ const HomeScreen = () => {
           }}
         // image={imagePath.icGreenMarker}
         />
-        {/* <Polygon
-          coordinates={thepolygonCoordinates}
-          fillColor="rgba(0, 200, 0, 0.3)"
-          strokeColor="#FF0000" // Change to red color
-          strokeWidth={1}
-
-        /> */}
-        {/* Markers */}
-        {/* {thepolygonCoordinates.map((coordinate, index) => (
-          <Marker
-            key={index}
-            coordinate={coordinate}
-            title={`Point ${index + 1}`}
-            description={`Marker at ${coordinate.latitude}, ${coordinate.longitude}`}
-
-            pinColor="green"
-          />
-        ))} */}
+        
 
         {isAddPolygonMode && polygonCoordinates.length > 0 && (
           <Polygon
@@ -232,7 +210,7 @@ const HomeScreen = () => {
       </MapView>
 
 
-      {!isAddFarmVisible && !showSearchButton && (
+      {isAddFarmVisible && showSearchButton && (
         <ImageBackground
           source={require('../assets/images/Rectangle13.png')}
           style={styles.backgroundImage}
@@ -258,7 +236,7 @@ const HomeScreen = () => {
         </ImageBackground>
       )}
 
-      {isAddFarmVisible && (
+      {farmStep==1 && (
         <View style={styles.instructionTextContainer}>
           <View style={styles.textBox}>
             <Text style={styles.instructionText}>
