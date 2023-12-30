@@ -1,79 +1,78 @@
 
-import { SelectList } from 'react-native-dropdown-select-list';
-import { Dimensions, StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground } from 'react-native'
+import { StyleSheet, Text, View, TextInput, Modal, TouchableOpacity, ImageBackground } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import MapView, { Marker, PROVIDER_GOOGLE, Polygon } from 'react-native-maps';
 import Svg, { Path, Rect, G, Defs, ClipPath, Line } from 'react-native-svg';
-import { BlurView } from '@react-native-community/blur';
+import FarmSelectionModal from './components/farmSelectionModal';
 import CustomComponent from './component/customComponent';
 const HomeScreen = () => {
-  const [isAddFarmVisible, setAddFarmVisible] = useState(true);
-  const [farmStep,setFarm]=useState(0)
-  const [showSearchButton, setShowSearchButton] = useState(true);
-  const [showContinueButton, setShowContinueButton] = useState(false);
-
-  const [isAddPolygonMode, setAddPolygonMode] = useState(false);
+  const [farmStep, setFarmStep] = useState(0);
   const [polygonCoordinates, setPolygonCoordinates] = useState([]);
-
+  const [isPolygonButtonPressed, setPolygonButtonPressed] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [screenState, setScreenState] = useState({
+    isAddFarmVisible: true,
+    showSearchButton: true,
+    showContinueButton: false,
+    isAddPolygonMode: false,
+  });
 
   useEffect(() => {
-    
-    // setShowSearchButton(false);
-    setShowContinueButton(false);
+    setScreenState((prevState) => ({
+      ...prevState,
+      showSearchButton: false,
+      showContinueButton: false,
+    }));
   }, []);
 
   const handleAddFarmPress = () => {
-    setFarm(1)
-    setAddFarmVisible(true);
-    setShowSearchButton(false);
-    setShowContinueButton(false);
+    setFarmStep(1);
+    setScreenState((prevState) => ({
+      ...prevState,
+      isAddFarmVisible: true,
+      showSearchButton: false,
+      showContinueButton: false,
+    }));
   };
 
   const handleOKPress = () => {
-    setFarm(0)
-    setShowContinueButton(true);
-  };
-  const handleAddPolygonPress = () => {
-    // console.log('Add Polygon ');
-    setAddFarmVisible(false);
-    
-    setShowSearchButton(false);
-    setShowContinueButton(false);
-    setAddPolygonMode(!isAddPolygonMode);
-    setPolygonCoordinates([]); 
-    setPolygonButtonPressed(!isPolygonButtonPressed); 
+    setFarmStep(0);
+    setScreenState((prevState) => ({ ...prevState, showContinueButton: true }));
   };
 
-  const [isPolygonButtonPressed, setPolygonButtonPressed] = useState(false);
+  const handleAddPolygonPress = () => {
+    setScreenState((prevState) => ({
+      ...prevState,
+      isAddFarmVisible: !prevState.isAddFarmVisible,
+      showSearchButton: false,
+      showContinueButton: isPolygonButtonPressed,
+      isAddPolygonMode: !prevState.isAddPolygonMode,
+    }));
+    setPolygonCoordinates([]);
+    setPolygonButtonPressed(!isPolygonButtonPressed);
+  };
+
 
   const handleMapPress = (event) => {
-    if (isAddPolygonMode) {
+    if (screenState.isAddPolygonMode) {
       const newCoordinate = {
         latitude: event.nativeEvent.coordinate.latitude,
         longitude: event.nativeEvent.coordinate.longitude,
       };
-      setPolygonCoordinates((prevCoordinates) => {
-        const updatedCoordinates = [...prevCoordinates, newCoordinate];
-        // console.log('updateddddd:', updatedCoordinates);
-        return updatedCoordinates;
-      });
+      setPolygonCoordinates((prevCoordinates) => [...prevCoordinates, newCoordinate]);
     }
   };
 
 
- 
   const renderFarmIcons = (onAddPolygonPress) => {
     const farmIcons = [
       (
-        // <TouchableOpacity onPress={handleAddPolygonPress}>
         <TouchableOpacity
           onPress={handleAddPolygonPress}
-          // onPressIn={() => setPolygonButtonPressed(true)} 
-          // onPressOut={() => setPolygonButtonPressed(false)} 
         >
-          
-            {isPolygonButtonPressed ? (
-              <View
+
+          {isPolygonButtonPressed ? (
+            <View
               style={{
                 borderWidth: 5, // Add a border width
                 borderRadius: 30,
@@ -93,16 +92,16 @@ const HomeScreen = () => {
                   </ClipPath>
                 </Defs>
               </Svg>
-              </View>
-            ) : (
-              <View
-            style={{
-              borderWidth: 2, // Add a border width
-              borderRadius: 20,
-              borderColor:  'transparent', // Set border color to green when pressed
-            }}
-            key={0}
-          >
+            </View>
+          ) : (
+            <View
+              style={{
+                borderWidth: 2, // Add a border width
+                borderRadius: 20,
+                borderColor: 'transparent', // Set border color to green when pressed
+              }}
+              key={0}
+            >
               <Svg width="30" height="30" viewBox="0 0 47 47" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <G clip-path="url(#clip0_612_1957)">
                   <Path d="M13.0565 14.2294C10.7413 16.5451 9.44061 19.6855 9.44061 22.9601C9.44061 26.2346 10.7413 29.3751 13.0565 31.6907C13.378 32.0233 13.556 32.4688 13.5522 32.9313C13.5484 33.3938 13.3631 33.8364 13.0362 34.1636C12.7093 34.4908 12.267 34.6765 11.8045 34.6807C11.3419 34.685 10.8963 34.5074 10.5634 34.1862C8.71673 32.3403 7.35385 30.0674 6.59549 27.5689C5.83714 25.0704 5.70673 22.4234 6.21582 19.8624C6.72492 17.3015 7.85779 14.9056 9.51408 12.8871C11.1704 10.8686 13.2989 9.28977 15.7112 8.29048C18.1235 7.29119 20.745 6.9023 23.3435 7.15826C25.942 7.41421 28.4372 8.30712 30.6082 9.75786C32.7791 11.2086 34.5587 13.1724 35.7894 15.4753C37.02 17.7782 37.6636 20.349 37.6633 22.9601C37.6633 23.4279 37.4774 23.8766 37.1466 24.2074C36.8158 24.5382 36.3671 24.7241 35.8993 24.7241C35.4314 24.7241 34.9827 24.5382 34.6519 24.2074C34.3211 23.8766 34.1353 23.4279 34.1353 22.9601C34.135 20.5181 33.4106 18.131 32.0538 16.1006C30.6969 14.0703 28.7685 12.4878 26.5124 11.5533C24.2563 10.6189 21.7737 10.3743 19.3786 10.8507C16.9835 11.327 14.7834 12.5028 13.0565 14.2294Z" fill="black" />
@@ -115,9 +114,9 @@ const HomeScreen = () => {
                   </ClipPath>
                 </Defs>
               </Svg>
-            
-          </View>
-            )}
+
+            </View>
+          )}
         </TouchableOpacity>
       ),
       (
@@ -168,7 +167,7 @@ const HomeScreen = () => {
     <View style={styles.container}>
 
       <MapView
-        provider={PROVIDER_GOOGLE} // remove if not using Google Maps
+        provider={PROVIDER_GOOGLE}
         style={styles.map}
         region={{
           latitude: 31.5928548,
@@ -187,30 +186,26 @@ const HomeScreen = () => {
           }}
         // image={imagePath.icGreenMarker}
         />
-        
-
-        {isAddPolygonMode && polygonCoordinates.length > 0 && (
+        {polygonCoordinates.length > 0 && (
           <Polygon
             coordinates={polygonCoordinates}
             fillColor="rgba(0, 200, 0, 0.3)"
             strokeColor="#FF0000"
             strokeWidth={1}
           />
-      
+
         )}
-   {polygonCoordinates.map((coordinate, index) => (
-      <Marker
-        key={index}
-        coordinate={coordinate}
-        title={`Point ${index + 1}`}
-        description={`Marker at ${coordinate.latitude}, ${coordinate.longitude}`}
-        pinColor="green"
-      />
-    ))}
+        {polygonCoordinates.map((coordinate, index) => (
+          <Marker
+            key={index}
+            coordinate={coordinate}
+            title={`Point ${index + 1}`}
+            description={`Marker at ${coordinate.latitude}, ${coordinate.longitude}`}
+            pinColor="green"
+          />
+        ))}
       </MapView>
-
-
-      {isAddFarmVisible && showSearchButton && (
+      {!screenState.isAddPolygonMode && (
         <ImageBackground
           source={require('../assets/images/Rectangle13.png')}
           style={styles.backgroundImage}
@@ -235,8 +230,7 @@ const HomeScreen = () => {
           </View>
         </ImageBackground>
       )}
-
-      {farmStep==1 && (
+      {farmStep === 1 && (
         <View style={styles.instructionTextContainer}>
           <View style={styles.textBox}>
             <Text style={styles.instructionText}>
@@ -244,12 +238,13 @@ const HomeScreen = () => {
             </Text>
           </View>
           <TouchableOpacity onPress={handleOKPress} style={styles.okButton}>
-            <Text style={styles.okButtonText}>OK</Text>
+            <Text style={{ fontSize: 16 }}>OK</Text>
           </TouchableOpacity>
         </View>
       )}
 
-      {showSearchButton && !isAddFarmVisible && (
+      {/* {screenState.showSearchButton && !screenState.isAddFarmVisible && ( */}
+      {screenState.isAddPolygonMode && (
         <View style={styles.searchContainer}>
           <CustomComponent style={styles.socialContainer}>
             <TextInput
@@ -260,17 +255,24 @@ const HomeScreen = () => {
           </CustomComponent>
         </View>
       )}
+      <Modal
+        visible={isModalVisible}
+        transparent={true}
+        animationType="slide"
+      >
+        <FarmSelectionModal onClose={() => setIsModalVisible(false)} />
+      </Modal>
+      {screenState.isAddPolygonMode && (
 
-      {showContinueButton && !isAddFarmVisible && (
         <View style={{ justifyContent: 'flex-end', alignItems: 'center', backgroundColor: 'rgba(255, 255, 255, 0.9)', borderRadius: 20, padding: 5, bottom: 30, width: '60%' }}>
-          <TouchableOpacity style={styles.input}>
+          <TouchableOpacity style={styles.input} onPress={() => setIsModalVisible(true)}>
             <Text style={{ marginVertical: 10, fontWeight: '600', fontSize: 16, color: 'black' }}>Continue</Text>
           </TouchableOpacity>
         </View>
       )}
 
       <View style={[styles.farmIconsContainer, { zIndex: 101 }]}>
-        {renderFarmIcons(handleAddPolygonPress)}
+        {renderFarmIcons()}
       </View>
     </View>
   )
@@ -288,8 +290,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: '70%',
     width: '100%',
-    height: '60%', // Adjust the height percentage as needed
-    // resizeMode: 'cover', // or 'stretch' or 'contain'
+    height: '60%',
   },
 
   map: {
@@ -297,21 +298,15 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 40,
-
     borderRadius: 40,
     paddingHorizontal: 45,
-    // flexDirection: "row",
-    // alignItems: "center",
-    // alignSelf: "center",
-    // justifyContent: "space-between",
+
   },
 
   searchContainer: {
     ...StyleSheet.absoluteFillObject,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    // width:"90%",
-
   },
   socialContainer: {
     position: 'absolute',
@@ -337,7 +332,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-
   shadow: {
     shadowColor: "#000",
     shadowOffset: {
@@ -346,7 +340,6 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.27,
     shadowRadius: 4.65,
-
     elevation: 6,
   },
   farmIconsContainer: {
@@ -355,7 +348,6 @@ const styles = StyleSheet.create({
     right: 3,
     flexDirection: 'column',
     alignItems: 'flex-end',
-
   },
 
   farmIconContainer: {
@@ -369,9 +361,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-around',
     marginTop: 20,
-
   },
-
   selectFarmButton: {
     padding: 10,
     backgroundColor: 'lightgray',
@@ -411,13 +401,12 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     marginTop: 100,
     backgroundColor: '#f5f5dc',
-    marginBottom: 30, // Add margin for separation
+    marginBottom: 30,
   },
 
   instructionText: {
     fontSize: 18,
   },
-
   okButton: {
     backgroundColor: '#f8f8ff',
     borderRadius: 20,
@@ -425,9 +414,5 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginTop: 40,
     paddingHorizontal: 30,
-  },
-
-  okButtonText: {
-    fontSize: 16,
   },
 })
