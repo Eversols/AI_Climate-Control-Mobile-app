@@ -47,6 +47,7 @@ const FarmSelectionModal = ({
 
     const handleYes = () => {
         setShowConfirmation(false);
+        onClose()
     };
 
     const handleNo = () => {
@@ -104,6 +105,7 @@ const FarmSelectionModal = ({
                     visible={showConfirmation}
                     onYes={handleYes}
                     onNo={handleNo}
+                  
                 />
             </ImageBackground>
         </Modal>
