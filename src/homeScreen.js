@@ -6,6 +6,7 @@ import Svg, { Path, Rect, G, Defs, ClipPath, Line } from 'react-native-svg';
 import FarmSelectionModal from './components/farmSelectionModal';
 import CustomComponent from './component/customComponent';
 import GetLocation from 'react-native-get-location';
+
 const HomeScreen = () => {
   const [farmStep, setFarmStep] = useState(0);
   const [polygonCoordinates, setPolygonCoordinates] = useState([]);
@@ -110,6 +111,7 @@ const HomeScreen = () => {
     const farmIcons = [
       (
         <>
+
           {innerPolygonButtonPressed != true &&
             < TouchableOpacity
               onPress={handleAddPolygonPress}
@@ -162,7 +164,10 @@ const HomeScreen = () => {
                   </Svg>
 
                 </View>
+
               )}
+
+
             </TouchableOpacity >}
           {
             innerPolygonButtonPressed && <TouchableOpacity
@@ -185,7 +190,9 @@ const HomeScreen = () => {
                     <Path d="M29.9536 1.02644C29.9393 0.771598 29.8357 0.531089 29.6624 0.350578C29.4891 0.170067 29.2581 0.0621238 29.0135 0.0472411C22.5424 -0.343399 17.3466 1.70616 15.1137 5.54484C13.6385 8.0827 13.641 11.1648 15.0937 14.1051C14.2668 15.1303 13.6625 16.3296 13.3222 17.6208L11.2881 15.4944C12.2657 13.3681 12.2282 11.1518 11.1631 9.31061C9.51279 6.47326 5.70342 4.95237 0.9739 5.24145C0.729217 5.25633 0.498299 5.36427 0.324987 5.54478C0.151675 5.72529 0.0480362 5.9658 0.0337471 6.22065C-0.245048 11.1466 1.21644 15.1142 3.94063 16.833C4.83961 17.4051 5.87264 17.7079 6.92612 17.7081C7.94866 17.6949 8.95529 17.4426 9.8716 16.9698L12.9971 20.2251V23.9583C12.9971 24.2346 13.1025 24.4995 13.29 24.6949C13.4776 24.8902 13.732 25 13.9973 25C14.2625 25 14.5169 24.8902 14.7045 24.6949C14.8921 24.4995 14.9974 24.2346 14.9974 23.9583V20.1183C14.993 18.4611 15.5344 16.8524 16.5314 15.5608C17.8178 16.261 19.2445 16.6358 20.6959 16.6546C22.0991 16.6593 23.4762 16.2601 24.6753 15.5009C28.3609 13.1779 30.3337 7.76628 29.9536 1.02644ZM4.97205 15.0517C3.05424 13.842 1.96906 10.9786 1.99532 7.291C5.53589 7.25975 8.28509 8.39391 9.44653 10.3914C10.0529 11.4331 10.1516 12.648 9.75408 13.8993L6.70233 10.7208C6.51324 10.5337 6.26145 10.4309 6.00064 10.4344C5.73984 10.4379 5.49066 10.5473 5.30623 10.7394C5.12179 10.9315 5.01671 11.1911 5.01337 11.4627C5.01003 11.7343 5.1087 11.9966 5.28835 12.1935L8.3401 15.372C7.13865 15.7861 5.97346 15.6832 4.97205 15.0517ZM23.6388 13.7209C21.9636 14.777 19.9945 14.8577 17.9942 13.9814L24.7065 6.98891C24.8862 6.79196 24.9848 6.52971 24.9815 6.25807C24.9782 5.98644 24.8731 5.7269 24.6886 5.53481C24.5042 5.34272 24.255 5.23327 23.9942 5.22979C23.7334 5.22631 23.4816 5.32909 23.2925 5.5162L16.5789 12.4995C15.7338 10.4161 15.8101 8.36396 16.829 6.6204C18.5718 3.6255 22.7049 1.95617 27.997 2.08508C28.1171 7.5957 26.5168 11.9058 23.6388 13.7209Z" fill="#fff" />
                   </Svg>
                 </View>
-              ) : (
+              ) : 
+              
+              (
                 <View
                   style={{
                     borderWidth: 2, // Add a border width
@@ -309,22 +316,33 @@ const HomeScreen = () => {
         >
           <View style={styles.selectFarmContainer}>
             <TouchableOpacity style={styles.addFarmButton} onPress={handleAddFarmPress}>
-              <Text style={{ marginHorizontal: 10, fontSize: 16, fontWeight: '700' }}>
-                Add Another Farm
-              </Text>
-              <Svg style={{ marginLeft: 40 }} width="14" height="14" viewBox="0 0 14 14" fill="black" xmlns="http://www.w3.org/2000/svg">
-                <Path d="M14 8H8V14H6V8H0V6H6V0H8V6H14V8Z" fill="black" />
-              </Svg>
+              <View style={{ flexDirection: 'row' }}>
+
+                <Text style={{ fontSize: 16, color: 'black', fontWeight: '700', marginHorizontal: '30%' }}>
+                  Add A Farm
+                </Text>
+
+                <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                  <Svg width="14" height="14" viewBox="0 0 14 14" fill="black" xmlns="http://www.w3.org/2000/svg">
+                    <Path d="M14 8H8V14H6V8H0V6H6V0H8V6H14V8Z" fill="black" />
+                  </Svg>
+                </View>
+              </View>
             </TouchableOpacity>
             <TouchableOpacity style={styles.selectFarmButton}>
-              <Text style={{ marginHorizontal: 70, fontSize: 16, fontWeight: '700' }}>
-                Select a Farm
-              </Text>
-              <Svg width="9" height="14" viewBox="0 0 9 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <Path d="M1 13L7 7L0.999999 1" stroke="black" stroke-width="2" stroke-linecap="round" />
-              </Svg>
+              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={{ fontSize: 16, color: 'black', fontWeight: '700', marginHorizontal: '30%' }}>
+                  Select a Farm
+                </Text>
+                <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                  <Svg width="9" height="14" viewBox="0 0 9 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <Path d="M1 13L7 7L0.999999 1" stroke="black" strokeWidth="2" strokeLinecap="round" />
+                  </Svg>
+                </View>
+              </View>
             </TouchableOpacity>
           </View>
+
         </ImageBackground>
       )}
       {farmStep === 1 && (
@@ -372,11 +390,29 @@ const HomeScreen = () => {
           </TouchableOpacity>
         </View>
       )}
-
       <View style={[styles.farmIconsContainer, { zIndex: 101 }]}>
         {renderFarmIcons()}
       </View>
+      {!innerPolygonButtonPressed && !screenState.isAddPolygonMode && farmStep === 0 && (
+
+        <View style={styles.popupContainer}>
+          <View style={styles.arrowContainer}>
+            <View style={styles.arrow} />
+          </View>
+          <Text style={styles.messageText}>Use This Button To Tag The Area Of The Farm</Text>
+
+        </View>)}
+      {innerPolygonButtonPressed && screenState.isAddPolygonMode && (
+
+        <View style={styles.popupContainer1}>
+          <View style={styles.arrowContainer}>
+            <View style={styles.arrow} />
+          </View>
+          <Text style={styles.messageText}>Use This Button To Tag Crop Area In The Field</Text>
+
+        </View>)}
     </View>
+
   )
 }
 export default HomeScreen;
@@ -402,7 +438,7 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 40,
     paddingHorizontal: 45,
-
+    color:'#000000'
   },
 
   searchContainer: {
@@ -419,7 +455,9 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderRadius: 30,
     borderColor: 'black',
-    zIndex: 100,
+    // zIndex: 100,
+    backgroundColor:'#FFFFFF99'
+    
   },
   circularBackground: {
     // backgroundColor: 'white',
@@ -471,12 +509,12 @@ const styles = StyleSheet.create({
   selectFarmButton: {
     padding: 10,
     backgroundColor: 'lightgray',
-    borderRadius: 10,
-    marginHorizontal: 30,
+    borderRadius: 15,
+    marginHorizontal: 40,
     marginVertical: 10,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    // justifyContent: 'center',
 
   },
   addFarmButton: {
@@ -520,5 +558,55 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginTop: 40,
     paddingHorizontal: 30,
+  },
+  // Inside the styles object
+  popupContainer: {
+    backgroundColor: '#FFFFFFCC',
+    paddingHorizontal: 25,
+    paddingVertical: 15,
+    borderRadius: 20,
+    borderColor: '#000000',
+    borderWidth: 1,
+    maxWidth: 220,
+    bottom: 520,
+    // left:5,
+  },
+  popupContainer1: {
+    backgroundColor: '#FFFFFFCC',
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    borderRadius: 20,
+    borderColor: '#000000',
+    borderWidth: 1,
+    maxWidth: 200,
+    bottom: 500,
+    left:25,
+  },
+  arrowContainer: {
+    position: 'absolute',
+    top: '50%',
+    right: -20,
+    transform: [{ translateY: -10 }], // Adjust this value to align the arrow with the center
+  },
+  arrow: {
+    width: 0,
+    height: 0,
+    borderStyle: 'solid',
+    borderLeftWidth: 10,
+    borderRightWidth: 10,
+    borderBottomWidth: 10,
+    borderLeftColor: 'black',
+    borderRightColor: 'transparent',
+    borderBottomColor: 'transparent',
+
+  },
+
+  messageText: {
+    fontSize: 16,
+    padding: 10,
+    textAlign: 'center',
+    color: '#000000',
+    lineHeight: 24,
+
   },
 })

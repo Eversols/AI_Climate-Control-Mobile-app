@@ -11,6 +11,7 @@ import {
     ImageBackground,
 } from 'react-native';
 import CustomComponent from '../component/customComponent';
+import { Path, Svg } from 'react-native-svg';
 const FarmSelectionModal = ({
     visible,
     onFarmFieldSelect,
@@ -63,7 +64,8 @@ const FarmSelectionModal = ({
             <ImageBackground
                 source={require('../../assets/images/image145.png')}
                 style={styles.imageBackground}
-                blurRadius={5}
+                blurRadius={9}
+
             >
                 <View style={styles.topContainer}>
                     <Text style={styles.modalTitle}>Name for the farm</Text>
@@ -76,21 +78,30 @@ const FarmSelectionModal = ({
                     </CustomComponent>
                 </View>
                 <View style={styles.bottomContainer}>
+
                     <View style={styles.modalContent}>
-                        <Text style={styles.modalTitle}>Select the Crops of the farm</Text>
+                        <View style={{ alignItems: 'center' }}>
+                            <Text style={styles.modalTitle}>Select the Crops of the farm</Text>
+                        </View>
                         <FlatList
                             data={cropOptions}
                             keyExtractor={(item) => item.value}
                             renderItem={({ item, index }) => (
-                                <TouchableOpacity
-                                    style={styles.checkboxContainer}
-                                    onPress={() => handleCropOptionSelect(index)}
-                                >
-                                    <Text>{item.label}</Text>
-                                    <View style={styles.checkbox}>
-                                        {item.selected && <Text>✔</Text>}
-                                    </View>
-                                </TouchableOpacity>
+                                <>
+                                    <TouchableOpacity
+                                        style={styles.checkboxContainer}
+                                        onPress={() => handleCropOptionSelect(index)}
+                                    >
+                                        <Text style={styles.cropOptionText}>{item.label}</Text>
+                                        {item.selected &&
+                                            <Svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <Path d="M16 1.26174L5.02857 12L0 7.0783L1.28914 5.81656L5.02857 9.46756L14.7109 0L16 1.26174Z" fill="black" />
+                                            </Svg>
+                                        }
+                                    </TouchableOpacity>
+                                    {item.label !== 'Sugar' && <View style={styles.whiteLine} />}
+
+                                </>
                             )}
                         />
                     </View>
@@ -98,14 +109,14 @@ const FarmSelectionModal = ({
                         <TouchableOpacity onPress={handleContinue}
                             style={{ top: 80, paddingVertical: 10, backgroundColor: 'white', borderRadius: 30, alignItems: 'center' }}
                         >
-                            <Text style={{ fontSize: 16, color: 'black' }}>Continue</Text></TouchableOpacity>
+                            <Text style={{ fontSize: 16, color: '#000000', fontWeight: '600' }}>Continue</Text></TouchableOpacity>
                     </View>
                 </View>
                 <ConfirmationModal
                     visible={showConfirmation}
                     onYes={handleYes}
                     onNo={handleNo}
-                  
+
                 />
             </ImageBackground>
         </Modal>
@@ -123,30 +134,33 @@ const ConfirmationModal = ({ visible, onYes, onNo }) => {
             visible={visible}
             onRequestClose={() => { }}
         >
-            <ImageBackground
+            {/* <ImageBackground
                 source={require('../../assets/images/image145.png')}
-                style={styles.imageBackground1}
-                blurRadius={8} 
-            >
+                style={styles.imageBackground}
+                blurRadius={10}
+            > */}
                 <View style={styles.confirmationModalContainer}>
                     <View style={styles.confirmationModalContent}>
-                        <Text style={styles.modalTitle}>Do you want to draw the area of the crops in your farm?</Text>
+                        <Text style={{textAlign: 'center',fontSize: 18, marginBottom: 10, color: "#3D4142",paddingHorizontal:25, lineHeight:24 }}>
+                            Do You Want To Draw The Area Of The Crops In Your Farm?
+                            </Text>
                         <TouchableOpacity style={styles.confirmationOption} onPress={onYes}>
-                            <Text>Yes</Text>
+                            <Text style={{color:'#1D2324', fontSize:16}}>Yes</Text>
                         </TouchableOpacity>
                         <View style={styles.blackLine} />
                         <TouchableOpacity style={styles.confirmationOption} onPress={onNo}>
-                            <Text>No</Text>
+                            <Text style={{color:'#1D2324', fontSize:16}}>Skip</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
-            </ImageBackground>
+            {/* </ImageBackground> */}
         </Modal>
     );
 };
 const styles = StyleSheet.create({
     imageBackground: {
         flex: 1,
+
     },
     imageBackground1: {
         flex: 1,
@@ -154,45 +168,67 @@ const styles = StyleSheet.create({
     topContainer: {
         justifyContent: 'flex-end',
         padding: 30,
+        marginTop: 40
     },
+
     bottomContainer: {
         flex: 1,
-        justifyContent: 'center',
+        // justifyContent: 'center',
         alignItems: 'center',
+        paddingVertical: 70,
+
     },
     modalContent: {
-        backgroundColor: 'rgba(255, 255, 255, 0.9)',
-        padding: 20,
-        borderRadius: 10,
-        elevation: 5,
+        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        paddingVertical: 10, // Add padding to top and bottom
+        borderRadius: 25,
+        // elevation: 5,
         width: '80%',
-        alignItems: 'center',
+        // alignItems: 'center',
     },
+
+    whiteLine: {
+        height: 1,
+        backgroundColor: 'white',
+        width: '100%',
+        marginBottom: 10, // Adjust as needed for spacing
+    },
+
+
     modalTitle: {
         fontSize: 18,
         // fontWeight: 'bold',
         marginBottom: 10,
+        color: "#3D4142",
     },
 
     textInput: {
         borderColor: '#ccc',
-        padding: 8,
+        padding: 5,
         left: 15,
         borderRadius: 5,
     },
     checkboxContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
-        // alignItems: 'center',
+        // justifyContent: 'space-between',
+        // alignItems: 'center', // Align items vertically
         marginVertical: 5,
-        paddingRight: 20, 
+        paddingRight: 20,
+    },
+    cropOptionText: {
+        flex: 1,
+        textAlign: 'center',
+        // marginStart:120,
+        paddingVertical: 5,
+        // textAlignVertical: 'center',
+        color: '#1D2324'
     },
     checkbox: {
         width: 20,
         height: 20,
-        marginLeft: 10,
-        justifyContent: 'center',
-        alignItems: 'center',
+        // marginLeft: 10,
+        // justifyContent: 'center',
+        alignItems: 'flex-end',
     },
 
     button: {
@@ -204,15 +240,21 @@ const styles = StyleSheet.create({
         color: 'white',
         fontWeight: 'bold',
     },
+   
     confirmationModalContainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: 'rgba(255, 255, 255, 0.6)', // Adjust the alpha value for the overlay color
+
     },
     confirmationModalContent: {
         backgroundColor: 'white',
-        padding: 20,
-        borderRadius: 10,
+        // paddingHorizontal: 10,
+        borderRadius: 25,
+        paddingVertical:15,
+        lineHeight:24,
+
         elevation: 5,
         width: '80%',
         alignItems: 'center',
@@ -223,9 +265,10 @@ const styles = StyleSheet.create({
     blackLine: {
         height: 1,
         backgroundColor: 'black',
-        width: '80%',
-        marginVertical: 10,
+        width: '100%',
+        marginVertical: 5,
     },
+    
 });
 
 export default FarmSelectionModal;
