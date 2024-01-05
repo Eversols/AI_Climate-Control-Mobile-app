@@ -7,6 +7,7 @@ import {
     Button,
     StyleSheet,
     TouchableOpacity,
+    Platform,
     FlatList,
     ImageBackground,
 } from 'react-native';
@@ -42,8 +43,20 @@ const FarmSelectionModal = ({
         }));
         setCropOptions(updatedCrops);
     };
+    const [farmName, setFarmName] = useState(''); 
     const handleContinue = () => {
-        setShowConfirmation(true);
+        const isAnyCropSelected = cropOptions.some((crop) => crop.selected);
+        const isFarmNameProvided = !!farmName
+        // if (!isFarmNameProvided && !isAnyCropSelected) {
+        //     alert('Please provide a farm name and choose at least one crop before continuing.');
+        // } else if (!isFarmNameProvided) {
+        //     alert('Please provide a farm name before continuing.');
+        // } 
+          if (!isAnyCropSelected) {
+            alert('Please choose at least one crop before continuing.');
+        } else {
+            setShowConfirmation(true);
+        }
     };
 
     const handleYes = () => {
@@ -54,12 +67,13 @@ const FarmSelectionModal = ({
     const handleNo = () => {
         setShowConfirmation(false);
     };
+    
     return (
         <Modal
             transparent={true}
             animationType="slide"
-            visible={visible}
-            onRequestClose={onClose}
+            // visible={visible}
+            // onRequestClose={onClose}
         >
             <ImageBackground
                 source={require('../../assets/images/image145.png')}
@@ -67,16 +81,18 @@ const FarmSelectionModal = ({
                 blurRadius={9}
 
             >
-                <View style={styles.topContainer}>
+               <View style={styles.topContainer}>
                     <Text style={styles.modalTitle}>Name for the farm</Text>
                     <CustomComponent>
                         <TextInput
                             style={styles.textInput}
                             placeholder="Farm 01"
-                            keyboardType="default"
+                            onChangeText={(text) => setFarmName(text)} 
+                            value={farmName} 
                         />
                     </CustomComponent>
                 </View>
+                
                 <View style={styles.bottomContainer}>
 
                     <View style={styles.modalContent}>
@@ -162,11 +178,9 @@ const styles = StyleSheet.create({
         flex: 1,
 
     },
-    imageBackground1: {
-        flex: 1,
-    },
+    
     topContainer: {
-        justifyContent: 'flex-end',
+        // justifyContent: 'flex-end',
         padding: 30,
         marginTop: 40
     },
