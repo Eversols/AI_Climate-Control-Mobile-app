@@ -69,12 +69,12 @@ const FarmSelectionModal = ({
     };
     
     return (
-        <Modal
-            transparent={true}
-            animationType="slide"
-            // visible={visible}
-            // onRequestClose={onClose}
-        >
+        // <Modal
+        //     transparent={true}
+        //     animationType="slide"
+        //     // visible={visible}
+        //     // onRequestClose={onClose}
+        // >
             <ImageBackground
                 source={require('../../assets/images/image145.png')}
                 style={styles.imageBackground}
@@ -123,7 +123,7 @@ const FarmSelectionModal = ({
                     </View>
                     <View style={{ width: '60%' }}>
                         <TouchableOpacity onPress={handleContinue}
-                            style={{ top: 80, paddingVertical: 10, backgroundColor: 'white', borderRadius: 30, alignItems: 'center' }}
+                            style={{ top: 80, paddingVertical: 12, backgroundColor: 'rgba(255, 255, 255, 0.8)', borderRadius: 30, alignItems: 'center' }}
                         >
                             <Text style={{ fontSize: 16, color: '#000000', fontWeight: '600' }}>Continue</Text></TouchableOpacity>
                     </View>
@@ -135,7 +135,7 @@ const FarmSelectionModal = ({
 
                 />
             </ImageBackground>
-        </Modal>
+        // </Modal>
     );
 };
 const ConfirmationModal = ({ visible, onYes, onNo }) => {
@@ -157,15 +157,15 @@ const ConfirmationModal = ({ visible, onYes, onNo }) => {
             > */}
                 <View style={styles.confirmationModalContainer}>
                     <View style={styles.confirmationModalContent}>
-                        <Text style={{textAlign: 'center',fontSize: 18, marginBottom: 10, color: "#3D4142",paddingHorizontal:25, lineHeight:24 }}>
+                        <Text style={{textAlign: 'center',fontSize: 14, marginBottom: 10, color: "#3D4142",paddingHorizontal:25, lineHeight:24 }}>
                             Do You Want To Draw The Area Of The Crops In Your Farm?
                             </Text>
                         <TouchableOpacity style={styles.confirmationOption} onPress={onYes}>
-                            <Text style={{color:'#1D2324', fontSize:16}}>Yes</Text>
+                            <Text style={{color:'#1D2324', fontSize:14}}>Yes</Text>
                         </TouchableOpacity>
                         <View style={styles.blackLine} />
                         <TouchableOpacity style={styles.confirmationOption} onPress={onNo}>
-                            <Text style={{color:'#1D2324', fontSize:16}}>Skip</Text>
+                            <Text style={{color:'#1D2324', fontSize:14}}>Skip</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -210,17 +210,20 @@ const styles = StyleSheet.create({
 
 
     modalTitle: {
-        fontSize: 18,
+        fontSize: 16,
         // fontWeight: 'bold',
         marginBottom: 10,
         color: "#3D4142",
     },
 
     textInput: {
+        
         borderColor: '#ccc',
         padding: 5,
         left: 15,
         borderRadius: 5,
+        height:50,
+
     },
     checkboxContainer: {
         flexDirection: 'row',
@@ -275,6 +278,9 @@ const styles = StyleSheet.create({
     },
     confirmationOption: {
         padding: 10,
+        width:"90%",
+        alignItems:"center"
+
     },
     blackLine: {
         height: 1,

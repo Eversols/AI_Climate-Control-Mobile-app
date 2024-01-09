@@ -7,7 +7,8 @@ const CustomComponent = ({ style, children }) => {
 
 const styles = StyleSheet.create({
   container: {
-    // borderWidth: 1,
+    borderWidth: 1,
+    borderColor:"#ccc",
     borderRadius: 40,
     marginBottom: 10,
     backgroundColor:'#FFFFFF'
