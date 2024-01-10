@@ -13,6 +13,8 @@ import {
 } from 'react-native';
 import CustomComponent from '../component/customComponent';
 import { Path, Svg } from 'react-native-svg';
+import { useNavigation } from '@react-navigation/native';
+
 const FarmSelectionModal = ({
     visible,
     onFarmFieldSelect,
@@ -22,6 +24,7 @@ const FarmSelectionModal = ({
 }) => {
     const [selectedFarmField, setSelectedFarmField] = useState('Farm 1');
     const [showConfirmation, setShowConfirmation] = useState(false);
+    const navigation = useNavigation();
 
     const [cropOptions, setCropOptions] = useState([
         { label: 'Rice', value: 'Rice', selected: false },
@@ -47,15 +50,18 @@ const FarmSelectionModal = ({
     const handleContinue = () => {
         const isAnyCropSelected = cropOptions.some((crop) => crop.selected);
         const isFarmNameProvided = !!farmName
-        // if (!isFarmNameProvided && !isAnyCropSelected) {
-        //     alert('Please provide a farm name and choose at least one crop before continuing.');
-        // } else if (!isFarmNameProvided) {
-        //     alert('Please provide a farm name before continuing.');
-        // } 
-          if (!isAnyCropSelected) {
+        if (!isFarmNameProvided && !isAnyCropSelected) {
+            alert('Please provide a farm name and choose at least one crop before continuing.');
+        } else if (!isFarmNameProvided) {
+            alert('Please provide a farm name before continuing.');
+        } 
+          else if (!isAnyCropSelected) {
             alert('Please choose at least one crop before continuing.');
         } else {
             setShowConfirmation(true);
+
+
+            // navigation.navigate('FarmImageSelection')
         }
     };
 
@@ -65,7 +71,8 @@ const FarmSelectionModal = ({
     };
 
     const handleNo = () => {
-        setShowConfirmation(false);
+        // setShowConfirmation(false);
+        navigation.navigate('FarmImageSelection');
     };
     
     return (

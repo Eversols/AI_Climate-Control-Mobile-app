@@ -21,6 +21,8 @@ import AuthenticationCodeScreen from './src/authenticationCode';
 import NewPasswordScreen from './src/newPassword';
 import CreateAccountScreen from './src/createAccount';
 import AccountSuccessScreen from './src/accountSuccessScreen';
+import FarmSelectionModal from './src/components/farmSelectionModal';
+import FarmImageSelection from './src/selectFarmImage';
 
 const Stack = createNativeStackNavigator();
 
@@ -39,7 +41,8 @@ const AppNavigator = () => {
             <Stack.Screen name='authenticationCode' component={AuthenticationCodeScreen} options={{ headerTransparent: true, headerTitle: 'Authentication Code' }} />
             <Stack.Screen name='createAccount' component={CreateAccountScreen} options={{headerShown:false}}/>
             <Stack.Screen name='accountSuccess' component={AccountSuccessScreen} options={{headerShown:false}}/>
-
+            <Stack.Screen name="FarmSelection" component={FarmSelectionModal} options={{headerShown:false}}/>
+            <Stack.Screen name="FarmImageSelection" component={FarmImageSelection} options={{headerShown:false}}/>
             <Stack.Screen name='newPassword' component={NewPasswordScreen} options={{ headerTransparent: true, headerTitle: "New Password" }} />
             <Stack.Screen name='Signup' component={SignupScreen} options={{ headerShown: false }} />
             <Stack.Screen name='Home' component={HomeScreen} options={{ headerShown: false }} />

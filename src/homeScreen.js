@@ -414,25 +414,30 @@ const HomeScreen = () => {
       )}
       <View style={[styles.farmIconsContainer, { zIndex: 101 }]}>
         {renderFarmIcons()}
+        <View></View>
+        {!innerPolygonButtonPressed && !screenState.isAddPolygonMode && farmStep === 0 && isAddFarmPressed != false && (
+          <View style={{ right:60}}>
+            <View style={styles.popupContainer}>
+              <View style={styles.arrowContainer}>
+                <View style={styles.arrow} />
+              </View>
+              <Text style={styles.messageText}>Use This Button To Tag The Area Of The Farm</Text>
+
+            </View>
+          </View>)}
+        {innerPolygonButtonPressed && screenState.isAddPolygonMode && (
+          <View style={{right: 60 }}>
+
+            <View style={styles.popupContainer}>
+              <View style={styles.arrowContainer}>
+                <View style={styles.arrow} />
+              </View>
+              <Text style={styles.messageText}>Use This Button To Tag Crop Area In The Field</Text>
+
+            </View>
+          </View>)}
       </View>
-      {!innerPolygonButtonPressed && !screenState.isAddPolygonMode && farmStep === 0 && isAddFarmPressed != false && (
 
-        <View style={styles.popupContainer}>
-          <View style={styles.arrowContainer}>
-            <View style={styles.arrow} />
-          </View>
-          <Text style={styles.messageText}>Use This Button To Tag The Area Of The Farm</Text>
-
-        </View>)}
-      {innerPolygonButtonPressed && screenState.isAddPolygonMode && (
-
-        <View style={styles.popupContainer}>
-          <View style={styles.arrowContainer}>
-            <View style={styles.arrow} />
-          </View>
-          <Text style={styles.messageText}>Use This Button To Tag Crop Area In The Field</Text>
-
-        </View>)}
     </View>
 
   )
@@ -500,7 +505,7 @@ const styles = StyleSheet.create({
   },
   farmIconsContainer: {
     position: 'absolute',
-    top: 25,
+    top: 20,
     right: 3,
     flexDirection: 'column',
     alignItems: 'flex-end',
@@ -595,27 +600,16 @@ const styles = StyleSheet.create({
   },
   popupContainer: {
     backgroundColor: '#FFFFFFCC',
-    paddingHorizontal: 20,
-    paddingVertical: 15,
+    padding: 10,
+    // paddingVertical: 20,
     borderRadius: 20,
     borderColor: '#000000',
     borderWidth: 1,
-    width: "70%",
-    bottom: 565,
-    left: -15,
+    width: "85%",
+
+
   },
-  popupContainer1: {
-    backgroundColor: '#FFFFFFCC',
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-    borderRadius: 20,
-    borderColor: '#000000',
-    borderWidth: 1,
-    maxWidth: 200,
-    position: 'absolute',
-    top: 55,
-    right: 65,
-  },
+ 
   arrowContainer: {
     position: 'absolute',
     top: '50%',
@@ -637,10 +631,13 @@ const styles = StyleSheet.create({
 
   messageText: {
     fontSize: 14,
-    padding: 10,
+    paddingHorizontal: 40,
+    padding:20,
+    // paddingVertical:20,
     textAlign: 'center',
     color: '#000000',
     lineHeight: 24,
+    fontWeight:'400'
 
   },
 })
