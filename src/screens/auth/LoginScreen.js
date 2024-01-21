@@ -40,7 +40,7 @@ const LoginScreen = () => {
   
         dispatch(signInAsync(response.data.data));
   
-        navigation.navigate('Home');
+        navigation.navigate('bottom_navigation');
       } else {
         console.error('Sign-in failed', response.data && response.data.message);
       }
