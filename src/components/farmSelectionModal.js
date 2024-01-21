@@ -11,7 +11,7 @@ import {
     FlatList,
     ImageBackground,
 } from 'react-native';
-import CustomComponent from '../component/customComponent';
+import CustomComponent from './customComponent';
 import { Path, Svg } from 'react-native-svg';
 import { useNavigation } from '@react-navigation/native';
 

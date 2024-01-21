@@ -20,7 +20,7 @@ const Dashboard = ({ navigation }) => {
   const [locheigth, setLocheigth] = useState(80)
   return (
     <ImageBackground
-      source={require('../asssets/dashboard.png')} // Replace with the path to your image
+      source={require('../../../asssets/dashboard.png')} // Replace with the path to your image
       style={styles.backgroundImage}>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <TouchableOpacity style={{ padding: 20, marginTop: 10, marginLeft: 10 }} onPress={() => navigation.goBack()}>
@@ -48,7 +48,7 @@ const Dashboard = ({ navigation }) => {
         <TouchableOpacity onPress={()=>navigation.navigate("dashboard2")} style={[styles.btn]}>
           <View style={{ flexDirection: "row", alignSelf: "center", justifyContent: "space-between", width: "100%" }}>
             <View style={{ flexDirection: "row" }}>
-              <Image style={{ width: 50, height: 50, borderRadius: 200, borderWidth: 1, borderColor: "#fff", resizeMode: "contain" }} source={require('../asssets/rice.png')} />
+              <Image style={{ width: 50, height: 50, borderRadius: 200, borderWidth: 1, borderColor: "#fff", resizeMode: "contain" }} source={require('../../../asssets/rice.png')} />
               <View>
                 <Text style={{ fontWeight: "400", marginLeft: 20, fontSize: 18, color: "#000" }}>Farm 1</Text>
                 <Text style={{ fontWeight: "400", marginLeft: 20, fontSize: 16, color: "#1D2324" }}>Crop: Rice</Text>
@@ -61,7 +61,7 @@ const Dashboard = ({ navigation }) => {
         <TouchableOpacity onPress={()=>navigation.navigate("dashboard2")} style={[styles.btn]}>
           <View style={{ flexDirection: "row", alignSelf: "center", justifyContent: "space-between", width: "100%" }}>
             <View style={{ flexDirection: "row" }}>
-              <Image style={{ width: 50, height: 50, borderRadius: 200, borderWidth: 1, borderColor: "#fff", resizeMode: "contain" }} source={require('../asssets/wheat.png')} />
+              <Image style={{ width: 50, height: 50, borderRadius: 200, borderWidth: 1, borderColor: "#fff", resizeMode: "contain" }} source={require('../../../asssets/wheat.png')} />
               <View>
                 <Text style={{ fontWeight: "400", marginLeft: 20, fontSize: 18, color: "#000" }}>Farm 2</Text>
                 <Text style={{ fontWeight: "400", marginLeft: 20, fontSize: 16, color: "#1D2324" }}>Crop: Wheat</Text>
@@ -73,7 +73,7 @@ const Dashboard = ({ navigation }) => {
         <TouchableOpacity onPress={()=>navigation.navigate("dashboard2")} style={[styles.btn]}>
           <View style={{ flexDirection: "row", alignSelf: "center", justifyContent: "space-between", width: "100%" }}>
             <View style={{ flexDirection: "row" }}>
-              <Image style={{ width: 50, height: 50, borderRadius: 200, borderWidth: 1, borderColor: "#fff", resizeMode: "contain" }} source={require('../asssets/corn.png')} />
+              <Image style={{ width: 50, height: 50, borderRadius: 200, borderWidth: 1, borderColor: "#fff", resizeMode: "contain" }} source={require('../../../asssets/corn.png')} />
               <View>
                 <Text style={{ fontWeight: "400", marginLeft: 20, fontSize: 18, color: "#000" }}>Farm 1</Text>
                 <Text style={{ fontWeight: "400", marginLeft: 20, fontSize: 16, color: "#1D2324" }}>Crop: Corn</Text>
@@ -85,7 +85,7 @@ const Dashboard = ({ navigation }) => {
         <TouchableOpacity onPress={()=>navigation.navigate("dashboard2")} style={[styles.btn]}>
           <View style={{ flexDirection: "row", alignSelf: "center", justifyContent: "space-between", width: "100%" }}>
             <View style={{ flexDirection: "row" }}>
-              <Image style={{ width: 50, height: 50, borderRadius: 200, borderWidth: 1, borderColor: "#fff", resizeMode: "contain" }} source={require('../asssets/apple.png')} />
+              <Image style={{ width: 50, height: 50, borderRadius: 200, borderWidth: 1, borderColor: "#fff", resizeMode: "contain" }} source={require('../../../asssets/apple.png')} />
               <View>
                 <Text style={{ fontWeight: "400", marginLeft: 20, fontSize: 18, color: "#000" }}>Farm 1</Text>
                 <Text style={{ fontWeight: "400", marginLeft: 20, fontSize: 16, color: "#1D2324" }}>Crop: Apple</Text>

@@ -1,52 +1,125 @@
 import React, { useState } from 'react';
 import { View, Text, ImageBackground, ScrollView, StyleSheet, TouchableOpacity, TextInput, Image, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import CustomComponent from './component/customComponent';
+import CustomComponent from '../../components/customComponent';
 import { RadioButton } from 'react-native-paper';
 import Svg, { Path } from 'react-native-svg';
-
+import { Formik } from 'formik';
+import * as Yup from 'yup'
+import {useDispatch} from 'react-redux';
+import { signInAsync } from '../../redux/slices/authSlice';
+import { post } from '../../utils/axios';
 const LoginScreen = () => {
   const navigation = useNavigation();
   const [checked, setChecked] = useState(false);
+  const dispatch = useDispatch();
+  const initialValues = {
+    email: '',
+    password: '',
+  };
+
+  const validationSchema = Yup.object().shape({
+    email: Yup.string().email('Invalid email').required('Email is required'),
+    password: Yup.string().required('Password is required'),
+  });
+
+  const handleSignIn = async (values) => {
+    try {
+      const payload = {
+        email: values.email.trim(),
+        password: values.password,
+      };
+      
+  
+      const response = await post('/login', payload);
+  
+      console.log('Server response:', response);
+  
+      if (response.data && response.data.code === 0) {
+        console.log('Authentication data:', response.data.data);
+  
+        dispatch(signInAsync(response.data.data));
+  
+        navigation.navigate('Home');
+      } else {
+        console.error('Sign-in failed', response.data && response.data.message);
+      }
+    } catch (error) {
+      console.error('Sign-in failed', error.response?.status, error.response?.data);
+    }
+  };
+  
+  
 
   return (
-    <ImageBackground source={require('../assets/images/image119.png')} style={styles.backgroundImage} blurRadius={5}>
-
-      <View style={styles.overlay} />
+    <ImageBackground source={require('../../../assets/images/image119.png')} style={styles.backgroundImage} blurRadius={5}>
+ <View style={styles.overlay} />
       <ScrollView>
         <View style={styles.container}>
           <CustomComponent style={styles.logoContainer}>
             <Text style={styles.logoText}>Logo</Text>
           </CustomComponent>
-          <Text style={styles.label}>Email Address</Text>
-          <CustomComponent style={styles.inputContainer}>
-            <TextInput style={styles.input} placeholder="Email" />
-          </CustomComponent>
-          <Text style={styles.label}>Password</Text>
-          <CustomComponent style={styles.inputContainer}>
-            <TextInput style={styles.input} secureTextEntry placeholder="Password" />
-          </CustomComponent>
-          <View style={styles.checkboxContainer}>
-            <View style={styles.checkboxRow}>
-              <RadioButton
-                value="remember"
-                status={checked ? 'checked' : 'unchecked'}
-                onPress={() => setChecked(!checked)}
-                color='black'
-              />
-              <Text style={styles.checkboxText}>Remember Me</Text>
-            </View>
-            <TouchableOpacity onPress={() => navigation.navigate('forgetPassword')}>
-              <Text style={styles.forgotPasswordLink}>Forgot Password?</Text>
-            </TouchableOpacity>
-          </View>
 
-          <TouchableOpacity
-            style={[styles.btn, { width: "65%" }]}
-          onPress={() => navigation.navigate('forgetPassword')}
+          <Formik
+            initialValues={initialValues}
+            validationSchema={validationSchema}
+            onSubmit={handleSignIn}
           >
-            <Text style={{ fontWeight: "700", fontSize: 18, color: "#000" }}>Log In</Text>
-          </TouchableOpacity>
+            {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+              <>
+                <Text style={styles.label}>Email Address</Text>
+                <CustomComponent style={styles.inputContainer}>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Email"
+                    onChangeText={handleChange('email')}
+                    onBlur={handleBlur('email')}
+                    value={values.email}
+                  />
+                </CustomComponent>
+                {touched.email && errors.email && (
+                  <Text style={styles.errorText}>{errors.email}</Text>
+                )}
+
+                <Text style={styles.label}>Password</Text>
+                <CustomComponent style={styles.inputContainer}>
+                  <TextInput
+                    style={styles.input}
+                    secureTextEntry
+                    placeholder="Password"
+                    onChangeText={handleChange('password')}
+                    onBlur={handleBlur('password')}
+                    value={values.password}
+                  />
+                </CustomComponent>
+                {touched.password && errors.password && (
+                  <Text style={styles.errorText}>{errors.password}</Text>
+                )}
+
+                <View style={styles.checkboxContainer}>
+                  <View style={styles.checkboxRow}>
+                    <RadioButton
+                      value="remember"
+                      status={checked ? 'checked' : 'unchecked'}
+                      onPress={() => setChecked(!checked)}
+                      color='black'
+                    />
+                    <Text style={styles.checkboxText}>Remember Me</Text>
+                  </View>
+                  <TouchableOpacity onPress={() => navigation.navigate('forgetPassword')}>
+                    <Text style={styles.forgotPasswordLink}>Forgot Password?</Text>
+                  </TouchableOpacity>
+                </View>
+
+                <TouchableOpacity
+                  style={[styles.btn, { width: "65%" }]}
+                  onPress={handleSubmit}
+                >
+                  <Text style={{ fontWeight: "700", fontSize: 18, color: "#000" }}>Log In</Text>
+                </TouchableOpacity>
+              </>
+            )}
+          </Formik>
           <View style={styles.socialRow}>
             <TouchableOpacity style={styles.socialContainer}>
               {/* <Image source={require('../assets/images/Group1000007855.png')} style={styles.socialImage} /> */}

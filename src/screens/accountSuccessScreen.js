@@ -6,17 +6,19 @@ const AccountSuccessScreen = () => {
   const navigation = useNavigation();
 
   return (
-    <ImageBackground source={require('../assets/images/image131.png')} style={styles.backgroundImage} blurRadius={5}>
+    <ImageBackground source={require('../../assets/images/image131.png')} style={styles.backgroundImage} blurRadius={5}>
       <View style={styles.overlay}/>
      
       <View style={styles.container}>
         <View style={styles.centeredImageContainer}>
-          <Image source={require('../assets/images/Group1000007856.png')} style={styles.centeredImage} />
+          <Image source={require('../../assets/images/Group1000007856.png')} style={styles.centeredImage} />
         </View>
         <Text style={{ fontSize: 20, textAlign: 'center', color: 'black' }}>Your account has been successfully added</Text>
         <TouchableOpacity
           style={[styles.btn, { width: "65%" }]}
-        onPress={() => navigation.navigate('bottom_navigation')}
+        // onPress={() => navigation.navigate('bottom_navigation')}
+        onPress={() => navigation.navigate('Login')}
+
         >
           <Text style={{ fontWeight: "700", fontSize: 18, color: "#000" }}>Done</Text>
         </TouchableOpacity>

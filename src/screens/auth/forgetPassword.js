@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, ImageBackground, StyleSheet, TouchableOpacity } from 'react-native';
 import PhoneInput from 'react-native-phone-number-input';
-import CustomComponent from './component/customComponent';
+import CustomComponent from '../../components/customComponent';
 import { useNavigation } from '@react-navigation/native';
 
 const ForgotPasswordScreen = () => {
@@ -11,7 +11,7 @@ const ForgotPasswordScreen = () => {
   const phoneInput = React.useRef(null);
 
   return (
-    <ImageBackground source={require('../assets/images/image122.png')} style={styles.backgroundImage} blurRadius={5}>
+    <ImageBackground source={require('../../../assets/images/image122.png')} style={styles.backgroundImage} blurRadius={5}>
       <View style={styles.overlay} />
       <View style={styles.container}>
         <Text style={styles.titleText}>Forget Password</Text>

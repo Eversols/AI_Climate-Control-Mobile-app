@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 import MapView, { Marker, PROVIDER_GOOGLE, Polygon, AnimatedRegion } from 'react-native-maps';
 import Svg, { Path, Rect, G, Defs, ClipPath, Line } from 'react-native-svg';
 import FarmSelectionModal from './components/farmSelectionModal';
-import CustomComponent from './component/customComponent';
+import CustomComponent from './components/customComponent';
 import GetLocation from 'react-native-get-location';
 
 const HomeScreen = () => {

@@ -7,20 +7,20 @@ const FarmImageSelection = () => {
   const navigation = useNavigation();
 
   const farmImages = [
-    require('../assets/images/image168.png'),
-    require('../assets/images/image180.png'),
-    require('../assets/images/image169.png'),
-    require('../assets/images/image171.png'),
-    require('../assets/images/image176.png'),
-    require('../assets/images/Ellipse3960.png'),
-    require('../assets/images/image175.png'),
-    require('../assets/images/image174.png'),
-    require('../assets/images/image177.png'),
+    require('../../assets/images/image168.png'),
+    require('../../assets/images/image180.png'),
+    require('../../assets/images/image169.png'),
+    require('../../assets/images/image171.png'),
+    require('../../assets/images/image176.png'),
+    require('../../assets/images/Ellipse3960.png'),
+    require('../../assets/images/image175.png'),
+    require('../../assets/images/image174.png'),
+    require('../../assets/images/image177.png'),
     // Add more image paths as needed
   ];
-const handleFinish =()=>{
+  const handleFinish = () => {
     navigation.navigate("Home");
-}
+  }
   const renderFarmImages = () => {
     return farmImages.map((farmImage, index) => (
       <TouchableOpacity
@@ -43,7 +43,7 @@ const handleFinish =()=>{
   return (
     <View style={styles.container}>
       <ImageBackground
-        source={require('../assets/images/image1451.png')}
+        source={require('../../assets/images/image1451.png')}
         style={styles.backgroundImage}
         blurRadius={12}
       >
@@ -51,7 +51,7 @@ const handleFinish =()=>{
           <View style={styles.selectionContainer}>
             <TouchableOpacity onPress={() => console.log('Circular image selected')}>
               <Image
-                source={selectedImage ? selectedImage : require('../assets/images/Ellipse3950.png')}
+                source={selectedImage ? selectedImage : require('../../assets/images/Ellipse3950.png')}
                 style={[
                   styles.circularImage,
                   selectedImage && styles.selectedCircularImage,
@@ -67,12 +67,12 @@ const handleFinish =()=>{
           <View style={styles.imagesGrid}>{renderFarmImages()}</View>
 
           {selectedImage && (
-             <View style={{ width: '60%' }}>
-             <TouchableOpacity onPress={handleFinish}
-                 style={{  paddingVertical: 12, backgroundColor: '#FFFFFF', borderRadius: 30, alignItems: 'center' }}
-             >
-                 <Text style={{ fontSize: 18,lineHeight:27, color: '#000000', fontWeight: '600' }}>Finish</Text></TouchableOpacity>
-         </View>
+            <View style={{ width: '60%' }}>
+              <TouchableOpacity onPress={handleFinish}
+                style={{ paddingVertical: 12, backgroundColor: '#FFFFFF', borderRadius: 30, alignItems: 'center' }}
+              >
+                <Text style={{ fontSize: 18, lineHeight: 27, color: '#000000', fontWeight: '600' }}>Finish</Text></TouchableOpacity>
+            </View>
           )}
         </View>
       </ImageBackground>
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     borderWidth: 1,
     // borderColor: 'white',
-    
+
   },
   selectedCircularImage: {
     // borderColor: 'black', // Change the border color for the selected image
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     marginVertical: 10,
     lineHeight: 27,
-    color:'#000000'
+    color: '#000000'
   },
   subText: {
     fontSize: 18,
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: '400',
     lineHeight: 27,
-    color:'#1D2324'
+    color: '#1D2324'
     // marginHorizontal:50,
   },
 
@@ -133,24 +133,24 @@ const styles = StyleSheet.create({
     // justifyContent: 'space-between', // Use space-between to arrange images in 3 rows
     marginHorizontal: 15,
     marginVertical: 10,
-    
+
 
   },
   imageContainer: {
     overflow: 'hidden',
-    marginVertical:10,
+    marginVertical: 10,
   },
   selectedImage: {
     borderWidth: 2,
     borderColor: 'white',
     borderRadius: 58,
-    
+
   },
   image: {
     width: 100,
     height: 100,
     borderRadius: 60,
-    
+
   },
   finishButton: {
     backgroundColor: '#FFFFFF',

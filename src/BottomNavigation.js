@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import Svg, { Path, Rect } from 'react-native-svg';
 import HomeScreen from './homeScreen';
-import PestScreen1 from './pestScreen1';
+import PestScreen1 from './screens/pestScreens/pestScreen1';
 import Profile from './profile';
 
 const Tab = createBottomTabNavigator();

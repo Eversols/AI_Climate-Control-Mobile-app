@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useClearByFocusCell, CodeField } from 'react-native-confirmation-code-field';
-import CodeInputField from './component/codeInputField';
+import CodeInputField from '../components/codeInputField';
 
 const CELL_COUNT = 6;
 
@@ -18,7 +18,7 @@ const AuthenticationCodeScreen = () => {
 
 
   return (
-    <ImageBackground source={require('../assets/images/image124.png')} style={styles.backgroundImage} blurRadius={5}>
+    <ImageBackground source={require('../../assets/images/image124.png')} style={styles.backgroundImage} blurRadius={5}>
       <View style={styles.overlay} />
       <View style={styles.container}>
         <Text style={styles.title}>Enter authentication code</Text>

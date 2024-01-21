@@ -11,16 +11,21 @@ import {
   TextInput,
   ImageBackground,
 } from 'react-native';
+import RBSheet from "react-native-raw-bottom-sheet";
+import LinearGradient from 'react-native-linear-gradient';
+import { useNavigation } from '@react-navigation/native';
 // import MapView, { Marker } from 'react-native-maps';
+// import Mapbox, { UserLocation, Camera } from '@rnmapbox/maps';
 import { Defs, G, Filter, Path, Rect, Svg } from 'react-native-svg';
+import { SelectList } from 'react-native-dropdown-select-list';
 
-const PestScreen2 = ({ navigation }) => {
+const PestScreen1 = ({ navigation }) => {
   // const navigation = useNavigation();
   const refRBSheet = useRef();
   const [locheigth, setLocheigth] = useState(80)
   return (
     <ImageBackground
-      source={require('../asssets/pestScreen1.png')} // Replace with the path to your image
+      source={require('../../../asssets/pestScreen1.png')} // Replace with the path to your image
       style={styles.backgroundImage}>
       <TouchableOpacity style={{ padding: 20, margin: 10 }} onPress={() => navigation.goBack()}>
         <Svg width="8" height="16" viewBox="0 0 8 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -29,17 +34,23 @@ const PestScreen2 = ({ navigation }) => {
 
       </TouchableOpacity>
 
-      <View style={{ flexDirection: "row",marginTop:40, justifyContent: "center" }}>
-        <Image style={{width:"85%",resizeMode:"contain"}} source={require('../asssets/minibutter.png')} />
+      <View style={{ flexDirection: "row", justifyContent: "center" }}>
+        <Image source={require('../../../asssets/bee.png')} />
       </View>
 
-     
+      <TouchableOpacity onPress={() => navigation.navigate("pestScreen2")} style={styles.btn}>
+        <Text style={{ fontWeight: "700", fontSize: 18, color: "#000" }}>Send</Text>
+      </TouchableOpacity>
 
-      <TouchableOpacity onPress={()=>navigation.navigate("pestScreen3")} style={[styles.btn, { width: "70%", }]}>
+      <TouchableOpacity onPress={() => navigation.navigate("pestScreen2")} style={[styles.btn, { width: "65%", }]}>
         <Text style={{ fontWeight: "700", fontSize: 18, color: "#000" }}>Take Image</Text>
       </TouchableOpacity>
 
-
+      <TouchableOpacity
+        onPress={() => navigation.navigate("pestScreen2")}
+        style={[styles.btn, { width: "65%", }]}>
+        <Text style={{ fontWeight: "700", fontSize: 18, color: "#000" }}>Upload Image</Text>
+      </TouchableOpacity>
 
     </ImageBackground>
 
@@ -55,7 +66,7 @@ const styles = StyleSheet.create({
   btn: {
     backgroundColor: 'rgba(255,255,255,0.4)',
     alignSelf: "center",
-    marginTop: 40,
+    marginTop: 30,
     borderRadius: 30,
     borderWidth: 1,
     padding: 15,
@@ -66,4 +77,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default PestScreen2;
+export default PestScreen1;

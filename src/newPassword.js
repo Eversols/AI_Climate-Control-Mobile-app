@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, ImageBackground } from 'react-native';
-import CustomComponent from './component/customComponent';
+import CustomComponent from './components/customComponent';
 import { useNavigation } from '@react-navigation/native';
 
 import Svg, { Path } from 'react-native-svg';

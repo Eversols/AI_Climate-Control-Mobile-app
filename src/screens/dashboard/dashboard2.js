@@ -20,7 +20,7 @@ const Dashboard2 = ({ navigation }) => {
   const [locheigth, setLocheigth] = useState(80)
   return (
     <ImageBackground
-      source={require('../asssets/dashback.png')} // Replace with the path to your image
+      source={require('..//../../asssets/dashback.png')} // Replace with the path to your image
       style={styles.backgroundImage}>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <TouchableOpacity style={{ padding: 20, marginTop: 10, marginLeft: 10 }} onPress={() => navigation.goBack()}>
@@ -38,7 +38,7 @@ const Dashboard2 = ({ navigation }) => {
   
 <View style={styles.container}>
         <View style={{ flexDirection: "row", marginTop: -80, justifyContent: "center" }}>
-          <Image style={{ width: 100, borderRadius: 200, height: 100, resizeMode: "contain" }} source={require('../asssets/dash.png')} />
+          <Image style={{ width: 100, borderRadius: 200, height: 100, resizeMode: "contain" }} source={require('../../../asssets/dash.png')} />
         </View>
         <View >
           <Text style={{ textAlign: "center", color: "#000", fontSize: 24, fontWeight: "400" }}>Farm 1</Text>
