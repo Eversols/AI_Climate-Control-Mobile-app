@@ -26,12 +26,14 @@ import FarmImageSelection from './src/screens/selectFarmImage';
 
 import store from './src/redux/index'
 import { Provider } from 'react-redux';
+import SplashScreen from './src/screens/splashScreen';
 const Stack = createNativeStackNavigator();
 
 const AppNavigator = () => {
     return (
         <Provider store={store}>
-        <Stack.Navigator initialRouteName='createAccount'>
+        <Stack.Navigator initialRouteName='splash'>
+            <Stack.Screen name='splash' component={SplashScreen} options={{headerShown:false}}/>
             <Stack.Screen name="bottom_navigation" component={BottomNavigation} options={{ headerShown: false }} />
             <Stack.Screen name='pestScreen1' component={PestScreen1} options={{ headerShown: false }} />
             <Stack.Screen name='pestScreen2' component={PestScreen2} options={{ headerShown: false }} />

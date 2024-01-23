@@ -29,13 +29,12 @@ const LoginScreen = () => {
         email: values.email.trim(),
         password: values.password,
       };
-      
   
       const response = await post('/login', payload);
   
       console.log('Server response:', response);
   
-      if (response.data && response.data.code === 0) {
+      if (response.data && response.data.success) {
         console.log('Authentication data:', response.data.data);
   
         dispatch(signInAsync(response.data.data));
@@ -50,6 +49,10 @@ const LoginScreen = () => {
   };
   
   
+  const handleSignUpPress = () => {
+    navigation.navigate('createAccount');
+  };
+
 
   return (
     <ImageBackground source={require('../../../assets/images/image119.png')} style={styles.backgroundImage} blurRadius={5}>
@@ -155,7 +158,7 @@ const LoginScreen = () => {
           </View>
           <View style={styles.signupContainer}>
             <Text style={styles.signupText}>Don't have an account?</Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={handleSignUpPress}>
               <Text style={styles.signupLink}>Sign up</Text>
             </TouchableOpacity>
           </View>

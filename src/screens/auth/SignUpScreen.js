@@ -32,31 +32,36 @@ const SignUpScreen = () => {
     occupation: Yup.string().notRequired(), // Allow it to be optional
   });
 
-const handleSubmit = async (values) => {
-  try {
-    const payload = {
-      name: values.name,
-      email: values.email,
-      password: values.password,
-      role: values.role,
-      occupation: values.occupation,
-    };
 
-    const response = await post('/registration', payload);
 
-    console.log('Server response:', response);
-
-    if (response.data && response.data.code === 0) {
-      dispatch(signUpAsync(response.data.data));
-      navigation.navigate('accountSuccess');
-    } else {
-      console.error('Registration failed', response.data && response.data.message);
+  const handleSubmit = async (values) => {
+    try {
+      const payload = {
+        user_name: values.name,
+        email: values.email,
+        password: values.password,
+        role: values.role,
+        // occupation: values.occupation,
+      };
+  
+      console.log('Registration Payload:', payload);
+  
+      const response = await post('/register', payload);
+  
+      console.log('Server response:', response);
+  
+      if (response.data && response.data.success) {
+        dispatch(signUpAsync(response.data.data));
+        navigation.navigate('accountSuccess');
+      } else {
+        console.error('Registration failed', response.data && response.data.message);
+      }
+    } catch (error) {
+      console.error('Registration failed', error.response?.data || error.message);
     }
-  } catch (error) {
-    console.error('Registration failed', error);
-  }
-};
-
+  };
+  
+  
 
 
 
@@ -146,7 +151,7 @@ const handleSubmit = async (values) => {
                       value={values.occupation}
                     />
                   </CustomComponent>
-                  {touched.occupation && errors.occupation && <Text style={{ color: 'red' }}>{errors.occupation}</Text>}
+                  {/* {touched.occupation && errors.occupation && <Text style={{ color: 'red' }}>{errors.occupation}</Text>} */}
 
                   <TouchableOpacity style={[styles.btn, { width: '65%' }]} onPress={handleSubmit}>
                     <Text style={{ fontWeight: '700', fontSize: 18, color: '#000' }}>Sign Up</Text>

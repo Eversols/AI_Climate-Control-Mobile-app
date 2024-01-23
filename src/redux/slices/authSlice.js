@@ -2,23 +2,23 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { post } from '../../utils/axios';
 
-const BASE_URL = 'http://restapi.adequateshop.com/api';
+const BASE_URL = 'http://climate.axiscodingsolutions.com/api/v1';
 
 export const signUpAsync = createAsyncThunk('auth/signUp', async (userData) => {
   try {
-    const response = await post(`${BASE_URL}/authaccount/registration`, userData);
+    const response = await post(`${BASE_URL}/register`, userData);
     return response.data;
   } catch (error) {
-    throw error.response ? error.response.data : 'Unknown error';
+    throw error.response?.data || error.message;
   }
 });
 
 export const signInAsync = createAsyncThunk('auth/signIn', async (userData) => {
   try {
-    const response = await post(`${BASE_URL}/authaccount/login`, userData);
+    const response = await post(`${BASE_URL}/login`, userData);
     return response.data;
   } catch (error) {
-    throw error.response ? error.response.data : 'Unknown error';
+    throw error.response?.data || error.message;
   }
 });
 
@@ -26,14 +26,27 @@ const authSlice = createSlice({
   name: 'auth',
   initialState: {
     user: null,
-    token: null,
+    fields: {
+      email: '',
+      name: '',
+      password: '',
+      confirmPassword: '',
+      role: 'User',
+      occupation: '',
+    },
     loading: false,
     error: null,
   },
   reducers: {
-    setAuth: (state, action) => {
-      state.token = action.payload ? action.payload.token : null;
-      state.user = action.payload ? action.payload.user : null;
+    resetFields: (state) => {
+      state.fields = {
+        email: '',
+        name: '',
+        password: '',
+        confirmPassword: '',
+        role: 'User',
+        occupation: '',
+      };
     },
   },
   extraReducers: (builder) => {
@@ -45,11 +58,18 @@ const authSlice = createSlice({
       .addCase(signUpAsync.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload.user;
-        state.token = action.payload.token;
+        state.fields = {
+          email: '',
+          name: '',
+          password: '',
+          confirmPassword: '',
+          role: 'User',
+          occupation: '',
+        };
       })
       .addCase(signUpAsync.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || 'Unknown error';
+        state.error = action.error.message;
       })
       .addCase(signInAsync.pending, (state) => {
         state.loading = true;
@@ -58,15 +78,18 @@ const authSlice = createSlice({
       .addCase(signInAsync.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload.user;
-        state.token = action.payload.token;
+        state.fields = {
+          email: '',
+          password: '',
+        };
       })
       .addCase(signInAsync.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || 'Unknown error';
+        state.error = action.error.message;
       });
   },
 });
 
-export const { setAuth } = authSlice.actions;
+export const { resetFields } = authSlice.actions;
 
 export default authSlice.reducer;

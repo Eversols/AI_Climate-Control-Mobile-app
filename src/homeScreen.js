@@ -6,6 +6,7 @@ import Svg, { Path, Rect, G, Defs, ClipPath, Line } from 'react-native-svg';
 import FarmSelectionModal from './components/farmSelectionModal';
 import CustomComponent from './components/customComponent';
 import GetLocation from 'react-native-get-location';
+import { post } from './utils/axios';
 
 const HomeScreen = () => {
   const [farmStep, setFarmStep] = useState(0);
@@ -48,7 +49,18 @@ const HomeScreen = () => {
 
   };
 
+  const addFarm = async (child, farmName, corp) => {
 
+    const formData = {
+      "farmName": farmName,
+      "corp": corp,
+      "polygons": polygonCoordinates,
+      // "parentId": "65ad5977749943e6bc93793e"
+    }
+    console.log("formdata", formData)
+    const response = await post("create-farm", formData)
+    console.log("response.",response)
+  }
 
   const getCurrentLocation = () => {
     GetLocation.getCurrentPosition({
@@ -376,7 +388,11 @@ const HomeScreen = () => {
           setIsModalVisible(false);
           setInnerPolygonButtonPressed(true)
           setPolygonButtonPressed(false)
-        }} />
+        }}
+
+          onSubmit={addFarm}
+        />
+
       </Modal>
 
       {screenState.isAddPolygonMode && (
@@ -416,7 +432,7 @@ const HomeScreen = () => {
         {renderFarmIcons()}
         <View></View>
         {!innerPolygonButtonPressed && !screenState.isAddPolygonMode && farmStep === 0 && isAddFarmPressed != false && (
-          <View style={{ right:60}}>
+          <View style={{ right: 60 }}>
             <View style={styles.popupContainer}>
               <View style={styles.arrowContainer}>
                 <View style={styles.arrow} />
@@ -426,7 +442,7 @@ const HomeScreen = () => {
             </View>
           </View>)}
         {innerPolygonButtonPressed && screenState.isAddPolygonMode && (
-          <View style={{right: 60 }}>
+          <View style={{ right: 60 }}>
 
             <View style={styles.popupContainer}>
               <View style={styles.arrowContainer}>
@@ -609,7 +625,7 @@ const styles = StyleSheet.create({
 
 
   },
- 
+
   arrowContainer: {
     position: 'absolute',
     top: '50%',
@@ -632,12 +648,12 @@ const styles = StyleSheet.create({
   messageText: {
     fontSize: 14,
     paddingHorizontal: 40,
-    padding:20,
+    padding: 20,
     // paddingVertical:20,
     textAlign: 'center',
     color: '#000000',
     lineHeight: 24,
-    fontWeight:'400'
+    fontWeight: '400'
 
   },
 })
