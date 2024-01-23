@@ -1,6 +1,7 @@
 
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { post } from '../../utils/axios';
+import { storeToken } from '../../utils/StorageToken';
 
 const BASE_URL = 'http://climate.axiscodingsolutions.com/api/v1';
 
@@ -26,6 +27,7 @@ const authSlice = createSlice({
   name: 'auth',
   initialState: {
     user: null,
+    token,
     fields: {
       email: '',
       name: '',
@@ -78,10 +80,13 @@ const authSlice = createSlice({
       .addCase(signInAsync.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload.user;
-        state.fields = {
-          email: '',
-          password: '',
-        };
+        state.token = action.payload.token;
+        storeToken(action.payload.token)
+
+        // state.fields = {
+        //   email: '',
+        //   password: '',
+        // };
       })
       .addCase(signInAsync.rejected, (state, action) => {
         state.loading = false;
