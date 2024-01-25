@@ -51,15 +51,24 @@ const HomeScreen = () => {
 
   const addFarm = async (child, farmName, corp) => {
 
-    const formData = {
-      "farmName": farmName,
-      "corp": corp,
-      "polygons": polygonCoordinates,
-      // "parentId": "65ad5977749943e6bc93793e"
+    try {
+      const formData = {
+        "farmName": farmName,
+        "corp": corp,
+        "polygons": polygonCoordinates,
+        // "parentId": "65ad5977749943e6bc93793e"
+      }
+      console.log("formdata", formData)
+      const response = await post("create-farm", formData)
+      console.log("response.", response.data.success)
+      if (response.data.success) {
+        setIsModalVisible(false);
+        setInnerPolygonButtonPressed(true)
+        setPolygonButtonPressed(false)
+      }
+    } catch (err) {
+      console.log("error", err)
     }
-    console.log("formdata", formData)
-    const response = await post("create-farm", formData)
-    console.log("response.",response)
   }
 
   const getCurrentLocation = () => {

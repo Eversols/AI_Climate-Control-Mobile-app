@@ -27,7 +27,7 @@ const authSlice = createSlice({
   name: 'auth',
   initialState: {
     user: null,
-    token,
+    token: null,
     fields: {
       email: '',
       name: '',
@@ -78,6 +78,7 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(signInAsync.fulfilled, (state, action) => {
+        console.log('Action Payload:', action.payload);
         state.loading = false;
         state.user = action.payload.user;
         state.token = action.payload.token;

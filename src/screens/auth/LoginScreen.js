@@ -6,9 +6,10 @@ import { RadioButton } from 'react-native-paper';
 import Svg, { Path } from 'react-native-svg';
 import { Formik } from 'formik';
 import * as Yup from 'yup'
-import {useDispatch} from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { signInAsync } from '../../redux/slices/authSlice';
 import { post } from '../../utils/axios';
+import { storeToken } from '../../utils/StorageToken';
 const LoginScreen = () => {
   const navigation = useNavigation();
   const [checked, setChecked] = useState(false);
@@ -29,26 +30,30 @@ const LoginScreen = () => {
         email: values.email.trim(),
         password: values.password,
       };
-  
+
       const response = await post('/login', payload);
-  
-      console.log('Server response:', response);
-  
-      if (response.data && response.data.success) {
-        console.log('Authentication data:', response.data.data);
-  
-        dispatch(signInAsync(response.data.data));
-  
+
+      console.log('Server response:', response.data);
+      if (response.data.success) {
+        storeToken(response.data.data.token);
         navigation.navigate('bottom_navigation');
-      } else {
-        console.error('Sign-in failed', response.data && response.data.message);
       }
+
+      // if (response.data && response.data.success) {
+      //   console.log('Authentication data:', response.data.data);
+
+      //   dispatch(signInAsync(response.data.data));
+
+      //   navigation.navigate('bottom_navigation');
+      // } else {
+      //   console.error('Sign-in failed', response.data && response.data.message);
+      // }
     } catch (error) {
       console.error('Sign-in failed', error.response?.status, error.response?.data);
     }
   };
-  
-  
+
+
   const handleSignUpPress = () => {
     navigation.navigate('createAccount');
   };
@@ -56,7 +61,7 @@ const LoginScreen = () => {
 
   return (
     <ImageBackground source={require('../../../assets/images/image119.png')} style={styles.backgroundImage} blurRadius={5}>
- <View style={styles.overlay} />
+      <View style={styles.overlay} />
       <ScrollView>
         <View style={styles.container}>
           <CustomComponent style={styles.logoContainer}>
@@ -138,16 +143,16 @@ const LoginScreen = () => {
           </View>
           <View style={styles.socialRow}>
             {/* <CustomComponent onPress={() => console.log('Connect with Apple ID pressed')} style={styles.socialContainer}> */}
-              <TouchableOpacity style={styles.socialContainer}>
-                <Svg width="24" height="28" viewBox="0 0 24 28" fill="none" xmlns="http://www.w3.org/2000/svg" style={styles.socialImage}>
-                  <Path d="M19.9966 26.8766C18.4459 28.3542 16.7527 28.1209 15.1229 27.421C13.3981 26.7055 11.8157 26.6744 9.99598 27.421C7.71736 28.3853 6.51476 28.1053 5.15392 26.8766C-2.56807 19.0532 -1.42876 7.1391 7.3376 6.7036C9.4738 6.81247 10.9612 7.85456 12.2113 7.94789C14.0785 7.5746 15.8666 6.5014 17.8604 6.64138C20.2498 6.82803 22.0537 7.76124 23.2405 9.44103C18.3035 12.3496 19.4744 18.7421 24 20.5307C23.098 22.8638 21.9271 25.1813 19.9808 26.8922L19.9966 26.8766ZM12.0531 6.61028C11.8157 3.14183 14.6798 0.279965 17.9712 0C18.43 4.01283 14.2684 6.99912 12.0531 6.61028Z" fill="white" />
-                </Svg>
-                <Text style={styles.socialText}>Connect with Apple ID</Text>
-              </TouchableOpacity>
+            <TouchableOpacity style={styles.socialContainer}>
+              <Svg width="24" height="28" viewBox="0 0 24 28" fill="none" xmlns="http://www.w3.org/2000/svg" style={styles.socialImage}>
+                <Path d="M19.9966 26.8766C18.4459 28.3542 16.7527 28.1209 15.1229 27.421C13.3981 26.7055 11.8157 26.6744 9.99598 27.421C7.71736 28.3853 6.51476 28.1053 5.15392 26.8766C-2.56807 19.0532 -1.42876 7.1391 7.3376 6.7036C9.4738 6.81247 10.9612 7.85456 12.2113 7.94789C14.0785 7.5746 15.8666 6.5014 17.8604 6.64138C20.2498 6.82803 22.0537 7.76124 23.2405 9.44103C18.3035 12.3496 19.4744 18.7421 24 20.5307C23.098 22.8638 21.9271 25.1813 19.9808 26.8922L19.9966 26.8766ZM12.0531 6.61028C11.8157 3.14183 14.6798 0.279965 17.9712 0C18.43 4.01283 14.2684 6.99912 12.0531 6.61028Z" fill="white" />
+              </Svg>
+              <Text style={styles.socialText}>Connect with Apple ID</Text>
+            </TouchableOpacity>
             {/* </CustomComponent> */}
           </View>
           <View style={styles.socialRow}>
-          <TouchableOpacity style={styles.socialContainer}>
+            <TouchableOpacity style={styles.socialContainer}>
 
               <Svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={styles.socialImage}>
                 <Path d="M24 12.0743C24 5.40402 18.6248 0 12 0C5.37075 0 0 5.40402 0 12.0743C0 18.0994 4.38675 23.0952 10.125 24V15.5653H7.07775V12.0751H10.125V9.41345C10.125 6.38808 11.9138 4.71729 14.6558 4.71729C15.969 4.71729 17.3438 4.95274 17.3438 4.95274V7.92378H15.828C14.34 7.92378 13.875 8.85577 13.875 9.8104V12.0743H17.2028L16.668 15.5646H13.875V23.9992C19.6087 23.0944 24 18.0987 24 12.0736V12.0743Z" fill="#4285F4" />
@@ -245,7 +250,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     backgroundColor: 'rgba(255, 255, 255, 0.4)',
-    borderRadius:40,
+    borderRadius: 40,
   },
   socialImage: {
     width: 20,
