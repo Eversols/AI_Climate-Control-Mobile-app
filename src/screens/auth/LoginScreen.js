@@ -7,7 +7,7 @@ import Svg, { Path } from 'react-native-svg';
 import { Formik } from 'formik';
 import * as Yup from 'yup'
 import { useDispatch } from 'react-redux';
-import { signInAsync } from '../../redux/slices/authSlice';
+import { setAuth, setUser, signInAsync } from '../../redux/slices/authSlice';
 import { post } from '../../utils/axios';
 import { storeToken } from '../../utils/StorageToken';
 const LoginScreen = () => {
@@ -36,6 +36,8 @@ const LoginScreen = () => {
       console.log('Server response:', response.data);
       if (response.data.success) {
         storeToken(response.data.data.token);
+        dispatch(setUser(response.data.data.user))
+        dispatch(setAuth(true))
         navigation.navigate('bottom_navigation');
       }
 

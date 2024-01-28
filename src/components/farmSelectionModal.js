@@ -14,6 +14,8 @@ import {
 import CustomComponent from './customComponent';
 import { Path, Svg } from 'react-native-svg';
 import { useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
+import { storeFarmData } from '../redux/slices/farmSlice';
 
 const FarmSelectionModal = ({
     visible,
@@ -21,11 +23,13 @@ const FarmSelectionModal = ({
     onFarmNameChange,
     onSubmit,
     onClose,
+    dispatch
 }) => {
     const [selectedFarmField, setSelectedFarmField] = useState('Farm 1');
     const [selectedCorp, setSelectedCorp] = useState('');
     const [showConfirmation, setShowConfirmation] = useState(false);
     const navigation = useNavigation();
+    const { farmData } = useSelector((state) => state.farm)
 
     const [cropOptions, setCropOptions] = useState([
         { label: 'Rice', value: 'Rice', selected: false },
@@ -71,12 +75,13 @@ const FarmSelectionModal = ({
         setShowConfirmation(false);
         // onClose()
         console.log("ineeeeeeeeeeeeeeeee")
-        onSubmit(false, farmName, selectedCorp)
+        onSubmit(!!farmData, farmName, selectedCorp)
     };
 
     const handleNo = () => {
         // setShowConfirmation(false);
         navigation.navigate('FarmImageSelection');
+        dispatch(storeFarmData(null))
     };
 
     return (

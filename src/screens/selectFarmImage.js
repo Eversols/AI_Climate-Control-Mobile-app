@@ -19,7 +19,7 @@ const FarmImageSelection = () => {
     // Add more image paths as needed
   ];
   const handleFinish = () => {
-    navigation.navigate("Home");
+    navigation.navigate("bottom_navigation");
   }
   const renderFarmImages = () => {
     return farmImages.map((farmImage, index) => (

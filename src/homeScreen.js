@@ -7,6 +7,8 @@ import FarmSelectionModal from './components/farmSelectionModal';
 import CustomComponent from './components/customComponent';
 import GetLocation from 'react-native-get-location';
 import { post } from './utils/axios';
+import { storeFarmData } from './redux/slices/farmSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 const HomeScreen = () => {
   const [farmStep, setFarmStep] = useState(0);
@@ -23,6 +25,9 @@ const HomeScreen = () => {
     isAddPolygonMode: false,
   });
 
+  const { farmData } = useSelector((state) => state.farm)
+
+  const dispatch = useDispatch()
   const [timer, setTimer] = useState(0);
   const [currentLocation, setCurrentLocation] = useState({
     latitude: 31.5948548,
@@ -50,18 +55,22 @@ const HomeScreen = () => {
   };
 
   const addFarm = async (child, farmName, corp) => {
-
     try {
       const formData = {
         "farmName": farmName,
         "corp": corp,
         "polygons": polygonCoordinates,
-        // "parentId": "65ad5977749943e6bc93793e"
+      }
+      if (child) {
+        formData.parentId = farmData._id
       }
       console.log("formdata", formData)
       const response = await post("create-farm", formData)
-      console.log("response.", response.data.success)
+      console.log("response.", response.data)
       if (response.data.success) {
+        if (!farmData) {
+          dispatch(storeFarmData(response.data.data))
+        }
         setIsModalVisible(false);
         setInnerPolygonButtonPressed(true)
         setPolygonButtonPressed(false)
@@ -398,7 +407,7 @@ const HomeScreen = () => {
           setInnerPolygonButtonPressed(true)
           setPolygonButtonPressed(false)
         }}
-
+          dispatch={dispatch}
           onSubmit={addFarm}
         />
 
@@ -425,7 +434,7 @@ const HomeScreen = () => {
         }}>
           <TouchableOpacity
             onPress={() => setIsModalVisible(true)}
-            disabled={!(polygonCoordinates.length > 0)}
+            disabled={farmData ? !(innerPolygonCoordinates.length > 0) : !(polygonCoordinates.length > 0)}
           >
             <Text style={{
               marginVertical: 10,

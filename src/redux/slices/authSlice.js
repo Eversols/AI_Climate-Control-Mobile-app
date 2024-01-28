@@ -1,6 +1,6 @@
 
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { post } from '../../utils/axios';
+import { get, post } from '../../utils/axios';
 import { storeToken } from '../../utils/StorageToken';
 
 const BASE_URL = 'http://climate.axiscodingsolutions.com/api/v1';
@@ -23,37 +23,52 @@ export const signInAsync = createAsyncThunk('auth/signIn', async (userData) => {
   }
 });
 
+
+export const GetUserProfile = createAsyncThunk('getMyProfile', async (userData) => {
+  try {
+    const response = await get(`/get-my-profile`, userData);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+});
+
 const authSlice = createSlice({
   name: 'auth',
   initialState: {
     user: null,
     token: null,
-    fields: {
-      email: '',
-      name: '',
-      password: '',
-      confirmPassword: '',
-      role: 'User',
-      occupation: '',
-    },
+    isAuth: false,
     loading: false,
     error: null,
   },
   reducers: {
-    resetFields: (state) => {
-      state.fields = {
-        email: '',
-        name: '',
-        password: '',
-        confirmPassword: '',
-        role: 'User',
-        occupation: '',
-      };
+
+
+    setAuth: (state, action) => {
+      if (!action.payload) {
+        state.isAuth = false;
+        storeToken(null)
+      } else {
+        state.isAuth = action.payload
+      }
+    },
+    setUser: (state, { payload }) => {
+      state.user = payload;
+
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(signUpAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(signInAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(GetUserProfile.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
@@ -69,26 +84,29 @@ const authSlice = createSlice({
           occupation: '',
         };
       })
-      .addCase(signUpAsync.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message;
-      })
-      .addCase(signInAsync.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
+
       .addCase(signInAsync.fulfilled, (state, action) => {
         console.log('Action Payload:', action.payload);
         state.loading = false;
         state.user = action.payload.user;
         state.token = action.payload.token;
         storeToken(action.payload.token)
-
-        // state.fields = {
-        //   email: '',
-        //   password: '',
-        // };
       })
+      .addCase(GetUserProfile.fulfilled, (state, { payload }) => {
+        state.user = payload.data.user;
+        state.isAuth = true;
+        state.loading = false;
+      })
+      .addCase(signUpAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+
+      .addCase(GetUserProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+
       .addCase(signInAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
@@ -96,6 +114,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { resetFields } = authSlice.actions;
+export const { setAuth,setUser } = authSlice.actions;
 
 export default authSlice.reducer;
