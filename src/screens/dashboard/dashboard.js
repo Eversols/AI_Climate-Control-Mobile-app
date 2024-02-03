@@ -13,8 +13,29 @@ import {
 } from 'react-native';
 // import MapView, { Marker } from 'react-native-maps';
 import { Defs, G, Filter, Path, Rect, Svg } from 'react-native-svg';
+import { get } from '../../utils/axios';
 
 const Dashboard = ({ navigation }) => {
+  const [farms, setFarms] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await get('/get-my-farms');
+        const data = response.data;
+        if (data.success) {
+          setFarms(data.data.farms);
+        } else {
+          console.error('Failed to fetch farms data');
+        }
+      } catch (error) {
+        console.error('Error fetching farms data:', error);
+      }
+    };
+  
+    fetchData();
+  }, []);
+  
+  
   // const navigation = useNavigation();
   const refRBSheet = useRef();
   const [locheigth, setLocheigth] = useState(80)
@@ -45,55 +66,24 @@ const Dashboard = ({ navigation }) => {
 
         <Text style={{ textAlign: "left", color: "#000", fontSize: 18, fontWeight: "600", marginTop: 10 }}>Select Farm</Text>
 
-        <TouchableOpacity onPress={()=>navigation.navigate("dashboard2")} style={[styles.btn]}>
-          <View style={{ flexDirection: "row", alignSelf: "center", justifyContent: "space-between", width: "100%" }}>
-            <View style={{ flexDirection: "row" }}>
-              <Image style={{ width: 50, height: 50, borderRadius: 200, borderWidth: 1, borderColor: "#fff", resizeMode: "contain" }} source={require('../../../asssets/rice.png')} />
-              <View>
-                <Text style={{ fontWeight: "400", marginLeft: 20, fontSize: 18, color: "#000" }}>Farm 1</Text>
-                <Text style={{ fontWeight: "400", marginLeft: 20, fontSize: 16, color: "#1D2324" }}>Crop: Rice</Text>
+        {farms.map(farm => (
+          <TouchableOpacity
+            key={farm._id}
+            onPress={() => navigation.navigate("dashboard2")}
+            style={[styles.btn]}>
+            <View style={{ flexDirection: "row", alignSelf: "center", justifyContent: "space-between", width: "100%" }}>
+              <View style={{ flexDirection: "row" }}>
+                <Image style={{ width: 50, height: 50, borderRadius: 200, borderWidth: 1, borderColor: "#fff", resizeMode: "contain" }} source={{ uri: farm.image }} />
+                <View>
+                  <Text style={{ fontWeight: "400", marginLeft: 20, fontSize: 18, color: "#000" }}>{farm.farmName}</Text>
+                  <Text style={{ fontWeight: "400", marginLeft: 20, fontSize: 16, color: "#1D2324" }}>Crop: {farm.corp}</Text>
+                </View>
               </View>
+              <Text style={{ fontWeight: "400", marginLeft: 20, alignSelf: "center", fontSize: 16, color: "#1D2324" }}>Location: XYZ</Text>
             </View>
-            <Text style={{ fontWeight: "400", marginLeft: 20, alignSelf: "center", fontSize: 16, color: "#1D2324" }}>Location: XYZ</Text>
-          </View>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={()=>navigation.navigate("dashboard2")} style={[styles.btn]}>
-          <View style={{ flexDirection: "row", alignSelf: "center", justifyContent: "space-between", width: "100%" }}>
-            <View style={{ flexDirection: "row" }}>
-              <Image style={{ width: 50, height: 50, borderRadius: 200, borderWidth: 1, borderColor: "#fff", resizeMode: "contain" }} source={require('../../../asssets/wheat.png')} />
-              <View>
-                <Text style={{ fontWeight: "400", marginLeft: 20, fontSize: 18, color: "#000" }}>Farm 2</Text>
-                <Text style={{ fontWeight: "400", marginLeft: 20, fontSize: 16, color: "#1D2324" }}>Crop: Wheat</Text>
-              </View>
-            </View>
-            <Text style={{ fontWeight: "400", marginLeft: 20, alignSelf: "center", fontSize: 16, color: "#1D2324" }}>Location: XYZ</Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={()=>navigation.navigate("dashboard2")} style={[styles.btn]}>
-          <View style={{ flexDirection: "row", alignSelf: "center", justifyContent: "space-between", width: "100%" }}>
-            <View style={{ flexDirection: "row" }}>
-              <Image style={{ width: 50, height: 50, borderRadius: 200, borderWidth: 1, borderColor: "#fff", resizeMode: "contain" }} source={require('../../../asssets/corn.png')} />
-              <View>
-                <Text style={{ fontWeight: "400", marginLeft: 20, fontSize: 18, color: "#000" }}>Farm 1</Text>
-                <Text style={{ fontWeight: "400", marginLeft: 20, fontSize: 16, color: "#1D2324" }}>Crop: Corn</Text>
-              </View>
-            </View>
-            <Text style={{ fontWeight: "400", marginLeft: 20, alignSelf: "center", fontSize: 16, color: "#1D2324" }}>Location: XYZ</Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={()=>navigation.navigate("dashboard2")} style={[styles.btn]}>
-          <View style={{ flexDirection: "row", alignSelf: "center", justifyContent: "space-between", width: "100%" }}>
-            <View style={{ flexDirection: "row" }}>
-              <Image style={{ width: 50, height: 50, borderRadius: 200, borderWidth: 1, borderColor: "#fff", resizeMode: "contain" }} source={require('../../../asssets/apple.png')} />
-              <View>
-                <Text style={{ fontWeight: "400", marginLeft: 20, fontSize: 18, color: "#000" }}>Farm 1</Text>
-                <Text style={{ fontWeight: "400", marginLeft: 20, fontSize: 16, color: "#1D2324" }}>Crop: Apple</Text>
-              </View>
-            </View>
-            <Text style={{ fontWeight: "400", marginLeft: 20, alignSelf: "center", fontSize: 16, color: "#1D2324" }}>Location: XYZ</Text>
-          </View>
-        </TouchableOpacity>
+          </TouchableOpacity>
+        ))}
+      
 
       </View>
 

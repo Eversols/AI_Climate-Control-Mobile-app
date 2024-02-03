@@ -27,6 +27,8 @@ import FarmImageSelection from './src/screens/selectFarmImage';
 import store from './src/redux/index'
 import { Provider, useSelector } from 'react-redux';
 import SplashScreen from './src/screens/splashScreen';
+import UserProfileScreen from './src/screens/viewProfile';
+import editProfleDetails from './src/screens/editProfileDetails';
 const Stack = createNativeStackNavigator();
 
 const AppNavigator = () => {
@@ -47,6 +49,9 @@ const AppNavigator = () => {
                     <Stack.Screen name='pestScreen2' component={PestScreen2} options={{ headerShown: false }} />
                     <Stack.Screen name='pestScreen3' component={PestScreen3} options={{ headerShown: false }} />
                     <Stack.Screen name='profile' component={Profile} options={{ headerShown: false }} />
+                    <Stack.Screen name='UserProfileView' component={UserProfileScreen} options={{headerShown:false}} />
+                    <Stack.Screen name='editProfileDetails' component={editProfleDetails} options={{headerShown:false}} />
+
                     <Stack.Screen name='dashboard' component={Dashboard} options={{ headerShown: false }} />
                     <Stack.Screen name='dashboard2' component={Dashboard2} options={{ headerShown: false }} />
                     <Stack.Screen name="FarmSelection" component={FarmSelectionModal} options={{ headerShown: false }} />

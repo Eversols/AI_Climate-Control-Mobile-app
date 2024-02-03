@@ -29,6 +29,9 @@ const Profile = ({ navigation }) => {
     storeToken(null)
 
   }
+  const navigateToUserProfile = () => {
+    navigation.navigate('UserProfileView', { user });
+  };
   return (
     <ImageBackground
       source={require('../asssets/profileBack.png')} // Replace with the path to your image
@@ -53,7 +56,8 @@ const Profile = ({ navigation }) => {
       </View>
 
 
-      <TouchableOpacity style={[styles.btn]}>
+      
+      <TouchableOpacity style={[styles.btn]} onPress={navigateToUserProfile}>
         <Svg width="20" height="22" viewBox="0 0 20 22" fill="none" xmlns="http://www.w3.org/2000/svg">
           <Path d="M9.5 12C12.5376 12 15 9.53757 15 6.5C15 3.46243 12.5376 1 9.5 1C6.46243 1 4 3.46243 4 6.5C4 9.53757 6.46243 12 9.5 12Z" stroke="gray" stroke-opacity="0.47" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
           <Path d="M19 21C19 18.6131 18.0518 16.3239 16.364 14.636C14.6761 12.9482 12.3869 12 10 12C7.61305 12 5.32387 12.9482 3.63604 14.636C1.94821 16.3239 1 18.6131 1 21" stroke="gray" stroke-opacity="0.47" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />

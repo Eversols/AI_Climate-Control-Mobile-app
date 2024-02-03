@@ -1,14 +1,12 @@
 
-import { StyleSheet, Text, View, TextInput, Modal, TouchableOpacity, ImageBackground } from 'react-native'
+import { StyleSheet, Text, View, TextInput, Modal, TouchableOpacity, ImageBackground, ScrollView } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import MapView, { Marker, PROVIDER_GOOGLE, Polygon, AnimatedRegion } from 'react-native-maps';
 import Svg, { Path, Rect, G, Defs, ClipPath, Line } from 'react-native-svg';
 import FarmSelectionModal from './components/farmSelectionModal';
 import CustomComponent from './components/customComponent';
 import GetLocation from 'react-native-get-location';
-import { post } from './utils/axios';
-import { storeFarmData } from './redux/slices/farmSlice';
-import { useDispatch, useSelector } from 'react-redux';
+import { get, post } from './utils/axios';
 
 const HomeScreen = () => {
   const [farmStep, setFarmStep] = useState(0);
@@ -25,9 +23,6 @@ const HomeScreen = () => {
     isAddPolygonMode: false,
   });
 
-  const { farmData } = useSelector((state) => state.farm)
-
-  const dispatch = useDispatch()
   const [timer, setTimer] = useState(0);
   const [currentLocation, setCurrentLocation] = useState({
     latitude: 31.5948548,
@@ -55,22 +50,18 @@ const HomeScreen = () => {
   };
 
   const addFarm = async (child, farmName, corp) => {
+
     try {
       const formData = {
         "farmName": farmName,
         "corp": corp,
         "polygons": polygonCoordinates,
-      }
-      if (child) {
-        formData.parentId = farmData._id
+        // "parentId": "65ad5977749943e6bc93793e"
       }
       console.log("formdata", formData)
       const response = await post("create-farm", formData)
-      console.log("response.", response.data)
+      console.log("response.", response.data.success)
       if (response.data.success) {
-        if (!farmData) {
-          dispatch(storeFarmData(response.data.data))
-        }
         setIsModalVisible(false);
         setInnerPolygonButtonPressed(true)
         setPolygonButtonPressed(false)
@@ -156,7 +147,6 @@ const HomeScreen = () => {
       }
     }
   };
-
 
   const renderFarmIcons = () => {
     const farmIcons = [
@@ -291,7 +281,37 @@ const HomeScreen = () => {
     );
 
   };
-  return (
+  const [farmData, setFarmData] = useState([]);
+  const [selectedFarm, setSelectedFarm] = useState(null);
+  const [dropdownVisible, setDropdownVisible] = useState(false); // State for dropdown visibility
+
+  useEffect(() => {
+    fetchFarmData();
+  }, []);
+
+  const fetchFarmData = async () => {
+    try {
+      const response = await get('/get-all-farm');
+      console.log('API Response:', response.data); // Log the response data
+      if (response.data.success) {
+        setFarmData(response.data.data.farms);
+      }
+    } catch (error) {
+      console.error('Error fetching farm data:', error);
+    }
+  };
+
+  const handleFarmSelection = (farm) => {
+    setSelectedFarm(farm);
+    setDropdownVisible(false); 
+    console.log('Selected farm:', farm);
+  };
+
+  const toggleDropdown = () => {
+    setDropdownVisible(!dropdownVisible);
+  };
+
+ return(
     <View style={styles.container}>
       <MapView
         provider={PROVIDER_GOOGLE}
@@ -349,7 +369,7 @@ const HomeScreen = () => {
           source={require('../assets/images/Rectangle13.png')}
           style={styles.backgroundImage}
         >
-          <View style={styles.selectFarmContainer}>
+          <View style={[styles.selectFarmContainer, {marginTop: dropdownVisible ? 10 :50}]}>
             <TouchableOpacity style={styles.addFarmButton} onPress={handleAddFarmPress}>
               <Text style={{ fontSize: 14, textAlign: "center", color: 'black', fontWeight: '600', marginHorizontal: 30 }}>
                 Add A Farm
@@ -358,15 +378,34 @@ const HomeScreen = () => {
                 <Path d="M14 8H8V14H6V8H0V6H6V0H8V6H14V8Z" fill="black" />
               </Svg>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.selectFarmButton}>
-              <Text style={{ fontSize: 14, textAlign: "center", color: 'black', fontWeight: '600', marginHorizontal: 30 }}>
-                Select a Farm
+            <TouchableOpacity style={styles.selectFarmButton} onPress={() => setDropdownVisible(!dropdownVisible)}>
+              <Text style={{ fontSize: 14, alignItems:'center', justifyContent:'center',textAlign: "center", color: 'black', fontWeight: '600', marginHorizontal: 30 }}>
+                {selectedFarm ? selectedFarm.farmName : 'Select a Farm'}
               </Text>
-
               <Svg style={{ position: "absolute", right: 20, top: 15 }} width="9" height="14" viewBox="0 0 9 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <Path d="M1 13L7 7L0.999999 1" stroke="black" strokeWidth="2" strokeLinecap="round" />
               </Svg>
+            
             </TouchableOpacity>
+            {dropdownVisible && (
+        <View style={styles.dropdownContainer}>
+          <ScrollView style={styles.dropdownScroll} contentContainerStyle={styles.dropdownScrollContent}>
+            {farmData.map((farm) => (
+              <TouchableOpacity
+                key={farm._id}
+                style={[styles.dropdownOption, selectedFarm === farm && styles.selectedOption]}
+                onPress={() => {
+                  handleFarmSelection(farm);
+                  setDropdownVisible(false);
+                }}
+              >
+                <Text style={[styles.farmName, selectedFarm === farm && styles.selectedFarmName]}>{farm.farmName}</Text>
+                {selectedFarm === farm && <Text style={styles.tickSymbol}>✓</Text>}
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+      )}
           </View>
 
         </ImageBackground>
@@ -407,7 +446,7 @@ const HomeScreen = () => {
           setInnerPolygonButtonPressed(true)
           setPolygonButtonPressed(false)
         }}
-          dispatch={dispatch}
+
           onSubmit={addFarm}
         />
 
@@ -434,7 +473,7 @@ const HomeScreen = () => {
         }}>
           <TouchableOpacity
             onPress={() => setIsModalVisible(true)}
-            disabled={farmData ? !(innerPolygonCoordinates.length > 0) : !(polygonCoordinates.length > 0)}
+            disabled={!(polygonCoordinates.length > 0)}
           >
             <Text style={{
               marginVertical: 10,
@@ -487,9 +526,10 @@ const styles = StyleSheet.create({
 
   backgroundImage: {
     position: 'absolute',
-    top: '70%',
+    top: '65%',
+    // marginTop:30,
     width: '100%',
-    height: '60%',
+    height: '65%',
   },
 
   map: {
@@ -569,7 +609,7 @@ const styles = StyleSheet.create({
   selectFarmContainer: {
     flexDirection: 'column',
     justifyContent: 'space-around',
-    marginTop: 20,
+    marginTop:30 ,
   },
   selectFarmButton: {
     padding: 10,
@@ -612,8 +652,55 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.8)',
     marginBottom: 30,
   },
+  dropdownScroll: {
+    flex:1,
+  },
+  padding: 10,
+  backgroundColor: 'rgba(255, 255, 255, 0.8)',
+  borderRadius: 15,
+  marginHorizontal: 40,
+  marginVertical: 10,
+  height: 45,
 
+  dropdownContainer: {
+    position: 'absolute',
+    // top: '100%',
+    width: '75%',
+    marginTop:130,
+    // marginHorizontal:70,
+    alignItems:'center',
+    alignSelf:"center",
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
 
+    borderRadius: 15,
+    // elevation: 5,
+  },
+  dropdownScrollContent: {
+    padding: 5,
+  },
+  tickSymbol: {
+    marginLeft: 'auto',
+    fontWeight: 'bold',
+  },
+  dropdownOption: {
+    flexDirection: 'row',
+    // justifyContent: 'space-between',
+    // alignItems: 'center',
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    width:'100%',
+    borderBottomColor: '#ccc',
+  },
+
+  farmName: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: 'black',
+  },
+  corp: {
+    fontSize: 14,
+    color: '#555',
+  },
   okButton: {
     backgroundColor: '#f8f8ff',
     borderRadius: 30,
