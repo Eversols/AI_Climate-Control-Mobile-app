@@ -23,7 +23,8 @@ const FarmSelectionModal = ({
     onFarmNameChange,
     onSubmit,
     onClose,
-    dispatch
+    dispatch,
+    reset
 }) => {
     const [selectedFarmField, setSelectedFarmField] = useState('Farm 1');
     const [selectedCorp, setSelectedCorp] = useState('');
@@ -80,8 +81,10 @@ const FarmSelectionModal = ({
 
     const handleNo = () => {
         // setShowConfirmation(false);
+        onSubmit(!!farmData, farmName, selectedCorp)
+        // dispatch(storeFarmData(null))
         navigation.navigate('FarmImageSelection');
-        dispatch(storeFarmData(null))
+        reset()
     };
 
     return (

@@ -54,7 +54,7 @@ import axios from "axios";
 import { GetToken } from '../StorageToken';
 
 const axiosInstant = axios.create({
-  baseURL: "http://climate.axiscodingsolutions.com/api/v1"
+  baseURL: "https://climate.finitrek.com/api/v1"
   // baseURL: "https://digitalmining.axiscodingsolutions.com/demo/api/user"
 })
 
@@ -74,6 +74,13 @@ axiosInstant.interceptors.request.use(async config => {
 export const get = (api, body) => axiosInstant.get(api);
 export const post = (api, body) => axiosInstant.post(api, body);
 export const postForm = (url, body, options) => axiosInstant.post(url, body, {
+  ...options, headers: {
+    ...options?.headers,
+    'Content-Type': 'multipart/form-data', // Set Content-Type for the specific request
+  },
+});
+
+export const putForm = (url, body, options) => axiosInstant.put(url, body, {
   ...options, headers: {
     ...options?.headers,
     'Content-Type': 'multipart/form-data', // Set Content-Type for the specific request

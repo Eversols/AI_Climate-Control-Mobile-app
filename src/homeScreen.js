@@ -7,8 +7,10 @@ import FarmSelectionModal from './components/farmSelectionModal';
 import CustomComponent from './components/customComponent';
 import GetLocation from 'react-native-get-location';
 import { get, post } from './utils/axios';
+import { storeFarmData } from './redux/slices/farmSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
-const HomeScreen = () => {
+const HomeScreen = ({navigation}) => {
   const [farmStep, setFarmStep] = useState(0);
   const [polygonCoordinates, setPolygonCoordinates] = useState([]);
   const [innerPolygonCoordinates, setInnerPolygonCoordinates] = useState([]);
@@ -22,7 +24,8 @@ const HomeScreen = () => {
     showContinueButton: false,
     isAddPolygonMode: false,
   });
-
+  const { farmData } = useSelector((state) => state.farm)
+  const dispatch = useDispatch()
   const [timer, setTimer] = useState(0);
   const [currentLocation, setCurrentLocation] = useState({
     latitude: 31.5948548,
@@ -31,6 +34,22 @@ const HomeScreen = () => {
     longitudeDelta: 0.0121,
   });
 
+  const reset=()=>{
+    setInnerPolygonCoordinates([])
+    setPolygonCoordinates([])
+    setFarmStep(0)
+    setPolygonButtonPressed(false)
+    setInnerPolygonButtonPressed(false)
+    setIsModalVisible(false)
+    setIsAddFarmPressed(false)
+    setScreenState({
+      isAddFarmVisible: true,
+      showSearchButton: true,
+      showContinueButton: false,
+      isAddPolygonMode: false,
+    })
+
+  }
 
   const handleZoomIn = () => {
     setCurrentLocation((pre) => ({
@@ -50,7 +69,7 @@ const HomeScreen = () => {
   };
 
   const addFarm = async (child, farmName, corp) => {
-
+    
     try {
       const formData = {
         "farmName": farmName,
@@ -58,10 +77,14 @@ const HomeScreen = () => {
         "polygons": polygonCoordinates,
         // "parentId": "65ad5977749943e6bc93793e"
       }
+      if (child) {
+        formData.parentId = farmData?.id
+      }
       console.log("formdata", formData)
       const response = await post("create-farm", formData)
-      console.log("response.", response.data.success)
+      console.log("response.", response.data)
       if (response.data.success) {
+        dispatch(storeFarmData(response.data.data))
         setIsModalVisible(false);
         setInnerPolygonButtonPressed(true)
         setPolygonButtonPressed(false)
@@ -281,20 +304,20 @@ const HomeScreen = () => {
     );
 
   };
-  const [farmData, setFarmData] = useState([]);
+  const [farmsData, setFarmsData] = useState([]);
   const [selectedFarm, setSelectedFarm] = useState(null);
   const [dropdownVisible, setDropdownVisible] = useState(false); // State for dropdown visibility
 
   useEffect(() => {
     fetchFarmData();
-  }, []);
+  }, [navigation]);
 
   const fetchFarmData = async () => {
     try {
-      const response = await get('/get-all-farm');
+      const response = await get('/get-my-farms');
       console.log('API Response:', response.data); // Log the response data
       if (response.data.success) {
-        setFarmData(response.data.data.farms);
+        setFarmsData(response.data.data.farms);
       }
     } catch (error) {
       console.error('Error fetching farm data:', error);
@@ -303,7 +326,7 @@ const HomeScreen = () => {
 
   const handleFarmSelection = (farm) => {
     setSelectedFarm(farm);
-    setDropdownVisible(false); 
+    setDropdownVisible(false);
     console.log('Selected farm:', farm);
   };
 
@@ -311,7 +334,7 @@ const HomeScreen = () => {
     setDropdownVisible(!dropdownVisible);
   };
 
- return(
+  return (
     <View style={styles.container}>
       <MapView
         provider={PROVIDER_GOOGLE}
@@ -369,7 +392,7 @@ const HomeScreen = () => {
           source={require('../assets/images/Rectangle13.png')}
           style={styles.backgroundImage}
         >
-          <View style={[styles.selectFarmContainer, {marginTop: dropdownVisible ? 10 :50}]}>
+          <View style={[styles.selectFarmContainer, { marginTop: dropdownVisible ? 10 : 50 }]}>
             <TouchableOpacity style={styles.addFarmButton} onPress={handleAddFarmPress}>
               <Text style={{ fontSize: 14, textAlign: "center", color: 'black', fontWeight: '600', marginHorizontal: 30 }}>
                 Add A Farm
@@ -379,33 +402,33 @@ const HomeScreen = () => {
               </Svg>
             </TouchableOpacity>
             <TouchableOpacity style={styles.selectFarmButton} onPress={() => setDropdownVisible(!dropdownVisible)}>
-              <Text style={{ fontSize: 14, alignItems:'center', justifyContent:'center',textAlign: "center", color: 'black', fontWeight: '600', marginHorizontal: 30 }}>
+              <Text style={{ fontSize: 14, alignItems: 'center', justifyContent: 'center', textAlign: "center", color: 'black', fontWeight: '600', marginHorizontal: 30 }}>
                 {selectedFarm ? selectedFarm.farmName : 'Select a Farm'}
               </Text>
               <Svg style={{ position: "absolute", right: 20, top: 15 }} width="9" height="14" viewBox="0 0 9 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <Path d="M1 13L7 7L0.999999 1" stroke="black" strokeWidth="2" strokeLinecap="round" />
               </Svg>
-            
+
             </TouchableOpacity>
             {dropdownVisible && (
-        <View style={styles.dropdownContainer}>
-          <ScrollView style={styles.dropdownScroll} contentContainerStyle={styles.dropdownScrollContent}>
-            {farmData.map((farm) => (
-              <TouchableOpacity
-                key={farm._id}
-                style={[styles.dropdownOption, selectedFarm === farm && styles.selectedOption]}
-                onPress={() => {
-                  handleFarmSelection(farm);
-                  setDropdownVisible(false);
-                }}
-              >
-                <Text style={[styles.farmName, selectedFarm === farm && styles.selectedFarmName]}>{farm.farmName}</Text>
-                {selectedFarm === farm && <Text style={styles.tickSymbol}>✓</Text>}
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        </View>
-      )}
+              <View style={styles.dropdownContainer}>
+                <ScrollView style={styles.dropdownScroll} contentContainerStyle={styles.dropdownScrollContent}>
+                  {farmsData?.length > 0 && farmsData.map((farm) => (
+                    <TouchableOpacity
+                      key={farm.id}
+                      style={[styles.dropdownOption, selectedFarm === farm && styles.selectedOption]}
+                      onPress={() => {
+                        handleFarmSelection(farm);
+                        setDropdownVisible(false);
+                      }}
+                    >
+                      <Text style={[styles.farmName, selectedFarm === farm && styles.selectedFarmName]}>{farm.farmName}</Text>
+                      {selectedFarm === farm && <Text style={styles.tickSymbol}>✓</Text>}
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              </View>
+            )}
           </View>
 
         </ImageBackground>
@@ -448,6 +471,8 @@ const HomeScreen = () => {
         }}
 
           onSubmit={addFarm}
+          dispatch={dispatch}
+          reset={reset}
         />
 
       </Modal>
@@ -609,7 +634,7 @@ const styles = StyleSheet.create({
   selectFarmContainer: {
     flexDirection: 'column',
     justifyContent: 'space-around',
-    marginTop:30 ,
+    marginTop: 30,
   },
   selectFarmButton: {
     padding: 10,
@@ -653,7 +678,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   dropdownScroll: {
-    flex:1,
+    flex: 1,
   },
   padding: 10,
   backgroundColor: 'rgba(255, 255, 255, 0.8)',
@@ -666,10 +691,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     // top: '100%',
     width: '75%',
-    marginTop:130,
+    marginTop: 130,
     // marginHorizontal:70,
-    alignItems:'center',
-    alignSelf:"center",
+    alignItems: 'center',
+    alignSelf: "center",
     backgroundColor: 'rgba(255, 255, 255, 0.8)',
 
     borderRadius: 15,
@@ -688,7 +713,7 @@ const styles = StyleSheet.create({
     // alignItems: 'center',
     paddingVertical: 10,
     borderBottomWidth: 1,
-    width:'100%',
+    width: '100%',
     borderBottomColor: '#ccc',
   },
 

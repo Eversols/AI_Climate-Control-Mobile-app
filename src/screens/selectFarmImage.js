@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { postForm, putForm } from '../utils/axios';
+import { useDispatch, useSelector } from 'react-redux';
+import { storeFarmData } from '../redux/slices/farmSlice';
 
 const FarmImageSelection = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const navigation = useNavigation();
-
+  const dispatch = useDispatch()
   const farmImages = [
     require('../../assets/images/image168.png'),
     require('../../assets/images/image180.png'),
@@ -18,14 +21,45 @@ const FarmImageSelection = () => {
     require('../../assets/images/image177.png'),
     // Add more image paths as needed
   ];
-  const handleFinish = () => {
-    navigation.navigate("bottom_navigation");
-  }
+
+
+
+
+  const [image, setImage] = useState(null);
+  const { farmData } = useSelector((state) => state.farm)
+
+  const handleImageUpload = async () => {
+    try {
+      const formData = new FormData();
+      formData.append('image', {
+        uri: image,
+        type: 'image/jpeg', // adjust the type according to your image type
+        name: 'image.jpg' // adjust the name accordingly
+      });
+      // Make a POST request with Axios
+      const response = await putForm(`add-farm-pic/${farmData?.id}`, formData);
+
+      console.log(response.data); // Handle response
+      if (response.data.success) {
+        dispatch(storeFarmData(null))
+        navigation.navigate("bottom_navigation");
+
+      }
+    } catch (error) {
+      console.error('Error uploading image:', error);
+    }
+  };
+
+
+
   const renderFarmImages = () => {
     return farmImages.map((farmImage, index) => (
       <TouchableOpacity
         key={index}
-        onPress={() => handleImageSelection(farmImage)}
+        onPress={() => {
+          setImage(Image.resolveAssetSource(farmImage).uri);
+          handleImageSelection(farmImage)
+        }}
         style={[
           styles.imageContainer,
           selectedImage === farmImage && styles.selectedImage,
@@ -68,7 +102,7 @@ const FarmImageSelection = () => {
 
           {selectedImage && (
             <View style={{ width: '60%' }}>
-              <TouchableOpacity onPress={handleFinish}
+              <TouchableOpacity onPress={handleImageUpload}
                 style={{ paddingVertical: 12, backgroundColor: '#FFFFFF', borderRadius: 30, alignItems: 'center' }}
               >
                 <Text style={{ fontSize: 18, lineHeight: 27, color: '#000000', fontWeight: '600' }}>Finish</Text></TouchableOpacity>
@@ -130,7 +164,7 @@ const styles = StyleSheet.create({
   imagesGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    // justifyContent: 'space-between', // Use space-between to arrange images in 3 rows
+    justifyContent: 'center', // Use space-between to arrange images in 3 rows
     marginHorizontal: 15,
     marginVertical: 10,
 

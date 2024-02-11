@@ -14,6 +14,7 @@ import {
 // import MapView, { Marker } from 'react-native-maps';
 import { Defs, G, Filter, Path, Rect, Svg } from 'react-native-svg';
 import { get } from '../../utils/axios';
+import { BASE_URL, IMAGE_BASE_URL } from '../../redux/slices/authSlice';
 
 const Dashboard = ({ navigation }) => {
   const [farms, setFarms] = useState([]);
@@ -68,12 +69,12 @@ const Dashboard = ({ navigation }) => {
 
         {farms.map(farm => (
           <TouchableOpacity
-            key={farm._id}
+            key={farm.id}
             onPress={() => navigation.navigate("dashboard2")}
             style={[styles.btn]}>
             <View style={{ flexDirection: "row", alignSelf: "center", justifyContent: "space-between", width: "100%" }}>
               <View style={{ flexDirection: "row" }}>
-                <Image style={{ width: 50, height: 50, borderRadius: 200, borderWidth: 1, borderColor: "#fff", resizeMode: "contain" }} source={{ uri: farm.image }} />
+                <Image style={{ width: 50, height: 50, borderRadius: 200, borderWidth: 1, borderColor: "#fff", resizeMode: "contain" }} source={{ uri: `${IMAGE_BASE_URL}/${farm.image}` }} />
                 <View>
                   <Text style={{ fontWeight: "400", marginLeft: 20, fontSize: 18, color: "#000" }}>{farm.farmName}</Text>
                   <Text style={{ fontWeight: "400", marginLeft: 20, fontSize: 16, color: "#1D2324" }}>Crop: {farm.corp}</Text>
