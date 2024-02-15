@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Modal,
     View,
@@ -16,6 +16,7 @@ import { Path, Svg } from 'react-native-svg';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { storeFarmData } from '../redux/slices/farmSlice';
+import { get } from '../utils/axios';
 
 const FarmSelectionModal = ({
     visible,
@@ -32,13 +33,19 @@ const FarmSelectionModal = ({
     const navigation = useNavigation();
     const { farmData } = useSelector((state) => state.farm)
 
-    const [cropOptions, setCropOptions] = useState([
-        { label: 'Rice', value: 'Rice', selected: false },
-        { label: 'Corn', value: 'Corn', selected: false },
-        { label: 'Wheat', value: 'Wheat', selected: false },
-        { label: 'Pulses', value: 'Pulses', selected: false },
-        { label: 'Sugar', value: 'Sugar', selected: false },
-    ]);
+    const [cropOptions, setCropOptions] = useState([]);
+    console.log("selectedCorp", selectedCorp)
+
+    const getCrops = async () => {
+        try {
+            const response = await get("/get-crops")
+            setCropOptions(response?.data?.data?.crops.map(item => {
+                return { ...item, label: item?.name, value: item?.name, selected: false }
+            }))
+        } catch (err) {
+            console.log("error", err)
+        }
+    }
 
     const handleFarmFieldChange = (farmField) => {
         setSelectedFarmField(farmField);
@@ -46,13 +53,28 @@ const FarmSelectionModal = ({
     };
 
     const handleCropOptionSelect = (index) => {
-        const updatedCrops = cropOptions.map((crop, i) => ({
-            ...crop,
-            selected: i === index && !crop.selected,
-        }));
-        setCropOptions(updatedCrops);
-        setSelectedCorp(cropOptions[index].value)
+        setCropOptions((prevCropOptions) => {
+            const updatedOptions = [...prevCropOptions]; // Copy the array
+            const isSelected = updatedOptions[index].selected;
+
+            updatedOptions[index] = { ...updatedOptions[index], selected: !isSelected }; // Toggle selected
+
+            return updatedOptions; // Return the updated array
+        });
+
+        setSelectedCorp((prevSelectedCorp) => {
+            const cropId = cropOptions[index].id;
+
+            if (prevSelectedCorp.includes(cropId)) {
+                // If already selected, remove it
+                return prevSelectedCorp.filter((id) => id !== cropId);
+            } else {
+                // If not selected, add it
+                return [...prevSelectedCorp, cropId];
+            }
+        });
     };
+
     const [farmName, setFarmName] = useState('');
     const handleContinue = () => {
         const isAnyCropSelected = cropOptions.some((crop) => crop.selected);
@@ -76,7 +98,7 @@ const FarmSelectionModal = ({
         setShowConfirmation(false);
         // onClose()
         console.log("ineeeeeeeeeeeeeeeee")
-        onSubmit(!!farmData, farmName, selectedCorp)
+        onSubmit(!!farmData, farmName, "selectedCorp")
     };
 
     const handleNo = () => {
@@ -86,6 +108,11 @@ const FarmSelectionModal = ({
         navigation.navigate('FarmImageSelection');
         reset()
     };
+
+
+    useEffect(() => {
+        getCrops()
+    }, [])
 
     return (
         // <Modal
