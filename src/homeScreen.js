@@ -10,7 +10,8 @@ import { get, post } from './utils/axios';
 import { storeFarmData } from './redux/slices/farmSlice';
 import { useDispatch, useSelector } from 'react-redux';
 
-const HomeScreen = ({navigation}) => {
+
+const HomeScreen = ({ navigation }) => {
   const [farmStep, setFarmStep] = useState(0);
   const [polygonCoordinates, setPolygonCoordinates] = useState([]);
   const [innerPolygonCoordinates, setInnerPolygonCoordinates] = useState([]);
@@ -34,7 +35,7 @@ const HomeScreen = ({navigation}) => {
     longitudeDelta: 0.0121,
   });
 
-  const reset=()=>{
+  const reset = () => {
     setInnerPolygonCoordinates([])
     setPolygonCoordinates([])
     setFarmStep(0)
@@ -69,7 +70,7 @@ const HomeScreen = ({navigation}) => {
   };
 
   const addFarm = async (child, farmName, corp) => {
-    
+
     try {
       const formData = {
         "farmName": farmName,
@@ -307,7 +308,7 @@ const HomeScreen = ({navigation}) => {
   const [farmsData, setFarmsData] = useState([]);
   const [selectedFarm, setSelectedFarm] = useState(null);
   const [dropdownVisible, setDropdownVisible] = useState(false); // State for dropdown visibility
-
+  
   useEffect(() => {
     fetchFarmData();
   }, [navigation]);
