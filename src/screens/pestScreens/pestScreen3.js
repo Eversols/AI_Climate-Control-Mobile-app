@@ -15,9 +15,12 @@ import {
 import { Defs, G, Filter, Path, Rect, Svg } from 'react-native-svg';
 import DropDown from '../../components/dropDown';
 import TextDropDown from '../../components/textDropDown';
+import { useSelector } from 'react-redux';
 
 const PestScreen3 = ({navigation }) => {
   // const navigation = useNavigation();
+
+  const { pestImage } = useSelector((state) => state.pest)
 
   return (
     <ImageBackground
@@ -32,12 +35,12 @@ const PestScreen3 = ({navigation }) => {
 
       <ScrollView>
         <View style={{ flexDirection: "row", marginTop: -20, justifyContent: "center" }}>
-          <Image style={{ width: "85%", resizeMode: "contain" }} source={require('../../../asssets/minibutter2.png')} />
+          <Image style={{ width: "85%",height: 250, resizeMode: "contain" }} source={pestImage ? { uri: `${pestImage?.path}` } :require('../../../asssets/minibutter2.png')} />
         </View>
 
 
 
-        <View style={{ marginTop: -20 }}>
+        <View style={{ marginTop: 0 }}>
           <DropDown btnTitle={"Choose Pest"} />
 
 
