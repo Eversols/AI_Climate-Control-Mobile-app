@@ -29,6 +29,9 @@ import { Provider, useSelector } from 'react-redux';
 import SplashScreen from './src/screens/splashScreen';
 import UserProfileScreen from './src/screens/viewProfile';
 import editProfleDetails from './src/screens/editProfileDetails';
+import VerifyIdentityScreen from './src/screens/verifyProfile/verifyProfileIdentity';
+import EmailVerificationScreen from './src/screens/verifyProfile/emailVerifyProfile';
+import PhoneNumberVerificationScreen from './src/screens/verifyProfile/phoneNumberVerify';
 const Stack = createNativeStackNavigator();
 
 const AppNavigator = () => {
@@ -65,6 +68,11 @@ const AppNavigator = () => {
                     <Stack.Screen name='userPanel' component={UserPanel} options={{ headerShown: false }} />
                     <Stack.Screen name='userPanel2' component={UserPanel2} options={{ headerShown: false }} />
                     <Stack.Screen name='VisionCameraScreen' component={VisionCameraScreen} options={{ headerShown: false }} />
+
+                    <Stack.Screen name='VerifyIdentityScreen' component={VerifyIdentityScreen} options={{ headerTransparent: true, headerTitle:'Verify Your Identity'}} />
+                    <Stack.Screen name='EmailVerificationScreen' component={EmailVerificationScreen} options={{ headerTransparent: true, headerTitle:'Verify Your Identity'}} />
+                    <Stack.Screen name='PhoneNumberVerificationScreen' component={PhoneNumberVerificationScreen} options={{ headerTransparent: true, headerTitle:'Verify Your Identity'}} />
+
                 </>
                 }</Stack.Navigator>
         </Provider>

@@ -25,10 +25,10 @@ const AuthenticationCodeScreen = () => {
         <Text style={styles.subtitle}>Enter the 6-digit code that we have sent via the phone number +34 409-3049-3245</Text>
 
         <CodeInputField />
-
+{/* 
         <Text style={styles.resendText}>
           Don't have a code? <Text style={styles.resendLink}>Re-send</Text>
-        </Text>
+        </Text> */}
 
         <TouchableOpacity
           style={[styles.btn, { width: '65%' }]}
