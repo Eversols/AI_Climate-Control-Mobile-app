@@ -14,8 +14,9 @@ import {
 // import MapView, { Marker } from 'react-native-maps';
 import { Defs, G, Filter, Path, Rect, Svg } from 'react-native-svg';
 
-const DropDown = ({ navigation, btnTitle, options, selectedOption = 0, setSelectedOption }) => {
+const DropDown2 = ({ navigation, btnTitle, options, selectedOption = 0, setSelectedOption }) => {
     // const navigation = useNavigation();
+
     const refRBSheet = useRef();
     const [openDrop, setOpenDrop] = useState(false)
     return (
@@ -23,7 +24,7 @@ const DropDown = ({ navigation, btnTitle, options, selectedOption = 0, setSelect
 
             <TouchableOpacity onPress={() => setOpenDrop(!openDrop)} style={[styles.btn]}>
 
-                <Text style={{ fontWeight: "300", marginLeft: 10, fontSize: 16, color: "#000" }}>{btnTitle}</Text>
+                <Text style={{ fontWeight: "300", marginLeft: 10, fontSize: 16, color: "#000" }}>{btnTitle}:{selectedOption}</Text>
                 {openDrop ?
                     <Svg style={{ marginTop: 8 }} width="22" height="10" viewBox="0 0 22 10" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <Path d="M2.42871 1.4978L11.3889 8.25357L20.3491 1.49224" stroke="#363B3D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
@@ -36,16 +37,20 @@ const DropDown = ({ navigation, btnTitle, options, selectedOption = 0, setSelect
             </TouchableOpacity>
             {openDrop &&
                 <View style={styles.openBox}>
+                    <Text style={{ textAlign: "center", fontWeight: "600" }}>Select a Farm</Text>
                     <ScrollView nestedScrollEnabled={true}>
                         {options?.map((item, i) => (
-                            <TouchableOpacity onPress={() => setSelectedOption(i)} style={{ width: "100%", marginVertical: 10, flexDirection: "row", height: 22, justifyContent: "space-between" }}>
+                            <TouchableOpacity onPress={() => {
+                                setOpenDrop(!openDrop);
+                                setSelectedOption(i)
+                            }} style={{ width: "100%", marginVertical: 10, flexDirection: "row", borderBottomWidth: 1, borderColor: "gray", height: 22, justifyContent: "space-between",paddingHorizontal:10 }}>
                                 <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                                    <View style={{ height: 5, alignSelf: "center", width: 5, borderRadius: 20, backgroundColor: "#000" }}></View>
+                                    {/* <View style={{ height: 5, alignSelf: "center", width: 5, borderRadius: 20, backgroundColor: "#000" }}></View> */}
                                     <Text style={{ marginLeft: 10, fontSize: 12, fontWeight: "600" }}>{item}</Text>
                                 </View>
-                                <View style={{ height: 30, width: 30, borderRadius: 20, borderWidth: 1, justifyContent: "center", borderColor: "#000" }}>
-                                    {selectedOption == i &&
-                                        <View style={{ height: 14, width: 14, alignSelf: "center", borderRadius: 20, backgroundColor: "#000" }}></View>}
+                                <View style={{ height: 12, width: 12, borderRadius: 20, justifyContent: "center", backgroundColor: "#fff" }}>
+                                    {selectedOption == item &&
+                                        <View style={{ height: 7, width: 7, alignSelf: "center", borderRadius: 20, backgroundColor: "#000" }}></View>}
                                 </View>
                             </TouchableOpacity>
                         ))}
@@ -62,31 +67,33 @@ const styles = StyleSheet.create({
     btn: {
         backgroundColor: 'rgba(255,255,255,0.4)',
         alignSelf: "center",
-        marginTop: 12,
-        borderRadius: 30,
+        borderRadius: 10,
         borderWidth: 2,
         height: 50,
+        marginBottom: 20,
         paddingHorizontal: 20,
         paddingVertical: 10,
-        width: "85%",
+        // width: "50%",
         borderColor: "#FFFFFF",
         flexDirection: "row",
         justifyContent: "space-between"
     },
     openBox: {
-        backgroundColor: 'rgba(255,255,255,0.4)',
+        backgroundColor: 'rgba(255,255,255,0.6)',
         alignSelf: "center",
         marginTop: 20,
         borderRadius: 15,
         borderWidth: 2,
-        height: 300,
+        height: 250,
+        position: "absolute",
+        top: 40,
         zIndex: 100,
-        paddingHorizontal: 20,
+        // paddingHorizontal: 20,
         paddingVertical: 10,
-        width: "85%",
+        width: "80%",
         borderColor: "#FFFFFF",
     }
 
 });
 
-export default DropDown;
+export default DropDown2;

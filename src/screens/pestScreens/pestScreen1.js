@@ -18,11 +18,37 @@ import { useNavigation } from '@react-navigation/native';
 // import Mapbox, { UserLocation, Camera } from '@rnmapbox/maps';
 import { Defs, G, Filter, Path, Rect, Svg } from 'react-native-svg';
 import { SelectList } from 'react-native-dropdown-select-list';
+import DropDown2 from '../../components/dropDown2';
+import { useDispatch, useSelector } from 'react-redux';
+import { GetMyFarms } from '../../redux/slices/farmSlice';
+import { setSelectedFarm, setSelectedcorp } from '../../redux/slices/pesticidesSlice';
 
 const PestScreen1 = ({ navigation }) => {
   // const navigation = useNavigation();
   const refRBSheet = useRef();
   const [locheigth, setLocheigth] = useState(80)
+  const { farmList } = useSelector((state) => state.farm)
+  const dispatch = useDispatch()
+  const [corpOptions, setCorpOptions] = useState([])
+  const [selectedFarm, setFarmName] = useState("")
+  const [selectedcrop, setCropName] = useState("")
+
+  const handlefarmOptions = (i) => {
+
+    setCorpOptions(farmList[i].corp.length > 0 ? farmList[i].corp.map(item => { return { id: item.id, name: item.name } }) : [])
+    setFarmName(farmList[i].farmName)
+    dispatch(setSelectedFarm(farmList[i].id))
+  }
+  const handlecropOptions = (i) => {
+
+    setCropName(corpOptions[i].name)
+    dispatch(setSelectedcorp(corpOptions[i]?.id))
+  }
+
+  useEffect(() => {
+    dispatch(GetMyFarms())
+
+  }, [])
   return (
     <ImageBackground
       source={require('../../../asssets/pestScreen1.png')} // Replace with the path to your image
@@ -33,6 +59,20 @@ const PestScreen1 = ({ navigation }) => {
         </Svg>
 
       </TouchableOpacity>
+
+      <View style={{ flexDirection: "row", justifyContent: "space-evenly" }}>
+        <DropDown2
+          btnTitle="Farm"
+          options={farmList.map(item => item.farmName)}
+          selectedOption={selectedFarm}
+          setSelectedOption={handlefarmOptions} />
+
+        <DropDown2
+          btnTitle="Crop"
+          options={corpOptions.map(item => item.name)}
+          selectedOption={selectedcrop}
+          setSelectedOption={handlecropOptions} />
+      </View>
 
       <View style={{ flexDirection: "row", justifyContent: "center" }}>
         <Image source={require('../../../asssets/bee.png')} />

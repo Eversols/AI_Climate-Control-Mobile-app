@@ -14,7 +14,7 @@ import {
 // import MapView, { Marker } from 'react-native-maps';
 import { Defs, G, Filter, Path, Rect, Svg } from 'react-native-svg';
 
-const TextDropDown = ({ navigation, btnTitle }) => {
+const TextDropDown = ({ navigation, btnTitle, value, setValue }) => {
     // const navigation = useNavigation();
     const refRBSheet = useRef();
     const [openDrop, setOpenDrop] = useState(false)
@@ -35,7 +35,7 @@ const TextDropDown = ({ navigation, btnTitle }) => {
 
             </TouchableOpacity>
             {openDrop &&
-                <TextInput placeholder='Type....' style={styles.openBox}/>
+                <TextInput placeholder='Type....' style={styles.openBox} value={value} onChangeText={(text) => setValue(text)} />
             }
         </View>
     );

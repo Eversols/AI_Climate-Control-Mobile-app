@@ -17,11 +17,35 @@ import DropDown from '../../components/dropDown';
 import TextDropDown from '../../components/textDropDown';
 import { useSelector } from 'react-redux';
 
-const PestScreen3 = ({navigation }) => {
+const PestScreen3 = ({ navigation }) => {
   // const navigation = useNavigation();
 
   const { pestImage } = useSelector((state) => state.pest)
 
+  const [selectedPestOption, setSelectedPestOption] = useState(0)
+  const [pestOptions, setPestOptions] = useState(["Caterpillar", "White flies", "Caterpillars", "Slugs and Snails", "Japanese Beetles", "Spider Mites", "Trips", "Scale Insects", "Wireworms", "Deer"])
+
+  const [selectedRcmdPest, setSelectedRcmdPest] = useState(0)
+  const [rcmdPstOpts, setRcmdPstOpts] = useState([
+    "Bacillus thuringiensis",
+    "Spinosad",
+    "Neem Oil",
+    "Moths",
+    "Pyrethroids",
+    "Diatomaceous Earth",
+    "Insecticidal Soaps",
+    "Chlorantraniliprole",
+    "Imidacloprid",
+    "Carbaryl"
+  ])
+
+  const [insectInfo, setInsectInfo] = useState("")
+  const [upload, setUpload] = useState("")
+  const [feedback, setFeedback] = useState("")
+
+  console.log("insectInfo", insectInfo)
+  console.log("upload", upload)
+  console.log("feedback", feedback)
   return (
     <ImageBackground
       source={require('../../../asssets/pestScreen3.png')} // Replace with the path to your image
@@ -35,21 +59,39 @@ const PestScreen3 = ({navigation }) => {
 
       <ScrollView>
         <View style={{ flexDirection: "row", marginTop: -20, justifyContent: "center" }}>
-          <Image style={{ width: "85%",height: 250, resizeMode: "contain" }} source={pestImage ? { uri: `${pestImage?.path}` } :require('../../../asssets/minibutter2.png')} />
+          <Image style={{ width: "85%", height: 250, resizeMode: "contain" }} source={pestImage ? { uri: `${pestImage?.path}` } : require('../../../asssets/minibutter2.png')} />
         </View>
 
 
 
         <View style={{ marginTop: 0 }}>
-          <DropDown btnTitle={"Choose Pest"} />
+          <DropDown btnTitle={"Choose Pest"}
+            options={pestOptions}
+            selectedOption={selectedPestOption}
+            setSelectedOption={setSelectedPestOption} />
 
 
-          <TextDropDown btnTitle={"Insect Information"} />
+          <TextDropDown
+            btnTitle={"Insect Information"}
+            value={insectInfo}
+            setValue={setInsectInfo} />
 
-          <TextDropDown btnTitle={"Upload Information"} />
+          <TextDropDown
+            btnTitle={"Upload Information"}
+            value={upload}
+            setValue={setUpload} />
 
-          <DropDown btnTitle={"Recommended Pesticide"} />
-          <TextDropDown btnTitle={"Send Feedback"} />
+          <DropDown btnTitle={"Recommended Pesticide"}
+            options={rcmdPstOpts}
+            selectedOption={selectedRcmdPest}
+            setSelectedOption={setSelectedRcmdPest} />
+
+
+          <TextDropDown
+            btnTitle={"Send Feedback"}
+            value={feedback}
+            setValue={setFeedback}
+          />
           <TouchableOpacity onPress={() => navigation.navigate("profile")} style={[styles.btn, { width: "70%", }]}>
             <Text style={{ fontWeight: "700", fontSize: 18, color: "#000" }}>Submit</Text>
           </TouchableOpacity>

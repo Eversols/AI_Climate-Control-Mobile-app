@@ -7,6 +7,8 @@ import { post } from '../../utils/axios';
 const initialState = {
 
   pestImage: null,
+  selectedfarm: null,
+  selectedCorp: null,
   loading: false,
   error: null,
 }
@@ -16,8 +18,13 @@ const pestSlice = createSlice({
   initialState,
   reducers: {
     setPestImage: (state, { payload }) => {
-      console.log("payloadlllllllllllllllllllllllll", payload)
       state.pestImage = payload
+    },
+    setSelectedFarm: (state, { payload }) => {
+      state.selectedfarm = payload
+    },
+    setSelectedcorp: (state, { payload }) => {
+      state.selectedCorp = payload
     },
   },
   extraReducers: (builder) => {
@@ -30,6 +37,6 @@ const pestSlice = createSlice({
   },
 });
 
-export const { setPestImage } = pestSlice.actions;
+export const { setPestImage, setSelectedFarm, setSelectedcorp } = pestSlice.actions;
 
 export default pestSlice.reducer;
