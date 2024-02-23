@@ -39,13 +39,16 @@ const CodeInputField = () => {
                     </Text>
                 )}
             />
+            <Text style={styles.resendText}>
+                Don't have a code? <Text style={styles.resendLink}>Re-send</Text>
+            </Text>
         </SafeAreaView>
     );
 };
 
 const styles = StyleSheet.create({
-    root: { flex: 1, padding: 15, paddingHorizontal:5 },
-    codeFieldRoot: { marginTop: 20 ,marginHorizontal:2},
+    root: { flex: 1, padding: 15, paddingHorizontal: 5 },
+    codeFieldRoot: { marginTop: 20, marginHorizontal: 2 },
     cell: {
         width: 40,
         height: 40,
@@ -54,10 +57,19 @@ const styles = StyleSheet.create({
         borderBottomWidth: 3,
         borderColor: '#00000030',
         textAlign: 'center',
-        color:'black',
+        color: 'black',
     },
     focusCell: {
         borderColor: '#000',
+    },
+    resendText: {
+        fontSize: 16,
+        color: 'black',
+        marginTop: 10,
+    },
+    resendLink: {
+        textDecorationLine: 'underline',
+        fontWeight: '600',
     },
 });
 

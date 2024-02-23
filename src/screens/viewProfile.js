@@ -7,7 +7,8 @@ const UserProfileScreen = ({navigation}) => {
     const { user } = useSelector((state) => state.authReducer);
     console.log('userrrrrrrrrrrr', user);
     const navigateToEditProfile = () => {
-        navigation.navigate('editProfileDetails', { user });
+        // navigation.navigate('editProfileDetails', { user });
+        navigation.navigate('VerifyIdentityScreen')
     };
 
     // Function to handle image upload
@@ -22,10 +23,8 @@ const UserProfileScreen = ({navigation}) => {
             style={styles.backgroundImage}>
             <View style={styles.container}>
                 <View style={styles.profileImageContainer}>
-                    {/* Profile image with SVG icon */}
                     <View style={styles.circularBorder}>
                         <Image source={require('../../asssets/profilePic.png')} style={styles.profileImage} />
-                        {/* SVG icon for image upload */}
                         <TouchableOpacity onPress={handleImageUpload} style={styles.uploadIcon}>
                             <Svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <Circle cx="20" cy="20" r="20" fill="#E4EAE3" />
@@ -38,16 +37,16 @@ const UserProfileScreen = ({navigation}) => {
                 <View style={styles.userInfo}>
                     {/* <Text style={styles.userName}>{user.user_name.toUpperCase()}</Text> */}
                     <TouchableOpacity style={styles.btn}>
-                        <Text style={styles.userInfoText}>{user.user_name}</Text>
+                        <Text style={styles.btnText}>{user.user_name}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.btn}>
-                        <Text style={styles.userInfoText}>{user.email}</Text>
+                        <Text style={styles.btnText}>{user.email}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.btn}>
-                        <Text style={styles.userInfoText}>Phone{user.phone}</Text>
+                        <Text style={styles.btnText}>Phone Number{user.phone}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.btn}>
-                        <Text style={styles.userInfoText}>Occupation{user.occupation}</Text>
+                        <Text style={styles.btnText}>Occupation{user.occupation}</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -106,20 +105,13 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: '600',
     },
-    userInfoText: {
-        // textAlign: 'center',
-        color: '#000',
-        fontSize: 18,
-        fontWeight: '400',
-        marginTop: 10,
-    },
     editDetailsBtn: {
         backgroundColor: '#FCFCFC',
         marginTop: 20,
         borderRadius: 30,
         borderWidth: 2,
         height: 50,
-        paddingHorizontal: 20,
+        paddingHorizontal: 50,
         paddingVertical: 10,
         borderColor: '#FFFFFF',
         justifyContent: 'center',
@@ -128,9 +120,8 @@ const styles = StyleSheet.create({
     },
     btnText: {
         fontWeight: '400',
-        fontSize: 15,
+        fontSize: 18,
         color: '#000000',
-        textAlign: 'center',
     },
     btn: {
         backgroundColor: '#FCFCFC',
@@ -139,9 +130,9 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         // height: 50,
         paddingHorizontal: 20,
-        paddingVertical: 5,
+        paddingVertical: 8,
         width: 250,
-        justifyContent: 'center',
+        // justifyContent: 'center',
         borderColor: "#FFFFFF",
         flexDirection: "row",
     }
