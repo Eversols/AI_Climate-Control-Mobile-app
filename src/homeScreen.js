@@ -81,11 +81,11 @@ const HomeScreen = ({ navigation }) => {
       if (child) {
         formData.parentId = farmData?.id
       }
-      console.log("formdata", formData)
       const response = await post("create-farm", formData)
-      console.log("response.", response.data)
       if (response.data.success) {
-        dispatch(storeFarmData(response.data.data))
+        if (!child) {
+          dispatch(storeFarmData(response.data.data))
+        }
         setIsModalVisible(false);
         setInnerPolygonButtonPressed(true)
         setPolygonButtonPressed(false)
@@ -308,15 +308,14 @@ const HomeScreen = ({ navigation }) => {
   const [farmsData, setFarmsData] = useState([]);
   const [selectedFarm, setSelectedFarm] = useState(null);
   const [dropdownVisible, setDropdownVisible] = useState(false); // State for dropdown visibility
-  
+
   useEffect(() => {
     fetchFarmData();
   }, [navigation]);
 
   const fetchFarmData = async () => {
     try {
-      const response = await get('/get-my-farms');
-      console.log('API Response:', response.data); // Log the response data
+      const response = await get('/get-my-farms');// Log the response data
       if (response.data.success) {
         setFarmsData(response.data.data.farms);
       }
@@ -328,7 +327,6 @@ const HomeScreen = ({ navigation }) => {
   const handleFarmSelection = (farm) => {
     setSelectedFarm(farm);
     setDropdownVisible(false);
-    console.log('Selected farm:', farm);
   };
 
   const toggleDropdown = () => {

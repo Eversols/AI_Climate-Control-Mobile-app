@@ -33,13 +33,13 @@ const PestScreen2 = ({ navigation }) => {
   // const navigation = useNavigation();
   const refRBSheet = useRef();
   const [locheigth, setLocheigth] = useState(80)
-  const [camerOn, setCamerOn] = useState(false)
+  const [camerOn, setCamerOn] = useState(true)
 
   const camera = useRef(null); // Create a ref
   const [currentImage, setImage] = useState()
 
   const { pestImage } = useSelector((state) => state.pest)
-  
+
   const devices = useCameraDevices('wide-angle-camera');
   const device = devices.back || devices[0];
   const format = useCameraFormat(device, [
@@ -50,7 +50,8 @@ const PestScreen2 = ({ navigation }) => {
   const takePhoto = async () => {
     try {
       const path = await camera.current.takePhoto();
-      dispatch(setPestImage({ ...path, path: `file://${path.path}` }));
+      dispatch(setPestImage(
+        { ...path, path: `file://${path.path}` }));
       setCamerOn(false)
     } catch (err) {
       console.log("camera error", err);
@@ -183,17 +184,17 @@ const PestScreen2 = ({ navigation }) => {
           }} style={[styles.btn, { width: "70%", }]}>
             <Text style={{ fontWeight: "700", fontSize: 18, color: "#000" }}>{pestImage ? "Retake" : "Take"} Image</Text>
           </TouchableOpacity>
+          {pestImage &&
+            <TouchableOpacity onPress={() => {
 
-          <TouchableOpacity onPress={() => {
+              navigation.navigate("pestScreen3")
 
-            navigation.navigate("pestScreen3")
-
-          }} style={[styles.btn, { width: "70%", }]}>
-            <Text style={{ fontWeight: "700", fontSize: 18, color: "#000" }}>Next</Text>
-          </TouchableOpacity>
+            }} style={[styles.btn, { width: "70%", }]}>
+              <Text style={{ fontWeight: "700", fontSize: 18, color: "#000" }}>Next</Text>
+            </TouchableOpacity>
 
 
-
+          }
         </ImageBackground>
       }
     </>

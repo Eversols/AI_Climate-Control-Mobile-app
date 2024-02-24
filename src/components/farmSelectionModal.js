@@ -98,7 +98,7 @@ const FarmSelectionModal = ({
         setShowConfirmation(false);
         // onClose()
         console.log("ineeeeeeeeeeeeeeeee")
-        onSubmit(!!farmData, farmName, "selectedCorp")
+        onSubmit(!!farmData, farmName, selectedCorp)
     };
 
     const handleNo = () => {

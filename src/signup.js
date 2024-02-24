@@ -21,7 +21,6 @@ const SignupSchema = Yup.object().shape({
 const SignupScreen = () => {
   const navigation = useNavigation();
   const handleSignup = (values) => {
-    console.log('Signup values:', values);
     navigation.navigate('Home');
 
   };

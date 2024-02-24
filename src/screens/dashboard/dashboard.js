@@ -32,17 +32,17 @@ const Dashboard = ({ navigation }) => {
         console.error('Error fetching farms data:', error);
       }
     };
-  
+
     fetchData();
   }, []);
-  
-  
+
+
   // const navigation = useNavigation();
   const refRBSheet = useRef();
   const [locheigth, setLocheigth] = useState(80)
   return (
     <ImageBackground
-      source={require('../../../asssets/dashboard.png')} // Replace with the path to your image
+      source={require('../../../asssets/dashboard.png')}
       style={styles.backgroundImage}>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <TouchableOpacity style={{ padding: 20, marginTop: 10, marginLeft: 10 }} onPress={() => navigation.goBack()}>
@@ -67,24 +67,24 @@ const Dashboard = ({ navigation }) => {
 
         <Text style={{ textAlign: "left", color: "#000", fontSize: 18, fontWeight: "600", marginTop: 10 }}>Select Farm</Text>
 
-        {farms.map(farm => (
+        {farms.length > 0 && farms.map(farm => (
           <TouchableOpacity
-            key={farm.id}
+            key={farm?.id}
             onPress={() => navigation.navigate("dashboard2")}
             style={[styles.btn]}>
             <View style={{ flexDirection: "row", alignSelf: "center", justifyContent: "space-between", width: "100%" }}>
               <View style={{ flexDirection: "row" }}>
-                <Image style={{ width: 50, height: 50, borderRadius: 200, borderWidth: 1, borderColor: "#fff", resizeMode: "contain" }} source={{ uri: `${IMAGE_BASE_URL}/${farm.image}` }} />
+                <Image style={{ width: 50, height: 50, borderRadius: 200, borderWidth: 1, borderColor: "#fff", resizeMode: "contain" }} source={{ uri: `${IMAGE_BASE_URL}/${farm?.image}` }} />
                 <View>
-                  <Text style={{ fontWeight: "400", marginLeft: 20, fontSize: 18, color: "#000" }}>{farm.farmName}</Text>
-                  <Text style={{ fontWeight: "400", marginLeft: 20, fontSize: 16, color: "#1D2324" }}>Crop: {farm.corp}</Text>
+                  <Text style={{ fontWeight: "400", marginLeft: 20, fontSize: 18, color: "#000" }}>{farm?.farmName}</Text>
+                  <Text style={{ fontWeight: "400", marginLeft: 20, fontSize: 16, color: "#1D2324" }}>Crop: {farm?.corp}</Text>
                 </View>
               </View>
               <Text style={{ fontWeight: "400", marginLeft: 20, alignSelf: "center", fontSize: 16, color: "#1D2324" }}>Location: XYZ</Text>
             </View>
           </TouchableOpacity>
         ))}
-      
+
 
       </View>
 

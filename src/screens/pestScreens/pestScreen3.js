@@ -15,11 +15,15 @@ import {
 import { Defs, G, Filter, Path, Rect, Svg } from 'react-native-svg';
 import DropDown from '../../components/dropDown';
 import TextDropDown from '../../components/textDropDown';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { postForm } from '../../utils/axios';
+import { setPestImage, setSelectedFarm, setSelectedcorp } from '../../redux/slices/pesticidesSlice';
+import { useToast } from "react-native-toast-notifications";
 
 const PestScreen3 = ({ navigation }) => {
   // const navigation = useNavigation();
-
+  const toast = useToast();
+  const dispatch = useDispatch()
   const { pestImage } = useSelector((state) => state.pest)
 
   const [selectedPestOption, setSelectedPestOption] = useState(0)
@@ -42,10 +46,62 @@ const PestScreen3 = ({ navigation }) => {
   const [insectInfo, setInsectInfo] = useState("")
   const [upload, setUpload] = useState("")
   const [feedback, setFeedback] = useState("")
+  const { selectedfarm, selectedCorp } = useSelector((state) => state.pest)
 
-  console.log("insectInfo", insectInfo)
-  console.log("upload", upload)
-  console.log("feedback", feedback)
+  const addFormData = async () => {
+    try {
+      // toast.show("Hello World");
+      if (!selectedRcmdPest || !insectInfo || !upload || !feedback) {
+        toast.show("All fields Are required",
+          {
+            type: "danger",
+            placement: "bottom",
+            duration: 2000,
+            offset: 30,
+            animationType: "zoom-in",
+          });
+        return
+      }
+      const formData = new FormData()
+      formData.append("farm", selectedfarm)
+      formData.append("corp", selectedCorp)
+
+      formData.append("pest", pestOptions[selectedPestOption])
+
+      formData.append("pesticide", rcmdPstOpts[selectedRcmdPest])
+      formData.append("insectInformation", insectInfo)
+      formData.append("uploadInformation", upload)
+      formData.append("sendFeedback", feedback)
+      formData.append("image", {
+        uri: pestImage?.path,
+        type: 'image/jpeg', // adjust the type according to your image type
+        name: 'image.jpg' // adjust the name accordingly
+      })
+
+      const response = await postForm("/add-farmdata", formData)
+      if (response.data?.success) {
+        toast.show("Form submitted successfully.",
+          {
+            type: "success ",
+            placement: "bottom",
+            duration: 2000,
+            offset: 30,
+            animationType: "zoom-in",
+          });
+        setSelectedPestOption(0)
+        setSelectedRcmdPest(0)
+        setInsectInfo("")
+        setUpload("")
+        setFeedback("")
+        dispatch(setSelectedFarm(null))
+        dispatch(setSelectedcorp(null))
+        dispatch(setPestImage(null))
+        navigation.navigate("bottom_navigation")
+      }
+    } catch (error) {
+      console.log("add form error", error)
+    }
+  }
   return (
     <ImageBackground
       source={require('../../../asssets/pestScreen3.png')} // Replace with the path to your image
@@ -92,7 +148,10 @@ const PestScreen3 = ({ navigation }) => {
             value={feedback}
             setValue={setFeedback}
           />
-          <TouchableOpacity onPress={() => navigation.navigate("profile")} style={[styles.btn, { width: "70%", }]}>
+          <TouchableOpacity onPress={() => {
+            addFormData()
+            // navigation.navigate("profile")
+          }} style={[styles.btn, { width: "70%", }]}>
             <Text style={{ fontWeight: "700", fontSize: 18, color: "#000" }}>Submit</Text>
           </TouchableOpacity>
 

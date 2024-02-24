@@ -27,7 +27,7 @@ const FarmImageSelection = () => {
 
   const [image, setImage] = useState(null);
   const { farmData } = useSelector((state) => state.farm)
-
+console.log("farmData=>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",farmData)
   const handleImageUpload = async () => {
     try {
       const formData = new FormData();
@@ -37,6 +37,7 @@ const FarmImageSelection = () => {
         name: 'image.jpg' // adjust the name accordingly
       });
       // Make a POST request with Axios
+      console.log("farmData?.id",farmData?.id)
       const response = await putForm(`add-farm-pic/${farmData?.id}`, formData);
 
       console.log(response.data); // Handle response

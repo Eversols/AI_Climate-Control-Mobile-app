@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
+import { ToastProvider } from 'react-native-toast-notifications'
+
 
 import AppNavigator from './AppNavigator';
 import { GetToken } from './src/utils/StorageToken';
@@ -21,13 +23,15 @@ const App = () => {
   }, [])
 
   return (
- 
+
     <NavigationContainer>
       <Provider store={store}>
+        <ToastProvider>
           <AppNavigator />
-        </Provider>
+        </ToastProvider>
+      </Provider>
     </NavigationContainer>
-   
+
   );
 };
 

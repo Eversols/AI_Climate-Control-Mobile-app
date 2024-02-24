@@ -38,7 +38,10 @@ const DropDown = ({ navigation, btnTitle, options, selectedOption = 0, setSelect
                 <View style={styles.openBox}>
                     <ScrollView nestedScrollEnabled={true}>
                         {options?.map((item, i) => (
-                            <TouchableOpacity onPress={() => setSelectedOption(i)} style={{ width: "100%", marginVertical: 10, flexDirection: "row", height: 22, justifyContent: "space-between" }}>
+                            <TouchableOpacity onPress={() => {
+                                setOpenDrop(!openDrop)
+                                setSelectedOption(i)
+                            }} style={{ width: "100%", marginVertical: 10, flexDirection: "row", height: 22, justifyContent: "space-between" }}>
                                 <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                                     <View style={{ height: 5, alignSelf: "center", width: 5, borderRadius: 20, backgroundColor: "#000" }}></View>
                                     <Text style={{ marginLeft: 10, fontSize: 12, fontWeight: "600" }}>{item}</Text>
