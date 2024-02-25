@@ -81,7 +81,7 @@ const Profile = ({ navigation }) => {
         </Svg>
 
 
-        <Text style={{ fontWeight: "400", marginLeft: 20, fontSize: 15, color: "gray" }}>Watch Vedio To Guide This App</Text>
+        <Text style={{ fontWeight: "400", marginLeft: 20, fontSize: 15, color: "gray" }}>Watch Video To Guide This App</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={[styles.btn]} onPress={logout}>
