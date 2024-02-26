@@ -1,7 +1,10 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
+import { useSelector } from 'react-redux';
 
 const VerifyIdentityScreen = ({ navigation }) => {
+const { user } = useSelector((state) => state.authReducer);
+
     const navigateToPhoneNumberVerification = () => {
         navigation.navigate('PhoneNumberVerificationScreen');
     };
@@ -9,7 +12,9 @@ const VerifyIdentityScreen = ({ navigation }) => {
     const navigateToEmailVerification = () => {
         navigation.navigate('EmailVerificationScreen');
     };
-
+    const navigateToNextScreen = () => {
+        navigation.navigate('editProfileDetails', { user });
+    };
     return (
         <ImageBackground
             source={require('../../../asssets/profileBack.png')}
@@ -22,7 +27,7 @@ const VerifyIdentityScreen = ({ navigation }) => {
                 <TouchableOpacity style={styles.btn} onPress={navigateToEmailVerification}>
                     <Text style={styles.optionText}>Email</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.nextButton}>
+                <TouchableOpacity style={styles.nextButton} onPress={navigateToNextScreen}>
                     <Text style={styles.nextText}>Next</Text>
                 </TouchableOpacity>
             </View>
