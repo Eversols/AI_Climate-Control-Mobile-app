@@ -22,11 +22,13 @@ import GetLocation from 'react-native-get-location';
 import {get, post} from './utils/axios';
 import {storeFarmData} from './redux/slices/farmSlice';
 import {useDispatch, useSelector} from 'react-redux';
+import CropList from './components/List';
 
 const HomeScreen = ({navigation}) => {
   const [farmStep, setFarmStep] = useState(0);
   const [polygonCoordinates, setPolygonCoordinates] = useState([]);
   const [innerPolygonCoordinates, setInnerPolygonCoordinates] = useState([]);
+  const [addCrops, setAddCrops] = useState([]);
   const [isPolygonButtonPressed, setPolygonButtonPressed] = useState(false);
   const [innerPolygonButtonPressed, setInnerPolygonButtonPressed] =
     useState(false);
@@ -95,17 +97,32 @@ const HomeScreen = ({navigation}) => {
       }
       const response = await post('create-farm', formData);
       if (response.data.success) {
-        // if (!child) {
-        dispatch(storeFarmData(response.data.data));
+        if (!child) {
+          dispatch(storeFarmData(response.data.data));
+          console.log('YYYYYYYYYYYYYYYYYY:::::::::::::::', response.data)
+          if (response.data.data?.crop && response.data.data.crop.length > 0) {
+            setAddCrops(
+              response.data.data.crop.map(item => {
+                return {
+                  ...item,
+                  label: item?.name,
+                  value: item?.id,
+                  selected: false,
+                };
+              }),
+            );
+          }
+        }
         // }
         setIsModalVisible(false);
         setInnerPolygonButtonPressed(true);
         setPolygonButtonPressed(false);
-        console.log('DDDDDDDDDDDDDDDDDD', cropModel);
-        if (confirm) {
-          navigation.navigate('bottom_navigation');
-        } else {
-          navigation.navigate('FarmImageSelection');
+        if (!child) {
+          if (confirm) {
+            navigation.navigate('bottom_navigation');
+          } else {
+            navigation.navigate('FarmImageSelection');
+          }
         }
       }
     } catch (err) {
@@ -154,8 +171,8 @@ const HomeScreen = ({navigation}) => {
       showSearchButton: false,
       showContinueButton: false,
     }));
-    setInnerPolygonCoordinates([])
-    setPolygonCoordinates([])
+    setInnerPolygonCoordinates([]);
+    setPolygonCoordinates([]);
   };
 
   const handleOKPress = () => {
@@ -173,8 +190,14 @@ const HomeScreen = ({navigation}) => {
       isAddPolygonMode: !prevState.isAddPolygonMode,
     }));
     setPolygonButtonPressed(!isPolygonButtonPressed);
-    console.log('YYYYYYYYYYYYYYYYYYYYYYYYY', screenState)
-    if(!innerPolygonButtonPressed){
+    if (addSelectedCrop) {
+      addFarm(true, addSelectedCrop, addSelectedCrop.id);
+    }
+    if (screenState.isAddPolygonMode && addCrops.length > 0) {
+      setCropModel(true);
+    }
+    console.log('YYYYYYYYYYYYYYYYYYYYYYYYY', screenState);
+    if (!innerPolygonButtonPressed) {
       setTimeout(() => {
         setPolygonCoordinates([]);
       }, 1000);
@@ -209,7 +232,7 @@ const HomeScreen = ({navigation}) => {
     const farmIcons = [
       <>
         {innerPolygonButtonPressed != true && isAddFarmPressed != false && (
-          <View style={styles.farmIconContainer}>
+          <View style={[styles.farmIconContainer]}>
             <TouchableOpacity onPress={handleAddPolygonPress}>
               {isPolygonButtonPressed ? (
                 <View
@@ -296,54 +319,50 @@ const HomeScreen = ({navigation}) => {
             </TouchableOpacity>
           </View>
         )}
-        {innerPolygonButtonPressed && (
+        {innerPolygonButtonPressed && isAddFarmPressed != false && (
           <View style={styles.farmIconContainer}>
             <TouchableOpacity onPress={handleAddPolygonPress}>
-              {innerPolygonButtonPressed ? (
-                <View style={styles.farmIconContainer}>
-                  <View
-                    style={{
-                      padding: 6,
-                      marginTop: 0,
-                      borderRadius: 30,
-                      backgroundColor: 'rgba(85, 167, 72, 1)',
-                      borderColor: 'rgba(85, 167, 72, 1)',
-                    }}
-                    key={0}>
-                    <Svg
-                      width="37"
-                      height="37"
-                      viewBox="0 0 30 25"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg">
-                      <Path
-                        d="M29.9536 1.02644C29.9393 0.771598 29.8357 0.531089 29.6624 0.350578C29.4891 0.170067 29.2581 0.0621238 29.0135 0.0472411C22.5424 -0.343399 17.3466 1.70616 15.1137 5.54484C13.6385 8.0827 13.641 11.1648 15.0937 14.1051C14.2668 15.1303 13.6625 16.3296 13.3222 17.6208L11.2881 15.4944C12.2657 13.3681 12.2282 11.1518 11.1631 9.31061C9.51279 6.47326 5.70342 4.95237 0.9739 5.24145C0.729217 5.25633 0.498299 5.36427 0.324987 5.54478C0.151675 5.72529 0.0480362 5.9658 0.0337471 6.22065C-0.245048 11.1466 1.21644 15.1142 3.94063 16.833C4.83961 17.4051 5.87264 17.7079 6.92612 17.7081C7.94866 17.6949 8.95529 17.4426 9.8716 16.9698L12.9971 20.2251V23.9583C12.9971 24.2346 13.1025 24.4995 13.29 24.6949C13.4776 24.8902 13.732 25 13.9973 25C14.2625 25 14.5169 24.8902 14.7045 24.6949C14.8921 24.4995 14.9974 24.2346 14.9974 23.9583V20.1183C14.993 18.4611 15.5344 16.8524 16.5314 15.5608C17.8178 16.261 19.2445 16.6358 20.6959 16.6546C22.0991 16.6593 23.4762 16.2601 24.6753 15.5009C28.3609 13.1779 30.3337 7.76628 29.9536 1.02644ZM4.97205 15.0517C3.05424 13.842 1.96906 10.9786 1.99532 7.291C5.53589 7.25975 8.28509 8.39391 9.44653 10.3914C10.0529 11.4331 10.1516 12.648 9.75408 13.8993L6.70233 10.7208C6.51324 10.5337 6.26145 10.4309 6.00064 10.4344C5.73984 10.4379 5.49066 10.5473 5.30623 10.7394C5.12179 10.9315 5.01671 11.1911 5.01337 11.4627C5.01003 11.7343 5.1087 11.9966 5.28835 12.1935L8.3401 15.372C7.13865 15.7861 5.97346 15.6832 4.97205 15.0517ZM23.6388 13.7209C21.9636 14.777 19.9945 14.8577 17.9942 13.9814L24.7065 6.98891C24.8862 6.79196 24.9848 6.52971 24.9815 6.25807C24.9782 5.98644 24.8731 5.7269 24.6886 5.53481C24.5042 5.34272 24.255 5.23327 23.9942 5.22979C23.7334 5.22631 23.4816 5.32909 23.2925 5.5162L16.5789 12.4995C15.7338 10.4161 15.8101 8.36396 16.829 6.6204C18.5718 3.6255 22.7049 1.95617 27.997 2.08508C28.1171 7.5957 26.5168 11.9058 23.6388 13.7209Z"
-                        fill="#fff"
-                      />
-                    </Svg>
-                  </View>
+              {innerPolygonButtonPressed && !screenState.isAddPolygonMode ? (
+                <View
+                  style={{
+                    padding: 6,
+                    marginTop: 0,
+                    borderRadius: 30,
+                    backgroundColor: 'rgba(85, 167, 72, 1)',
+                    borderColor: 'rgba(85, 167, 72, 1)',
+                  }}
+                  key={0}>
+                  <Svg
+                    width="37"
+                    height="37"
+                    viewBox="0 0 30 25"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <Path
+                      d="M29.9536 1.02644C29.9393 0.771598 29.8357 0.531089 29.6624 0.350578C29.4891 0.170067 29.2581 0.0621238 29.0135 0.0472411C22.5424 -0.343399 17.3466 1.70616 15.1137 5.54484C13.6385 8.0827 13.641 11.1648 15.0937 14.1051C14.2668 15.1303 13.6625 16.3296 13.3222 17.6208L11.2881 15.4944C12.2657 13.3681 12.2282 11.1518 11.1631 9.31061C9.51279 6.47326 5.70342 4.95237 0.9739 5.24145C0.729217 5.25633 0.498299 5.36427 0.324987 5.54478C0.151675 5.72529 0.0480362 5.9658 0.0337471 6.22065C-0.245048 11.1466 1.21644 15.1142 3.94063 16.833C4.83961 17.4051 5.87264 17.7079 6.92612 17.7081C7.94866 17.6949 8.95529 17.4426 9.8716 16.9698L12.9971 20.2251V23.9583C12.9971 24.2346 13.1025 24.4995 13.29 24.6949C13.4776 24.8902 13.732 25 13.9973 25C14.2625 25 14.5169 24.8902 14.7045 24.6949C14.8921 24.4995 14.9974 24.2346 14.9974 23.9583V20.1183C14.993 18.4611 15.5344 16.8524 16.5314 15.5608C17.8178 16.261 19.2445 16.6358 20.6959 16.6546C22.0991 16.6593 23.4762 16.2601 24.6753 15.5009C28.3609 13.1779 30.3337 7.76628 29.9536 1.02644ZM4.97205 15.0517C3.05424 13.842 1.96906 10.9786 1.99532 7.291C5.53589 7.25975 8.28509 8.39391 9.44653 10.3914C10.0529 11.4331 10.1516 12.648 9.75408 13.8993L6.70233 10.7208C6.51324 10.5337 6.26145 10.4309 6.00064 10.4344C5.73984 10.4379 5.49066 10.5473 5.30623 10.7394C5.12179 10.9315 5.01671 11.1911 5.01337 11.4627C5.01003 11.7343 5.1087 11.9966 5.28835 12.1935L8.3401 15.372C7.13865 15.7861 5.97346 15.6832 4.97205 15.0517ZM23.6388 13.7209C21.9636 14.777 19.9945 14.8577 17.9942 13.9814L24.7065 6.98891C24.8862 6.79196 24.9848 6.52971 24.9815 6.25807C24.9782 5.98644 24.8731 5.7269 24.6886 5.53481C24.5042 5.34272 24.255 5.23327 23.9942 5.22979C23.7334 5.22631 23.4816 5.32909 23.2925 5.5162L16.5789 12.4995C15.7338 10.4161 15.8101 8.36396 16.829 6.6204C18.5718 3.6255 22.7049 1.95617 27.997 2.08508C28.1171 7.5957 26.5168 11.9058 23.6388 13.7209Z"
+                      fill="#fff"
+                    />
+                  </Svg>
                 </View>
               ) : (
-                <View style={styles.farmIconContainer}>
-                  <View
-                    style={{
-                      borderWidth: 2,
-                      borderRadius: 20,
-                      borderColor: 'transparent',
-                    }}
-                    key={0}>
-                    <Svg
-                      width="30"
-                      height="25"
-                      viewBox="0 0 30 25"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg">
-                      <Path
-                        d="M29.9536 1.02644C29.9393 0.771598 29.8357 0.531089 29.6624 0.350578C29.4891 0.170067 29.2581 0.0621238 29.0135 0.0472411C22.5424 -0.343399 17.3466 1.70616 15.1137 5.54484C13.6385 8.0827 13.641 11.1648 15.0937 14.1051C14.2668 15.1303 13.6625 16.3296 13.3222 17.6208L11.2881 15.4944C12.2657 13.3681 12.2282 11.1518 11.1631 9.31061C9.51279 6.47326 5.70342 4.95237 0.9739 5.24145C0.729217 5.25633 0.498299 5.36427 0.324987 5.54478C0.151675 5.72529 0.0480362 5.9658 0.0337471 6.22065C-0.245048 11.1466 1.21644 15.1142 3.94063 16.833C4.83961 17.4051 5.87264 17.7079 6.92612 17.7081C7.94866 17.6949 8.95529 17.4426 9.8716 16.9698L12.9971 20.2251V23.9583C12.9971 24.2346 13.1025 24.4995 13.29 24.6949C13.4776 24.8902 13.732 25 13.9973 25C14.2625 25 14.5169 24.8902 14.7045 24.6949C14.8921 24.4995 14.9974 24.2346 14.9974 23.9583V20.1183C14.993 18.4611 15.5344 16.8524 16.5314 15.5608C17.8178 16.261 19.2445 16.6358 20.6959 16.6546C22.0991 16.6593 23.4762 16.2601 24.6753 15.5009C28.3609 13.1779 30.3337 7.76628 29.9536 1.02644ZM4.97205 15.0517C3.05424 13.842 1.96906 10.9786 1.99532 7.291C5.53589 7.25975 8.28509 8.39391 9.44653 10.3914C10.0529 11.4331 10.1516 12.648 9.75408 13.8993L6.70233 10.7208C6.51324 10.5337 6.26145 10.4309 6.00064 10.4344C5.73984 10.4379 5.49066 10.5473 5.30623 10.7394C5.12179 10.9315 5.01671 11.1911 5.01337 11.4627C5.01003 11.7343 5.1087 11.9966 5.28835 12.1935L8.3401 15.372C7.13865 15.7861 5.97346 15.6832 4.97205 15.0517ZM23.6388 13.7209C21.9636 14.777 19.9945 14.8577 17.9942 13.9814L24.7065 6.98891C24.8862 6.79196 24.9848 6.52971 24.9815 6.25807C24.9782 5.98644 24.8731 5.7269 24.6886 5.53481C24.5042 5.34272 24.255 5.23327 23.9942 5.22979C23.7334 5.22631 23.4816 5.32909 23.2925 5.5162L16.5789 12.4995C15.7338 10.4161 15.8101 8.36396 16.829 6.6204C18.5718 3.6255 22.7049 1.95617 27.997 2.08508C28.1171 7.5957 26.5168 11.9058 23.6388 13.7209Z"
-                        fill="#000"
-                      />
-                    </Svg>
-                  </View>
+                <View
+                  style={{
+                    borderWidth: 2,
+                    borderRadius: 20,
+                    borderColor: 'transparent',
+                  }}
+                  key={0}>
+                  <Svg
+                    width="30"
+                    height="25"
+                    viewBox="0 0 30 25"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <Path
+                      d="M29.9536 1.02644C29.9393 0.771598 29.8357 0.531089 29.6624 0.350578C29.4891 0.170067 29.2581 0.0621238 29.0135 0.0472411C22.5424 -0.343399 17.3466 1.70616 15.1137 5.54484C13.6385 8.0827 13.641 11.1648 15.0937 14.1051C14.2668 15.1303 13.6625 16.3296 13.3222 17.6208L11.2881 15.4944C12.2657 13.3681 12.2282 11.1518 11.1631 9.31061C9.51279 6.47326 5.70342 4.95237 0.9739 5.24145C0.729217 5.25633 0.498299 5.36427 0.324987 5.54478C0.151675 5.72529 0.0480362 5.9658 0.0337471 6.22065C-0.245048 11.1466 1.21644 15.1142 3.94063 16.833C4.83961 17.4051 5.87264 17.7079 6.92612 17.7081C7.94866 17.6949 8.95529 17.4426 9.8716 16.9698L12.9971 20.2251V23.9583C12.9971 24.2346 13.1025 24.4995 13.29 24.6949C13.4776 24.8902 13.732 25 13.9973 25C14.2625 25 14.5169 24.8902 14.7045 24.6949C14.8921 24.4995 14.9974 24.2346 14.9974 23.9583V20.1183C14.993 18.4611 15.5344 16.8524 16.5314 15.5608C17.8178 16.261 19.2445 16.6358 20.6959 16.6546C22.0991 16.6593 23.4762 16.2601 24.6753 15.5009C28.3609 13.1779 30.3337 7.76628 29.9536 1.02644ZM4.97205 15.0517C3.05424 13.842 1.96906 10.9786 1.99532 7.291C5.53589 7.25975 8.28509 8.39391 9.44653 10.3914C10.0529 11.4331 10.1516 12.648 9.75408 13.8993L6.70233 10.7208C6.51324 10.5337 6.26145 10.4309 6.00064 10.4344C5.73984 10.4379 5.49066 10.5473 5.30623 10.7394C5.12179 10.9315 5.01671 11.1911 5.01337 11.4627C5.01003 11.7343 5.1087 11.9966 5.28835 12.1935L8.3401 15.372C7.13865 15.7861 5.97346 15.6832 4.97205 15.0517ZM23.6388 13.7209C21.9636 14.777 19.9945 14.8577 17.9942 13.9814L24.7065 6.98891C24.8862 6.79196 24.9848 6.52971 24.9815 6.25807C24.9782 5.98644 24.8731 5.7269 24.6886 5.53481C24.5042 5.34272 24.255 5.23327 23.9942 5.22979C23.7334 5.22631 23.4816 5.32909 23.2925 5.5162L16.5789 12.4995C15.7338 10.4161 15.8101 8.36396 16.829 6.6204C18.5718 3.6255 22.7049 1.95617 27.997 2.08508C28.1171 7.5957 26.5168 11.9058 23.6388 13.7209Z"
+                      fill="#000"
+                    />
+                  </Svg>
                 </View>
               )}
             </TouchableOpacity>
@@ -429,8 +448,11 @@ const HomeScreen = ({navigation}) => {
     );
   };
   const [farmsData, setFarmsData] = useState([]);
+  const [cropData, setCropData] = useState([]);
   const [selectedFarm, setSelectedFarm] = useState(null);
+  const [addSelectedCrop, setAddSelectedCrop] = useState(null);
   const [dropdownVisible, setDropdownVisible] = useState(false); // State for dropdown visibility
+  const [cropDropdownVisible, setCropDropdownVisible] = useState(false); // State for dropdown visibility
 
   useEffect(() => {
     fetchFarmData();
@@ -440,7 +462,28 @@ const HomeScreen = ({navigation}) => {
     try {
       const response = await get('/get-my-farms'); // Log the response data
       if (response.data.success) {
-        setFarmsData(response.data.data.farms);
+        setFarmsData(
+          response.data.data.farms.map(item => {
+            return {
+              ...item,
+              label: item?.farmName,
+              value: item?.id,
+              selected: false,
+            };
+          }),
+        );
+        if (response.data.data.farms[0].subFarms.length > 0) {
+          setCropData(
+            response.data.data.farms[0].subFarms.map(item => {
+              return {
+                ...item,
+                label: item?.farmName,
+                value: item?.id,
+                selected: false,
+              };
+            }),
+          );
+        }
       }
     } catch (error) {
       console.error('Error fetching farm data:', error);
@@ -448,26 +491,63 @@ const HomeScreen = ({navigation}) => {
   };
 
   const handleFarmSelection = farm => {
-    console.log('FFFFFFFFFFFFFFFFFFF', farm)
-    if(farm.polygons.length > 0){
-      setPolygonCoordinates(farm.polygons)
-    }else{
-      setPolygonCoordinates([])
+    console.log('FFFFFFFFFFFFFFFFFFF', farm.id);
+    if (farm.polygons.length > 0) {
+      setPolygonCoordinates(farm.polygons);
+    } else {
+      setPolygonCoordinates([]);
     }
-    if(farm.subFarms.length > 0){
-      const subFarm = farm.subFarms.map((item)=>{
-        return item.polygons
-      })
-      setInnerPolygonCoordinates(subFarm.flat())
-    }else{
-      setInnerPolygonCoordinates([])
+    if (farm.subFarms.length > 0) {
+      const subFarm = farm.subFarms.map(item => {
+        return item.polygons;
+      });
+      setInnerPolygonCoordinates(subFarm.flat());
+    } else {
+      setInnerPolygonCoordinates([]);
     }
     setSelectedFarm(farm);
+    setFarmsData(prevFarmsData => {
+      const updatedFarmsData = [...prevFarmsData];
+      const foundIndex = updatedFarmsData.findIndex(f => f.id === farm.id);
+      if (foundIndex !== -1) {
+        updatedFarmsData[foundIndex] = {
+          ...updatedFarmsData[foundIndex],
+          selected: true,
+        };
+      }
+      return updatedFarmsData;
+    });
+    //0 setDropdownVisible(false);
+    setCropDropdownVisible(false);
+  };
+
+  const handleCropSelection = crop => {
+    console.log('FFFFFFFFFFFFFFFFFFF', crop);
+    if (crop.polygons.length > 0) {
+      setInnerPolygonCoordinates(crop.polygons);
+    } else {
+      setInnerPolygonCoordinates([]);
+    }
+
+    setCropData(prevCropsData => {
+      const updatedCropsData = [...prevCropsData];
+      const foundIndex = updatedCropsData.findIndex(f => f.id === farm.id);
+      if (foundIndex !== -1) {
+        updatedCropsData[foundIndex] = {
+          ...updatedCropsData[foundIndex],
+          selected: true,
+        };
+      }
+      return updatedCropsData;
+    });
+
     setDropdownVisible(false);
+    // setCropDropdownVisible(false);
   };
 
   const toggleDropdown = () => {
     setDropdownVisible(!dropdownVisible);
+    setCropDropdownVisible(!cropDropdownVisible);
   };
 
   return (
@@ -527,7 +607,7 @@ const HomeScreen = ({navigation}) => {
           <View
             style={[
               styles.selectFarmContainer,
-              {marginTop: dropdownVisible ? 10 : 50},
+              {marginTop: dropdownVisible || cropDropdownVisible ? 10 : 50},
             ]}>
             <TouchableOpacity
               style={styles.addFarmButton}
@@ -552,67 +632,132 @@ const HomeScreen = ({navigation}) => {
                 <Path d="M14 8H8V14H6V8H0V6H6V0H8V6H14V8Z" fill="black" />
               </Svg>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.selectFarmButton}
-              onPress={() => setDropdownVisible(!dropdownVisible)}>
-              <Text
-                style={{
-                  fontSize: 14,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  textAlign: 'center',
-                  color: 'black',
-                  fontWeight: '600',
-                  marginHorizontal: 30,
-                }}>
-                {selectedFarm ? selectedFarm.farmName : 'Select a Farm'}
-              </Text>
-              <Svg
-                style={{position: 'absolute', right: 20, top: 15}}
-                width="9"
-                height="14"
-                viewBox="0 0 9 14"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg">
-                <Path
-                  d="M1 13L7 7L0.999999 1"
-                  stroke="black"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-              </Svg>
-            </TouchableOpacity>
-            {dropdownVisible && (
-              <View style={styles.dropdownContainer}>
-                <ScrollView
-                  style={styles.dropdownScroll}
-                  contentContainerStyle={styles.dropdownScrollContent}>
-                  {farmsData?.length > 0 &&
-                    farmsData.map(farm => (
-                      <TouchableOpacity
-                        key={farm.id}
-                        style={[
-                          styles.dropdownOption,
-                          selectedFarm === farm && styles.selectedOption,
-                        ]}
-                        onPress={() => {
-                          console.log('dddddddddddddddddddddd', farm);
-                          handleFarmSelection(farm);
-                          setDropdownVisible(false);
-                        }}>
-                        <Text
-                          style={[
-                            styles.farmName,
-                            selectedFarm === farm && styles.selectedFarmName,
-                          ]}>
-                          {farm.farmName}
-                        </Text>
-                        {selectedFarm === farm && (
-                          <Text style={styles.tickSymbol}>✓</Text>
-                        )}
-                      </TouchableOpacity>
-                    ))}
-                </ScrollView>
+            <View>
+              <TouchableOpacity
+                style={styles.selectFarmButton}
+                onPress={() => setDropdownVisible(!dropdownVisible)}>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    textAlign: 'center',
+                    color: 'black',
+                    fontWeight: '600',
+                    marginHorizontal: 30,
+                  }}>
+                  {selectedFarm ? selectedFarm.farmName : 'Select A Farm'}
+                </Text>
+                <View style={{position: 'absolute', right: 20, top: 15}}>
+                  {!dropdownVisible ? (
+                    <Svg
+                      width="9"
+                      height="14"
+                      viewBox="0 0 9 14"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg">
+                      <Path
+                        d="M1 13L7 7L0.999999 1"
+                        stroke="black"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                      />
+                    </Svg>
+                  ) : (
+                    <Svg
+                      width="14"
+                      height="9"
+                      viewBox="0 0 14 9"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg">
+                      <Path
+                        d="M1 1L7 7L13 1"
+                        stroke="black"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                      />
+                    </Svg>
+                  )}
+                </View>
+              </TouchableOpacity>
+              {dropdownVisible && (
+                <View style={styles.dropdownContainer}>
+                  <CropList
+                    options={farmsData}
+                    onPress={farm => {
+                      console.log('dddddddddddddddddddddd', farm);
+                      handleFarmSelection(farm);
+                      // setDropdownVisible(false);
+                    }}
+                  />
+                </View>
+              )}
+            </View>
+            {!(cropData?.length > 0) && (
+              <View>
+                <TouchableOpacity
+                  style={styles.selectFarmButton}
+                  onPress={() => {
+                    setCropDropdownVisible(!cropDropdownVisible);
+                    setDropdownVisible(false);
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      textAlign: 'center',
+                      color: 'black',
+                      fontWeight: '600',
+                      marginHorizontal: 30,
+                    }}>
+                    {selectedFarm ? selectedFarm.farmName : 'Select A Crop'}
+                  </Text>
+                  <View style={{position: 'absolute', right: 20, top: 15}}>
+                    {!cropDropdownVisible ? (
+                      <Svg
+                        width="9"
+                        height="14"
+                        viewBox="0 0 9 14"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <Path
+                          d="M1 13L7 7L0.999999 1"
+                          stroke="black"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                        />
+                      </Svg>
+                    ) : (
+                      <Svg
+                        width="14"
+                        height="9"
+                        viewBox="0 0 14 9"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <Path
+                          d="M1 1L7 7L13 1"
+                          stroke="black"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                        />
+                      </Svg>
+                    )}
+                  </View>
+                </TouchableOpacity>
+
+                {cropDropdownVisible && (
+                  <View style={styles.dropdownContainer}>
+                    <CropList
+                      options={farmsData}
+                      onPress={crop => {
+                        console.log('dddddddddddddddddddddd', crop);
+                        handleCropSelection(crop);
+                        // setCropDropdownVisible(false);
+                      }}
+                    />
+                  </View>
+                )}
               </View>
             )}
           </View>
@@ -663,9 +808,48 @@ const HomeScreen = ({navigation}) => {
           }}
           onSubmit={addFarm}
           dispatch={dispatch}
-          setCropModel={setCropModel}
           reset={reset}
         />
+      </Modal>
+      <Modal visible={cropModel} transparent={true} animationType="slide">
+        <ImageBackground
+          source={require('../assets/images/map-blur.png')}
+          style={{flex: 1, justifyContent: 'center'}}
+          blurRadius={9}>
+          <View
+            style={{
+              // flex: 1,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            {console.log('RRRRRRRRRRRRRRRRRR', farmData)}
+            <View style={styles.modalContent}>
+              <View style={{alignItems: 'center'}}>
+                <Text style={styles.modalTitle}>
+                  Select the crop that you want to draw the area of in your farm
+                </Text>
+              </View>
+              <CropList
+                options={addCrops}
+                onPress={crop => {
+                  console.log('dddddddddddddddddddddd', crop);
+                  setAddCrops(prevCropsData => {
+                    const updatedCropsData = [...prevCropsData];
+                    const foundIndex = updatedCropsData.findIndex(
+                      c => c.id === crop.id,
+                    );
+                    if (foundIndex !== -1) {
+                      updatedCropsData.splice(index, 1);
+                    }
+                    return updatedCropsData;
+                  });
+                  setAddSelectedCrop(crop);
+                  // setCropDropdownVisible(false);
+                }}
+              />
+            </View>
+          </View>
+        </ImageBackground>
       </Modal>
 
       {screenState.isAddPolygonMode && (
@@ -691,24 +875,41 @@ const HomeScreen = ({navigation}) => {
               },
             }),
           }}>
-          <TouchableOpacity
-            onPress={() => setIsModalVisible(true)}
-            disabled={!(polygonCoordinates.length > 0)}>
-            <Text
-              style={{
-                marginVertical: 10,
-                fontWeight: '600',
-                fontSize: 18,
-                color: polygonCoordinates.length > 2 ? '#000000' : 'gray',
-              }}>
-              Continue
-            </Text>
-          </TouchableOpacity>
+          {console.log('OOOOOOOOOOOOOOOOOOO', addCrops)}
+          {addCrops.length > 0 ? (
+            <TouchableOpacity
+              onPress={() => setIsModalVisible(true)}
+              disabled={!(polygonCoordinates.length > 0)}>
+              <Text
+                style={{
+                  marginVertical: 10,
+                  fontWeight: '600',
+                  fontSize: 18,
+                  color: polygonCoordinates.length > 2 ? '#000000' : 'gray',
+                }}>
+                Continue
+              </Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              onPress={() => setIsModalVisible(true)}
+              disabled={!(polygonCoordinates.length > 0)}>
+              <Text
+                style={{
+                  marginVertical: 10,
+                  fontWeight: '600',
+                  fontSize: 18,
+                  color: polygonCoordinates.length > 2 ? '#000000' : 'gray',
+                }}>
+                Continue
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
       )}
       <View style={[styles.farmIconsContainer, {zIndex: 101}]}>
         {renderFarmIcons()}
-        <View></View>
+        <View />
         {!innerPolygonButtonPressed &&
           !screenState.isAddPolygonMode &&
           farmStep === 0 &&
@@ -837,7 +1038,7 @@ const styles = StyleSheet.create({
   selectFarmContainer: {
     flexDirection: 'column',
     justifyContent: 'space-around',
-    marginTop: 30,
+    marginTop: 12,
   },
   selectFarmButton: {
     padding: 10,
@@ -889,11 +1090,12 @@ const styles = StyleSheet.create({
 
   dropdownContainer: {
     position: 'absolute',
+    bottom: -50,
     // top: '100%',
     width: '75%',
-    marginTop: 130,
+    // marginTop: 130,
     // marginHorizontal:70,
-    alignItems: 'center',
+    // alignItems: 'center',
     alignSelf: 'center',
     backgroundColor: 'rgba(255, 255, 255, 0.8)',
 
@@ -981,5 +1183,21 @@ const styles = StyleSheet.create({
     color: '#000000',
     lineHeight: 24,
     fontWeight: '400',
+  },
+  modalContent: {
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    paddingVertical: 10, // Add padding to top and bottom
+    borderRadius: 25,
+    paddingHorizontal: 32,
+    // elevation: 5,
+    width: '90%',
+    // alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 16,
+    // fontWeight: 'bold',
+    marginBottom: 10,
+    color: '#3D4142',
+    textAlign: 'center',
   },
 });

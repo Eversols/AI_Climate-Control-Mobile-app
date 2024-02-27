@@ -17,6 +17,7 @@ import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import {storeFarmData} from '../redux/slices/farmSlice';
 import {get} from '../utils/axios';
+import CropList from './List';
 
 const FarmSelectionModal = ({
   visible,
@@ -26,7 +27,6 @@ const FarmSelectionModal = ({
   onClose,
   dispatch,
   reset,
-  setCropModel
 }) => {
   const [selectedFarmField, setSelectedFarmField] = useState('Farm 1');
   const [selectedCorp, setSelectedCorp] = useState('');
@@ -45,7 +45,7 @@ const FarmSelectionModal = ({
           return {
             ...item,
             label: item?.name,
-            value: item?.name,
+            value: item?.id,
             selected: false,
           };
         }),
@@ -103,7 +103,6 @@ const FarmSelectionModal = ({
   };
 
   const handleYes = () => {
-      setCropModel(true)
     setShowConfirmation(false);
     // onClose()
     console.log('ineeeeeeeeeeeeeeeee');
@@ -111,7 +110,6 @@ const FarmSelectionModal = ({
   };
 
   const handleNo = () => {
-      setCropModel(false)
     // setShowConfirmation(false);
     onSubmit(!!farmData, farmName, selectedCorp, false);
     // dispatch(storeFarmData(null))
@@ -151,7 +149,8 @@ const FarmSelectionModal = ({
           <View style={{alignItems: 'center'}}>
             <Text style={styles.modalTitle}>Select the Crops of the farm</Text>
           </View>
-          <FlatList
+          <CropList options={cropOptions}  onPress={(_, index)=>handleCropOptionSelect(index)} />
+          {/* <FlatList
             data={cropOptions}
             keyExtractor={item => item.value}
             scrollEnabled={true} 
@@ -178,7 +177,7 @@ const FarmSelectionModal = ({
                 {item.label !== 'Sugar' && <View style={styles.whiteLine} />}
               </>
             )}
-          />
+          /> */}
         </View>
         <View style={{width: '60%'}}>
           <TouchableOpacity
