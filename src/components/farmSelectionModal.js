@@ -103,15 +103,15 @@ const FarmSelectionModal = ({
   };
 
   const handleYes = () => {
-    setShowConfirmation(false);
+    // setShowConfirmation(false);
     // onClose()
     console.log('ineeeeeeeeeeeeeeeee');
-    onSubmit(!!farmData, farmName, selectedCorp, true);
+    onSubmit( farmName, selectedCorp, true);
   };
 
   const handleNo = () => {
     // setShowConfirmation(false);
-    onSubmit(!!farmData, farmName, selectedCorp, false);
+    onSubmit( farmName, selectedCorp, false);
     // dispatch(storeFarmData(null))
     // navigation.navigate('FarmImageSelection');
     reset();

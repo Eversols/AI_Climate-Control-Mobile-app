@@ -8,25 +8,37 @@ import {
   ImageBackground,
   ScrollView,
 } from 'react-native';
-import React, {useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import MapView, {
   Marker,
   PROVIDER_GOOGLE,
   Polygon,
   AnimatedRegion,
 } from 'react-native-maps';
-import Svg, {Path, Rect, G, Defs, ClipPath, Line} from 'react-native-svg';
+import Svg, { Path, Rect, G, Defs, ClipPath, Line } from 'react-native-svg';
 import FarmSelectionModal from './components/farmSelectionModal';
 import CustomComponent from './components/customComponent';
 import GetLocation from 'react-native-get-location';
-import {get, post} from './utils/axios';
-import {storeFarmData} from './redux/slices/farmSlice';
-import {useDispatch, useSelector} from 'react-redux';
+import { get, post } from './utils/axios';
+import { storeFarmData } from './redux/slices/farmSlice';
+import { useDispatch, useSelector } from 'react-redux';
 import CropList from './components/List';
 
-const HomeScreen = ({navigation}) => {
+const HomeScreen = ({ navigation }) => {
   const [farmStep, setFarmStep] = useState(0);
   const [polygonCoordinates, setPolygonCoordinates] = useState([]);
+  const [isBottomSheet, setIsBottomSheet] = useState(false);
+  const [polygon, setPolygon] = useState({
+    coordinates: [],
+    isAddFarmPressed: false,
+    isAddFarmVisible: false
+  });
+  const [innerPolygon, setInnerPolygon] = useState({
+    coordinates: [],
+    selectedCoordinates: [],
+    isAddCropPressed: false,
+    isAddCropVisible: false
+  });
   const [innerPolygonCoordinates, setInnerPolygonCoordinates] = useState([]);
   const [addCrops, setAddCrops] = useState([]);
   const [isPolygonButtonPressed, setPolygonButtonPressed] = useState(false);
@@ -40,8 +52,9 @@ const HomeScreen = ({navigation}) => {
     showSearchButton: true,
     showContinueButton: false,
     isAddPolygonMode: false,
+    isAddCrops: false
   });
-  const {farmData} = useSelector(state => state.farm);
+  const { farmData } = useSelector(state => state.farm);
   const dispatch = useDispatch();
   const [timer, setTimer] = useState(0);
   const markerRef = useRef(null);
@@ -53,6 +66,7 @@ const HomeScreen = ({navigation}) => {
   });
 
   const reset = () => {
+    setPolygon(prev => ({ ...prev, coordinates: [] }))
     setInnerPolygonCoordinates([]);
     setPolygonCoordinates([]);
     setFarmStep(0);
@@ -84,46 +98,70 @@ const HomeScreen = ({navigation}) => {
     }));
   };
 
-  const addFarm = async (child, farmName, corp, confirm) => {
+  const addFarm = async (farmName, corp, confirm) => {
     try {
       const formData = {
         farmName: farmName,
         corp: corp,
-        polygons: polygonCoordinates,
+        polygons: polygon.coordinates,
         // "parentId": "65ad5977749943e6bc93793e"
       };
-      if (child) {
-        formData.parentId = farmData?.id;
-      }
       const response = await post('create-farm', formData);
       if (response.data.success) {
-        if (!child) {
-          dispatch(storeFarmData(response.data.data));
-          console.log('YYYYYYYYYYYYYYYYYY:::::::::::::::', response.data)
-          if (response.data.data?.crop && response.data.data.crop.length > 0) {
-            setAddCrops(
-              response.data.data.crop.map(item => {
-                return {
-                  ...item,
-                  label: item?.name,
-                  value: item?.id,
-                  selected: false,
-                };
-              }),
-            );
-          }
+
+        dispatch(storeFarmData(response.data.data));
+
+        if (response.data.data?.corp && response.data.data.corp.length > 0) {
+
+          setAddCrops(
+            response.data.data.corp.map(item => {
+              return {
+                ...item,
+                label: item?.name,
+                value: item?.id,
+                selected: false,
+              };
+            }),
+          );
         }
+        setAddSelectedCrop(null)
         // }
         setIsModalVisible(false);
-        setInnerPolygonButtonPressed(true);
-        setPolygonButtonPressed(false);
-        if (!child) {
-          if (confirm) {
-            navigation.navigate('bottom_navigation');
-          } else {
-            navigation.navigate('FarmImageSelection');
-          }
+        // setInnerPolygonButtonPressed(true);
+        // setPolygonButtonPressed(false);
+
+        if (!confirm) {
+          navigation.navigate('FarmImageSelection');
+        } else {
+          setPolygon((prev) => ({ ...prev, isAddFarmPressed: false, isAddFarmVisible: false }))
+          setIsBottomSheet(false)
+          setInnerPolygon((prev) => ({ ...prev, coordinate: [], selectedCoordinates: [], isAddCropPressed: true, isAddCropVisible: false }))
         }
+        // else {
+        //   navigation.navigate('bottom_navigation');
+        // }
+
+      }
+    } catch (err) {
+      console.log('error', err);
+    }
+  };
+
+
+  const addCrop = async () => {
+    try {
+      const formData = {
+        farmID: farmData.id,
+        cropID: addSelectedCrop.id,
+        polygons: innerPolygon.selectedCoordinates,
+        // "parentId": "65ad5977749943e6bc93793e"
+      };
+      console.log('PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP', farmData)
+      const response = await post('create-farm-crop', formData);
+
+      console.log('PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP  :::  ', response)
+      if (response.data.success) {
+        setInnerPolygon((prev) => ({ ...prev, selectedCoordinates: [], selectedCoordinates: [] }))
       }
     } catch (err) {
       console.log('error', err);
@@ -146,7 +184,7 @@ const HomeScreen = ({navigation}) => {
         }));
       })
       .catch(error => {
-        const {code, message} = error;
+        const { code, message } = error;
         console.warn(code, message);
       });
   };
@@ -156,74 +194,114 @@ const HomeScreen = ({navigation}) => {
   }, []);
 
   useEffect(() => {
-    setScreenState(prevState => ({
-      ...prevState,
-      showSearchButton: false,
-      showContinueButton: false,
-    }));
+    setIsBottomSheet(true)
+    setPolygon({
+      coordinates: [],
+      isAddFarmPressed: false,
+      isAddFarmVisible: false
+    })
+    setInnerPolygon({
+      coordinates: [],
+      selectedCoordinates: [],
+      isAddCropPressed: false,
+      isAddCropVisible: false
+    })
+    setSelectedFarm(null)
+    setCropModel(false)
+    // setScreenState(prevState => ({
+    //   ...prevState,
+    //   showSearchButton: false,
+    //   showContinueButton: false,
+    // }));
   }, []);
 
   const handleAddFarmPress = () => {
     setFarmStep(1);
-    setScreenState(prevState => ({
-      ...prevState,
-      isAddFarmVisible: true,
-      showSearchButton: false,
-      showContinueButton: false,
-    }));
-    setInnerPolygonCoordinates([]);
-    setPolygonCoordinates([]);
+    // setScreenState(prevState => ({
+    //   ...prevState,
+    //   isAddFarmVisible: true,
+    //   showSearchButton: false,
+    //   showContinueButton: false,
+    // }));
+    // setInnerPolygonCoordinates([]);
+    // setPolygonCoordinates([]);
+    setPolygon((prev) => ({ ...prev, coordinates: [] }))
+    setInnerPolygon((prev) => ({ ...prev, coordinates: [], selectedCoordinates: [] }))
   };
 
   const handleOKPress = () => {
+    setIsBottomSheet(false)
+    setPolygon((prev) => ({ ...prev, isAddFarmPressed: true }))
+
     setFarmStep(0);
-    setScreenState(prevState => ({...prevState, showContinueButton: true}));
+    setScreenState(prevState => ({ ...prevState, showContinueButton: true }));
     setIsAddFarmPressed(true);
   };
 
   const handleAddPolygonPress = () => {
-    setScreenState(prevState => ({
-      ...prevState,
-      isAddFarmVisible: !prevState.isAddFarmVisible,
-      showSearchButton: false,
-      showContinueButton: isPolygonButtonPressed,
-      isAddPolygonMode: !prevState.isAddPolygonMode,
-    }));
-    setPolygonButtonPressed(!isPolygonButtonPressed);
-    if (addSelectedCrop) {
-      addFarm(true, addSelectedCrop, addSelectedCrop.id);
+    if (polygon.isAddFarmPressed) {
+      setPolygon((prev) => ({ ...prev, isAddFarmVisible: !prev.isAddFarmVisible, }))
     }
-    if (screenState.isAddPolygonMode && addCrops.length > 0) {
-      setCropModel(true);
+    if (innerPolygon.isAddCropPressed) {
+      console.log('EEEEEEEEEEEEEEEEEEEEEEEEEEEEEE', innerPolygon)
+      if (innerPolygon.isAddCropVisible && innerPolygon.selectedCoordinates.length > 2) {
+        addCrop()
+      }
+      setInnerPolygon((prev) => ({ ...prev, isAddCropVisible: !prev.isAddCropVisible, }))
+      if (!innerPolygon.isAddCropVisible) {
+        setCropModel(true)
+      }
     }
-    console.log('YYYYYYYYYYYYYYYYYYYYYYYYY', screenState);
-    if (!innerPolygonButtonPressed) {
-      setTimeout(() => {
-        setPolygonCoordinates([]);
-      }, 1000);
-    }
+    // console.log('YYYYYYYYYYYYYYYYYYYYYYYYY', screenState);
+    // if (!screenState.isAddPolygonMode && addCrops.length > 0) {
+    //   setCropModel(true);
+    // }
+    // setScreenState(prevState => ({
+    //   ...prevState,
+    //   isAddFarmVisible: !prevState.isAddFarmVisible,
+    //   showSearchButton: false,
+    //   showContinueButton: isPolygonButtonPressed,
+    //   isAddPolygonMode: !prevState.isAddPolygonMode,
+    // }));
+    // setPolygonButtonPressed(!isPolygonButtonPressed);
+    // if (addSelectedCrop) {
+    //   addFarm(true, addSelectedCrop.name, [addSelectedCrop.id]);
+    // }
+    // console.log('YYYYYYYYYYYYYYYYYYYYYYYYY :: :: ', addCrops);
+    // if (!innerPolygonButtonPressed) {
+    //   setTimeout(() => {
+    //     setPolygonCoordinates([]);
+    //   }, 1000);
+    // }
   };
 
   const handleMapPress = event => {
-    if (screenState.isAddPolygonMode) {
-      if (innerPolygonButtonPressed) {
+    console.log('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', polygon)
+    console.log('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT LLLL ', innerPolygon)
+    if (polygon.isAddFarmPressed || innerPolygon.isAddCropPressed) {
+      if (polygon.isAddFarmVisible) {
         const newCoordinate = {
           latitude: event.nativeEvent.coordinate.latitude,
           longitude: event.nativeEvent.coordinate.longitude,
         };
-        setInnerPolygonCoordinates(prevCoordinates => [
-          ...prevCoordinates,
-          newCoordinate,
-        ]);
-      } else {
+        setPolygon((prev) => ({ ...prev, coordinates: [...prev.coordinates, newCoordinate] }))
+        // setInnerPolygonCoordinates(prevCoordinates => [
+        //   ...prevCoordinates,
+        //   newCoordinate,
+        // ]);
+      }
+      if (innerPolygon.isAddCropVisible) {
         const newCoordinate = {
           latitude: event.nativeEvent.coordinate.latitude,
           longitude: event.nativeEvent.coordinate.longitude,
         };
-        setPolygonCoordinates(prevCoordinates => [
-          ...prevCoordinates,
-          newCoordinate,
-        ]);
+        const lastIndex = innerPolygon.selectedCoordinates.length > 0 ? innerPolygon.coordinates.length - 1 : (innerPolygon.coordinates.length - 1) + 1
+        console.log('NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN', innerPolygon.coordinates[lastIndex] ? [innerPolygon.coordinates[lastIndex], newCoordinate] : [newCoordinate])
+        setInnerPolygon((prev) => ({ ...prev, coordinates: [...prev.coordinates, prev.coordinates[lastIndex] ? [...prev.coordinates[lastIndex], newCoordinate] : [newCoordinate]], selectedCoordinates: [...prev.selectedCoordinates, newCoordinate] }))
+        // setPolygonCoordinates(prevCoordinates => [
+        //   ...prevCoordinates,
+        //   newCoordinate,
+        // ]);
       }
     }
   };
@@ -231,10 +309,10 @@ const HomeScreen = ({navigation}) => {
   const renderFarmIcons = () => {
     const farmIcons = [
       <>
-        {innerPolygonButtonPressed != true && isAddFarmPressed != false && (
+        {polygon.isAddFarmPressed && (
           <View style={[styles.farmIconContainer]}>
             <TouchableOpacity onPress={handleAddPolygonPress}>
-              {isPolygonButtonPressed ? (
+              {polygon.isAddFarmVisible ? (
                 <View
                   style={{
                     borderWidth: 10,
@@ -319,10 +397,10 @@ const HomeScreen = ({navigation}) => {
             </TouchableOpacity>
           </View>
         )}
-        {innerPolygonButtonPressed && isAddFarmPressed != false && (
+        {innerPolygon.isAddCropPressed && (
           <View style={styles.farmIconContainer}>
             <TouchableOpacity onPress={handleAddPolygonPress}>
-              {innerPolygonButtonPressed && !screenState.isAddPolygonMode ? (
+              {innerPolygon.isAddCropVisible ? (
                 <View
                   style={{
                     padding: 6,
@@ -450,6 +528,7 @@ const HomeScreen = ({navigation}) => {
   const [farmsData, setFarmsData] = useState([]);
   const [cropData, setCropData] = useState([]);
   const [selectedFarm, setSelectedFarm] = useState(null);
+  const [selectedCrop, setSelectedCrop] = useState({index: null, crop: null})
   const [addSelectedCrop, setAddSelectedCrop] = useState(null);
   const [dropdownVisible, setDropdownVisible] = useState(false); // State for dropdown visibility
   const [cropDropdownVisible, setCropDropdownVisible] = useState(false); // State for dropdown visibility
@@ -472,9 +551,9 @@ const HomeScreen = ({navigation}) => {
             };
           }),
         );
-        if (response.data.data.farms[0].subFarms.length > 0) {
+        if (response.data.data.farms[0].farmCrops.length > 0) {
           setCropData(
-            response.data.data.farms[0].subFarms.map(item => {
+            response.data.data.farms[0].farmCrops.map(item => {
               return {
                 ...item,
                 label: item?.farmName,
@@ -491,47 +570,69 @@ const HomeScreen = ({navigation}) => {
   };
 
   const handleFarmSelection = farm => {
-    console.log('FFFFFFFFFFFFFFFFFFF', farm.id);
+    console.log('vvvvvvvvvvvvvvvvvvvvvvvvv', farm)
     if (farm.polygons.length > 0) {
-      setPolygonCoordinates(farm.polygons);
-    } else {
-      setPolygonCoordinates([]);
+      setPolygon((prev) => ({ ...prev, coordinates: farm.polygons }))
     }
-    if (farm.subFarms.length > 0) {
-      const subFarm = farm.subFarms.map(item => {
-        return item.polygons;
-      });
-      setInnerPolygonCoordinates(subFarm.flat());
-    } else {
-      setInnerPolygonCoordinates([]);
-    }
-    setSelectedFarm(farm);
-    setFarmsData(prevFarmsData => {
-      const updatedFarmsData = [...prevFarmsData];
-      const foundIndex = updatedFarmsData.findIndex(f => f.id === farm.id);
-      if (foundIndex !== -1) {
-        updatedFarmsData[foundIndex] = {
-          ...updatedFarmsData[foundIndex],
-          selected: true,
+    if (farm.farmCrops.length > 0) {
+      setSelectedCrop({index: 0, crop:farm.farmCrops[0]})
+      setCropData(farm.farmCrops.map(item => {
+        console.log('DDDDDDDDDDDDDDDDDDDDDDDDDDDDD', item)
+        return {
+          ...item,
+          label: item.crop?.name,
+          value: item.crop?.id,
+          selected: false,
         };
-      }
-      return updatedFarmsData;
-    });
-    //0 setDropdownVisible(false);
+      }))
+      console.log('CCCCCCCCCCCCCCCCCCCCCCCCCCCCC', farm.farmCrops.map((item) => item.polygons))
+      setInnerPolygon((prev) => ({ ...prev, coordinates: farm.farmCrops.map((item) => item.polygons) }));
+
+    }
+    setSelectedFarm(farm)
+    // console.log('FFFFFFFFFFFFFFFFFFF', farm.id);
+    // if (farm.polygons.length > 0) {
+    //   setPolygonCoordinates(farm.polygons);
+    // } else {
+    //   setPolygonCoordinates([]);
+    // }
+    // if (farm.subFarms.length > 0) {
+    //   const subFarm = farm.subFarms.map(item => {
+    //     return item.polygons;
+    //   });
+    //   setInnerPolygonCoordinates(subFarm.flat());
+    // } else {
+    //   setInnerPolygonCoordinates([]);
+    // }
+    // setSelectedFarm(farm);
+    // setFarmsData(prevFarmsData => {
+    //   const updatedFarmsData = [...prevFarmsData];
+    //   const foundIndex = updatedFarmsData.findIndex(f => f.id === farm.id);
+    //   if (foundIndex !== -1) {
+    //     updatedFarmsData[foundIndex] = {
+    //       ...updatedFarmsData[foundIndex],
+    //       selected: true,
+    //     };
+    //   }
+    //   return updatedFarmsData;
+    // });
+    setDropdownVisible(false);
     setCropDropdownVisible(false);
   };
 
-  const handleCropSelection = crop => {
+  const handleCropSelection = (crop, i) => {
     console.log('FFFFFFFFFFFFFFFFFFF', crop);
-    if (crop.polygons.length > 0) {
-      setInnerPolygonCoordinates(crop.polygons);
-    } else {
-      setInnerPolygonCoordinates([]);
-    }
+    setSelectedCrop({index: i, crop: crop})
+    // if (crop.polygons.length > 0) {
+    //   setInnerPolygon((prev)=> ({...prev, coordinates: [...prev.coordinates, ...crop.polygons]}));
+    // } else {
+    //   setInnerPolygon({coordinates: [], isAddCropPressed: false, isAddCropVisible: false});
+    // }
 
     setCropData(prevCropsData => {
       const updatedCropsData = [...prevCropsData];
-      const foundIndex = updatedCropsData.findIndex(f => f.id === farm.id);
+      console.log('BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', updatedCropsData)
+      const foundIndex = updatedCropsData.findIndex(f => f.value === crop.id);
       if (foundIndex !== -1) {
         updatedCropsData[foundIndex] = {
           ...updatedCropsData[foundIndex],
@@ -542,14 +643,14 @@ const HomeScreen = ({navigation}) => {
     });
 
     setDropdownVisible(false);
-    // setCropDropdownVisible(false);
+    setCropDropdownVisible(false);
   };
 
   const toggleDropdown = () => {
     setDropdownVisible(!dropdownVisible);
     setCropDropdownVisible(!cropDropdownVisible);
   };
-
+  console.log('YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY', selectedCrop)
   return (
     <View style={styles.container}>
       <MapView
@@ -565,15 +666,15 @@ const HomeScreen = ({navigation}) => {
             longitudeDelta: currentLocation.longitudeDelta,
           }}
         />
-        {polygonCoordinates.length > 0 && (
+        {polygon.coordinates.length > 0 && (
           <Polygon
-            coordinates={polygonCoordinates}
+            coordinates={polygon.coordinates}
             fillColor="rgba(0, 200, 0, 0.3)"
             strokeColor="#FF0000"
             strokeWidth={1}
           />
         )}
-        {polygonCoordinates.map((coordinate, index) => (
+        {polygon.coordinates.map((coordinate, index) => (
           <Marker
             key={index}
             coordinate={coordinate}
@@ -582,15 +683,17 @@ const HomeScreen = ({navigation}) => {
             pinColor="green"
           />
         ))}
-        {innerPolygonCoordinates.length > 0 && (
-          <Polygon
-            coordinates={innerPolygonCoordinates}
-            fillColor="rgba(255, 230, 6, 1)"
-            strokeColor="#FF0000"
-            strokeWidth={1}
-          />
+        {innerPolygon.coordinates.length > 0 && (
+          innerPolygon.coordinates.map((coordinates, i) => (
+            <Polygon
+              coordinates={coordinates}
+              fillColor="rgba(255, 230, 6, 1)"
+              strokeColor="#FF0000"
+              strokeWidth={selectedCrop?.index == i?  2: 1}
+            />
+          ))
         )}
-        {innerPolygonCoordinates.map((coordinate, index) => (
+        {/* {innerPolygon.isAddCropVisible && innerPolygon.selectedCoordinates.map((coordinate, index) => (
           <Marker
             key={index}
             coordinate={coordinate}
@@ -598,16 +701,28 @@ const HomeScreen = ({navigation}) => {
             description={`Marker at ${coordinate.latitude}, ${coordinate.longitude}`}
             pinColor="#FFE606"
           />
+        ))} */}
+
+        {innerPolygon.isAddCropPressed && innerPolygon.coordinates.map((polygon, index) => (
+          polygon.map((coordinate, i) => (
+            <Marker
+              key={`${index}-${i}`}
+              coordinate={coordinate}
+              title={`Point ${i + 1}`}
+              description={`Marker at ${coordinate.latitude}, ${coordinate.longitude}`}
+              pinColor="#FFE606"
+            />
+          ))
         ))}
       </MapView>
-      {!screenState.isAddPolygonMode && isAddFarmPressed != true && (
+      {isBottomSheet && (
         <ImageBackground
           source={require('../assets/images/Rectangle13.png')}
           style={styles.backgroundImage}>
           <View
             style={[
               styles.selectFarmContainer,
-              {marginTop: dropdownVisible || cropDropdownVisible ? 10 : 50},
+              { marginTop: dropdownVisible || cropDropdownVisible ? 10 : 50 },
             ]}>
             <TouchableOpacity
               style={styles.addFarmButton}
@@ -623,7 +738,7 @@ const HomeScreen = ({navigation}) => {
                 Add A Farm
               </Text>
               <Svg
-                style={{position: 'absolute', right: 15, top: 15}}
+                style={{ position: 'absolute', right: 15, top: 15 }}
                 width="14"
                 height="14"
                 viewBox="0 0 14 14"
@@ -648,7 +763,7 @@ const HomeScreen = ({navigation}) => {
                   }}>
                   {selectedFarm ? selectedFarm.farmName : 'Select A Farm'}
                 </Text>
-                <View style={{position: 'absolute', right: 20, top: 15}}>
+                <View style={{ position: 'absolute', right: 20, top: 15 }}>
                   {!dropdownVisible ? (
                     <Svg
                       width="9"
@@ -693,7 +808,7 @@ const HomeScreen = ({navigation}) => {
                 </View>
               )}
             </View>
-            {!(cropData?.length > 0) && (
+            {(cropData?.length > 0) && (
               <View>
                 <TouchableOpacity
                   style={styles.selectFarmButton}
@@ -711,9 +826,9 @@ const HomeScreen = ({navigation}) => {
                       fontWeight: '600',
                       marginHorizontal: 30,
                     }}>
-                    {selectedFarm ? selectedFarm.farmName : 'Select A Crop'}
+                    {selectedCrop?.crop ? selectedCrop.crop.crop.name : 'Select A Crop'}
                   </Text>
-                  <View style={{position: 'absolute', right: 20, top: 15}}>
+                  <View style={{ position: 'absolute', right: 20, top: 15 }}>
                     {!cropDropdownVisible ? (
                       <Svg
                         width="9"
@@ -749,10 +864,10 @@ const HomeScreen = ({navigation}) => {
                 {cropDropdownVisible && (
                   <View style={styles.dropdownContainer}>
                     <CropList
-                      options={farmsData}
-                      onPress={crop => {
+                      options={cropData}
+                      onPress={(crop, index) => {
                         console.log('dddddddddddddddddddddd', crop);
-                        handleCropSelection(crop);
+                        handleCropSelection(crop, index);
                         // setCropDropdownVisible(false);
                       }}
                     />
@@ -778,9 +893,9 @@ const HomeScreen = ({navigation}) => {
               the map to continue.
             </Text>
           </View>
-          <View style={{top: 180}}>
+          <View style={{ top: 180 }}>
             <TouchableOpacity onPress={handleOKPress} style={styles.okButton}>
-              <Text style={{fontSize: 18, fontWeight: '600', color: '#000000'}}>
+              <Text style={{ fontSize: 18, fontWeight: '600', color: '#000000' }}>
                 OK
               </Text>
             </TouchableOpacity>
@@ -814,7 +929,7 @@ const HomeScreen = ({navigation}) => {
       <Modal visible={cropModel} transparent={true} animationType="slide">
         <ImageBackground
           source={require('../assets/images/map-blur.png')}
-          style={{flex: 1, justifyContent: 'center'}}
+          style={{ flex: 1, justifyContent: 'center' }}
           blurRadius={9}>
           <View
             style={{
@@ -824,7 +939,7 @@ const HomeScreen = ({navigation}) => {
             }}>
             {console.log('RRRRRRRRRRRRRRRRRR', farmData)}
             <View style={styles.modalContent}>
-              <View style={{alignItems: 'center'}}>
+              <View style={{ alignItems: 'center' }}>
                 <Text style={styles.modalTitle}>
                   Select the crop that you want to draw the area of in your farm
                 </Text>
@@ -839,11 +954,12 @@ const HomeScreen = ({navigation}) => {
                       c => c.id === crop.id,
                     );
                     if (foundIndex !== -1) {
-                      updatedCropsData.splice(index, 1);
+                      updatedCropsData.splice(foundIndex, 1);
                     }
                     return updatedCropsData;
                   });
                   setAddSelectedCrop(crop);
+                  setCropModel(false)
                   // setCropDropdownVisible(false);
                 }}
               />
@@ -852,7 +968,7 @@ const HomeScreen = ({navigation}) => {
         </ImageBackground>
       </Modal>
 
-      {screenState.isAddPolygonMode && (
+      {(polygon.isAddFarmPressed || innerPolygon.isAddCropPressed) && (
         <View
           style={{
             position: 'absolute',
@@ -866,7 +982,7 @@ const HomeScreen = ({navigation}) => {
             ...Platform.select({
               ios: {
                 shadowColor: '#000000',
-                shadowOffset: {width: 4, height: 4},
+                shadowOffset: { width: 4, height: 4 },
                 shadowOpacity: 0.2,
                 shadowRadius: 19,
               },
@@ -875,58 +991,57 @@ const HomeScreen = ({navigation}) => {
               },
             }),
           }}>
-          {console.log('OOOOOOOOOOOOOOOOOOO', addCrops)}
-          {addCrops.length > 0 ? (
+          {console.log('OOOOOOOOOOOOOOOOOOO ::: ', polygon.isAddFarmPressed)}
+          {(!isBottomSheet && polygon.isAddFarmPressed) &&
             <TouchableOpacity
               onPress={() => setIsModalVisible(true)}
-              disabled={!(polygonCoordinates.length > 0)}>
+              disabled={!(polygon.coordinates.length > 0)}>
               <Text
                 style={{
                   marginVertical: 10,
                   fontWeight: '600',
                   fontSize: 18,
-                  color: polygonCoordinates.length > 2 ? '#000000' : 'gray',
+                  color: polygon.coordinates.length > 2 ? '#000000' : 'gray',
                 }}>
                 Continue
               </Text>
             </TouchableOpacity>
-          ) : (
+          }
+          {(!isBottomSheet && innerPolygon.isAddCropPressed) &&
             <TouchableOpacity
-              onPress={() => setIsModalVisible(true)}
-              disabled={!(polygonCoordinates.length > 0)}>
+              onPress={() => {  navigation.navigate('FarmImageSelection') }}
+              disabled={!((innerPolygon.selectedCoordinates.length <= 0) && (addCrops.length <= 0))}>
               <Text
                 style={{
                   marginVertical: 10,
                   fontWeight: '600',
                   fontSize: 18,
-                  color: polygonCoordinates.length > 2 ? '#000000' : 'gray',
+                  color: ((innerPolygon.selectedCoordinates.length <= 0) && (addCrops.length <= 0))  ? '#000000' : 'gray',
                 }}>
                 Continue
               </Text>
             </TouchableOpacity>
-          )}
+          }
+
         </View>
       )}
-      <View style={[styles.farmIconsContainer, {zIndex: 101}]}>
+      <View style={[styles.farmIconsContainer, { zIndex: 101 }]}>
         {renderFarmIcons()}
         <View />
-        {!innerPolygonButtonPressed &&
-          !screenState.isAddPolygonMode &&
-          farmStep === 0 &&
-          isAddFarmPressed != false && (
-            <View style={{right: 60}}>
-              <View style={styles.popupContainer}>
-                <View style={styles.arrowContainer}>
-                  <View style={styles.arrow} />
-                </View>
-                <Text style={styles.messageText}>
-                  Use This Button To Tag The Area Of The Farm
-                </Text>
+        {(polygon.isAddFarmPressed && !polygon.isAddFarmVisible) && (
+          <View style={{ right: 60 }}>
+            <View style={styles.popupContainer}>
+              <View style={styles.arrowContainer}>
+                <View style={styles.arrow} />
               </View>
+              <Text style={styles.messageText}>
+                Use This Button To Tag The Area Of The Farm
+              </Text>
             </View>
-          )}
-        {innerPolygonButtonPressed && screenState.isAddPolygonMode && (
-          <View style={{right: 60}}>
+          </View>
+        )}
+        {(innerPolygon.isAddCropPressed && !innerPolygon.isAddCropVisible) && (
+          <View style={{ right: 60 }}>
             <View style={styles.popupContainer}>
               <View style={styles.arrowContainer}>
                 <View style={styles.arrow} />
@@ -983,7 +1098,7 @@ const styles = StyleSheet.create({
     ...Platform.select({
       ios: {
         shadowColor: '#000000',
-        shadowOffset: {width: 4, height: 4},
+        shadowOffset: { width: 4, height: 4 },
         shadowOpacity: 0.2,
         shadowRadius: 19,
       },
@@ -1018,7 +1133,7 @@ const styles = StyleSheet.create({
     ...Platform.select({
       ios: {
         shadowColor: '#000000',
-        shadowOffset: {width: 4, height: 4},
+        shadowOffset: { width: 4, height: 4 },
         shadowOpacity: 0.2,
         shadowRadius: 19,
       },
@@ -1137,7 +1252,7 @@ const styles = StyleSheet.create({
     ...Platform.select({
       ios: {
         shadowColor: '#000000',
-        shadowOffset: {width: 4, height: 4},
+        shadowOffset: { width: 4, height: 4 },
         shadowOpacity: 0.2,
         shadowRadius: 19,
       },
@@ -1160,7 +1275,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: '50%',
     right: -15,
-    transform: [{translateX: -10}], // Adjust this value to align the arrow with the center
+    transform: [{ translateX: -10 }], // Adjust this value to align the arrow with the center
   },
 
   arrow: {
@@ -1171,7 +1286,7 @@ const styles = StyleSheet.create({
     borderLeftColor: 'transparent',
     borderRightColor: 'transparent',
     borderBottomColor: 'black',
-    transform: [{rotate: '310deg'}], // Rotate the arrow to point in the right direction
+    transform: [{ rotate: '310deg' }], // Rotate the arrow to point in the right direction
   },
 
   messageText: {

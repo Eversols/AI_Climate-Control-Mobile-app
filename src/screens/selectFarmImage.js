@@ -48,7 +48,8 @@ const FarmImageSelection = () => {
       console.log(response.data); // Handle response
       if (response.data.success) {
         dispatch(storeFarmData(null));
-        navigation.navigate('bottom_navigation');
+        // navigation.navigate('bottom_navigation', {});
+        navigation.replace('bottom_navigation');
       }
     } catch (error) {
       console.error('Error uploading image:', error);
