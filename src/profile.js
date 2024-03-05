@@ -48,7 +48,9 @@ const Profile = ({ navigation }) => {
 
       </View>
       <View style={{ flexDirection: "row", marginTop: 40, justifyContent: "center" }}>
-        <Image style={{ width: "85%", borderRadius: 200, height: 100, resizeMode: "contain" }} source={require('../asssets/profilePic.png')} />
+      <View style={styles.circularBorder}>
+        <Image style={{ width: "85%", borderRadius: 200, height: 100, resizeMode: "contain" }} source={user.avatar ? { uri: user.avatar } : require('../asssets/profilePic.png')} />
+        </View>
       </View>
       <View style={{ marginTop: 25 }}>
         <Text style={{ textAlign: "center", color: "#000", fontSize: 24, fontWeight: "600", }}>{user?.user_name.toUpperCase() || "WelCome"} </Text>
@@ -56,7 +58,7 @@ const Profile = ({ navigation }) => {
       </View>
 
 
-      
+
       <TouchableOpacity style={[styles.btn]} onPress={navigateToUserProfile}>
         <Svg width="20" height="22" viewBox="0 0 20 22" fill="none" xmlns="http://www.w3.org/2000/svg">
           <Path d="M9.5 12C12.5376 12 15 9.53757 15 6.5C15 3.46243 12.5376 1 9.5 1C6.46243 1 4 3.46243 4 6.5C4 9.53757 6.46243 12 9.5 12Z" stroke="gray" stroke-opacity="0.47" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
@@ -119,7 +121,17 @@ const styles = StyleSheet.create({
     borderColor: "#FFFFFF",
     flexDirection: "row",
     // justifyContent: "center"
-  }
+  },
+  circularBorder: {
+    position: 'relative',
+    borderWidth: 1,
+    borderColor: '#FFF',
+    // borderColor: '#3C3C3C',
+    borderRadius: 100,
+    overflow: 'visible',
+    width: 120,
+    height: 120,
+},
 });
 
 export default Profile;

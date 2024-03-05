@@ -305,6 +305,36 @@ const HomeScreen = ({ navigation }) => {
       }
     }
   };
+  const handleMarkerDrag  = event => {
+    console.log('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', event)
+    console.log('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT LLLL ')
+    if (polygon.isAddFarmPressed || innerPolygon.isAddCropPressed) {
+      if (polygon.isAddFarmVisible) {
+        const newCoordinate = {
+          latitude: event.nativeEvent.coordinate.latitude,
+          longitude: event.nativeEvent.coordinate.longitude,
+        };
+        setPolygon((prev) => ({ ...prev, coordinates: [...prev.coordinates, newCoordinate] }))
+        // setInnerPolygonCoordinates(prevCoordinates => [
+        //   ...prevCoordinates,
+        //   newCoordinate,
+        // ]);
+      }
+      if (innerPolygon.isAddCropVisible) {
+        const newCoordinate = {
+          latitude: event.nativeEvent.coordinate.latitude,
+          longitude: event.nativeEvent.coordinate.longitude,
+        };
+        const lastIndex = innerPolygon.selectedCoordinates.length > 0 ? innerPolygon.coordinates.length - 1 : (innerPolygon.coordinates.length - 1) + 1
+        console.log('NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN', innerPolygon.coordinates[lastIndex] ? [innerPolygon.coordinates[lastIndex], newCoordinate] : [newCoordinate])
+        setInnerPolygon((prev) => ({ ...prev, coordinates: [...prev.coordinates, prev.coordinates[lastIndex] ? [...prev.coordinates[lastIndex], newCoordinate] : [newCoordinate]], selectedCoordinates: [...prev.selectedCoordinates, newCoordinate] }))
+        // setPolygonCoordinates(prevCoordinates => [
+        //   ...prevCoordinates,
+        //   newCoordinate,
+        // ]);
+      }
+    }
+  };
 
   const renderFarmIcons = () => {
     const farmIcons = [
@@ -650,7 +680,7 @@ const HomeScreen = ({ navigation }) => {
     setDropdownVisible(!dropdownVisible);
     setCropDropdownVisible(!cropDropdownVisible);
   };
-  console.log('YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY', selectedCrop)
+  console.log('YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY', farmsData)
   return (
     <View style={styles.container}>
       <MapView
@@ -668,7 +698,7 @@ const HomeScreen = ({ navigation }) => {
         />
         {polygon.coordinates.length > 0 && (
           <Polygon
-            coordinates={polygon.coordinates}
+            coordinates={[...polygon.coordinates, polygon.coordinates[0]]}
             fillColor="rgba(0, 200, 0, 0.3)"
             strokeColor="#FF0000"
             strokeWidth={1}
@@ -678,6 +708,8 @@ const HomeScreen = ({ navigation }) => {
           <Marker
             key={index}
             coordinate={coordinate}
+            // onDragEnd={handleMarkerDrag}
+            // draggable={true}
             title={`Point ${index + 1}`}
             description={`Marker at ${coordinate.latitude}, ${coordinate.longitude}`}
             pinColor="green"
@@ -722,7 +754,7 @@ const HomeScreen = ({ navigation }) => {
           <View
             style={[
               styles.selectFarmContainer,
-              { marginTop: dropdownVisible || cropDropdownVisible ? 10 : 50 },
+              { marginTop: dropdownVisible || cropDropdownVisible ? 10 : 10 },
             ]}>
             <TouchableOpacity
               style={styles.addFarmButton}
@@ -808,6 +840,7 @@ const HomeScreen = ({ navigation }) => {
                 </View>
               )}
             </View>
+            
             {(cropData?.length > 0) && (
               <View>
                 <TouchableOpacity
@@ -875,6 +908,43 @@ const HomeScreen = ({ navigation }) => {
                 )}
               </View>
             )}
+            {(isBottomSheet && (!innerPolygon.isAddCropPressed || !innerPolygon.isAddCropPressed) && farmsData.length > 0) && <View
+          style={{
+            position: 'absolute',
+            bottom: -56,
+            left: '20%',
+            alignItems: 'center',
+            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+            borderRadius: 40,
+            padding: 5,
+            width: '60%',
+            ...Platform.select({
+              ios: {
+                shadowColor: '#000000',
+                shadowOffset: { width: 4, height: 4 },
+                shadowOpacity: 0.2,
+                shadowRadius: 19,
+              },
+              android: {
+                elevation: 4,
+              },
+            }),
+          }}>
+            <TouchableOpacity
+              onPress={() => ''}
+              disabled={!((innerPolygon.selectedCoordinates.length <= 0) && (addCrops.length <= 0))}>
+              <Text
+                style={{
+                  marginVertical: 10,
+                  fontWeight: '600',
+                  fontSize: 18,
+                  color: ((innerPolygon.selectedCoordinates.length <= 0) && (addCrops.length <= 0))  ? '#000000' : 'gray',
+                }}>
+                Continue
+              </Text>
+            </TouchableOpacity>
+            
+            </View>}
           </View>
         </ImageBackground>
       )}
@@ -1022,7 +1092,6 @@ const HomeScreen = ({ navigation }) => {
               </Text>
             </TouchableOpacity>
           }
-
         </View>
       )}
       <View style={[styles.farmIconsContainer, { zIndex: 101 }]}>

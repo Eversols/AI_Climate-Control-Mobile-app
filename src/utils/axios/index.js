@@ -62,6 +62,7 @@ const axiosInstant = axios.create({
 axiosInstant.interceptors.request.use(async config => {
   const token = await GetToken('token');
   if (token) {
+    console.log('JJJJJJJJJJJJJJJJJJJJJ', token)
     config.headers['Authorization'] = 'Bearer ' + token;
   }
   // console.log("tokem............", config.headers['Authorization'])

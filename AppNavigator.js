@@ -32,6 +32,7 @@ import editProfleDetails from './src/screens/editProfileDetails';
 import VerifyIdentityScreen from './src/screens/verifyProfile/verifyProfileIdentity';
 import EmailVerificationScreen from './src/screens/verifyProfile/emailVerifyProfile';
 import PhoneNumberVerificationScreen from './src/screens/verifyProfile/phoneNumberVerify';
+import { Text, View } from 'react-native';
 const Stack = createNativeStackNavigator();
 
 const AppNavigator = () => {
@@ -52,8 +53,8 @@ const AppNavigator = () => {
                     <Stack.Screen name='pestScreen2' component={PestScreen2} options={{ headerShown: false }} />
                     <Stack.Screen name='pestScreen3' component={PestScreen3} options={{ headerShown: false }} />
                     <Stack.Screen name='profile' component={Profile} options={{ headerShown: false }} />
-                    <Stack.Screen name='UserProfileView' component={UserProfileScreen} options={{headerShown:false}} />
-                    <Stack.Screen name='editProfileDetails' component={editProfleDetails} options={{headerShown:false}} />
+                    <Stack.Screen name='UserProfileView' component={UserProfileScreen} options={{headerShown: false}} />
+                    <Stack.Screen name='editProfileDetails' component={editProfleDetails} options={{ headerShown: false }} />
 
                     <Stack.Screen name='dashboard' component={Dashboard} options={{ headerShown: false }} />
                     <Stack.Screen name='dashboard2' component={Dashboard2} options={{ headerShown: false }} />
@@ -69,9 +70,9 @@ const AppNavigator = () => {
                     <Stack.Screen name='userPanel2' component={UserPanel2} options={{ headerShown: false }} />
                     <Stack.Screen name='VisionCameraScreen' component={VisionCameraScreen} options={{ headerShown: false }} />
 
-                    <Stack.Screen name='VerifyIdentityScreen' component={VerifyIdentityScreen} options={{ headerTransparent: true, headerTitle:'Verify Your Identity'}} />
-                    <Stack.Screen name='EmailVerificationScreen' component={EmailVerificationScreen} options={{ headerTransparent: true, headerTitle:'Verify Your Identity'}} />
-                    <Stack.Screen name='PhoneNumberVerificationScreen' component={PhoneNumberVerificationScreen} options={{ headerTransparent: true, headerTitle:'Verify Your Identity'}} />
+                    <Stack.Screen name='VerifyIdentityScreen' component={VerifyIdentityScreen} options={{ headerShown: false, headerTransparent: true, headerTitle: 'Verify Your Identity' }} />
+                    <Stack.Screen name='EmailVerificationScreen' component={EmailVerificationScreen} options={{ headerTransparent: true, headerTitle: 'Verify Your Identity' }} />
+                    <Stack.Screen name='PhoneNumberVerificationScreen' component={PhoneNumberVerificationScreen} options={{ headerTransparent: true, headerTitle: 'Verify Your Identity' }} />
 
                 </>
                 }</Stack.Navigator>
