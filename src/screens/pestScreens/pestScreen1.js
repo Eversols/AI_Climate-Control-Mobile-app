@@ -23,7 +23,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { GetMyFarms } from '../../redux/slices/farmSlice';
 import { setSelectedFarm, setSelectedcorp } from '../../redux/slices/pesticidesSlice';
 
-const PestScreen1 = ({ navigation }) => {
+const PestScreen1 = ({ navigation, route }) => {
   // const navigation = useNavigation();
   const refRBSheet = useRef();
   const [locheigth, setLocheigth] = useState(80)
@@ -32,23 +32,39 @@ const PestScreen1 = ({ navigation }) => {
   const [corpOptions, setCorpOptions] = useState([])
   const [selectedFarm, setFarmName] = useState("")
   const [selectedcrop, setCropName] = useState("")
-
+  
   const handlefarmOptions = (i) => {
-
-    setCorpOptions(farmList[i].corp.length > 0 ? farmList[i].corp.map(item => { return { id: item.id, name: item.name } }) : [])
+    
+    setCorpOptions(farmList[i].farmCrops.length > 0 ? farmList[i].farmCrops.map(item => { return { id: item.crop.id, name: item.crop.name } }) : [])
     setFarmName(farmList[i].farmName)
     dispatch(setSelectedFarm(farmList[i].id))
+    setCropName("")
   }
   const handlecropOptions = (i) => {
-
+    
     setCropName(corpOptions[i].name)
     dispatch(setSelectedcorp(corpOptions[i]?.id))
   }
-
+  
   useEffect(() => {
     dispatch(GetMyFarms())
-
+    
   }, [])
+  useEffect(() => {
+    
+    // console.log('WWWWWWWWWWWWWWWWWWWW', route.params.crop.crop.id)
+    if(farmList.length > 0 && route?.params?.farm && route?.params?.crop){
+      setFarmName(farmList.find((item)=> item.id === route.params.farm.id)?.farmName)
+      setCropName(corpOptions.find((item)=> item.id === route.params.crop.crop.id)?.name)
+    }else{
+      if(farmList.length > 0){
+        setCorpOptions(farmList[0].farmCrops.length > 0 ? farmList[0].farmCrops.map(item => { return { id: item.crop.id, name: item.crop.name } }) : [])
+        setFarmName(farmList[0]?.farmName)
+        setCropName(corpOptions[0]?.name)
+        
+      }
+    }
+  }, [farmList])
   return (
     <ImageBackground
       source={require('../../../asssets/pestScreen1.png')} // Replace with the path to your image
@@ -60,7 +76,7 @@ const PestScreen1 = ({ navigation }) => {
 
       </TouchableOpacity>
 
-      <View style={{ flexDirection: "row", justifyContent: "space-evenly" }}>
+      <View style={{ flexDirection: "row", justifyContent: "space-between", marginHorizontal: 16 }}>
         <DropDown2
           btnTitle="Farm"
           options={farmList.map(item => item.farmName)}

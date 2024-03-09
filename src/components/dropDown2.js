@@ -24,14 +24,17 @@ const DropDown2 = ({ navigation, btnTitle, options, selectedOption = 0, setSelec
 
             <TouchableOpacity onPress={() => setOpenDrop(!openDrop)} style={[styles.btn]}>
 
-                <Text style={{ fontWeight: "300", marginLeft: 10, fontSize: 16, color: "#000" }}>{btnTitle}:{selectedOption}</Text>
+                <Text style={{ fontWeight: "300", marginRight: 8, fontSize: 16, color: "#000" }}>{btnTitle}: {selectedOption}</Text>
                 {openDrop ?
-                    <Svg style={{ marginTop: 8 }} width="22" height="10" viewBox="0 0 22 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <Path d="M2.42871 1.4978L11.3889 8.25357L20.3491 1.49224" stroke="#363B3D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                    <Svg width="14" height="9" viewBox="0 0 14 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <Path d="M1 1L7 7L13 1" stroke="black" stroke-width="2" stroke-linecap="round" />
                     </Svg>
-                    : <Svg width="11" height="22" viewBox="0 0 11 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <Path d="M2.00025 19.8298L8.76833 10.8789L2.01934 1.90944" stroke="#363B3D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
-                    </Svg>}
+                    :
+                    <Svg width="9" height="14" viewBox="0 0 9 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <Path d="M1 13L7 7L0.999999 1" stroke="black" stroke-width="2" stroke-linecap="round" />
+                    </Svg>
+
+                }
 
 
             </TouchableOpacity>
@@ -43,7 +46,7 @@ const DropDown2 = ({ navigation, btnTitle, options, selectedOption = 0, setSelec
                             <TouchableOpacity onPress={() => {
                                 setOpenDrop(!openDrop);
                                 setSelectedOption(i)
-                            }} style={{ width: "100%", marginVertical: 10, flexDirection: "row", borderBottomWidth: 1, borderColor: "gray", height: 22, justifyContent: "space-between",paddingHorizontal:10 }}>
+                            }} style={{ width: "100%", marginVertical: 10, flexDirection: "row", borderBottomWidth: 1, borderColor: "gray", height: 22, justifyContent: "space-between", paddingHorizontal: 10 }}>
                                 <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                                     {/* <View style={{ height: 5, alignSelf: "center", width: 5, borderRadius: 20, backgroundColor: "#000" }}></View> */}
                                     <Text style={{ marginLeft: 10, fontSize: 12, fontWeight: "600" }}>{item}</Text>
@@ -67,16 +70,17 @@ const styles = StyleSheet.create({
     btn: {
         backgroundColor: 'rgba(255,255,255,0.4)',
         alignSelf: "center",
+        alignItems: 'center',
         borderRadius: 10,
         borderWidth: 2,
         height: 50,
         marginBottom: 20,
-        paddingHorizontal: 20,
-        paddingVertical: 10,
+        padding: 10,
         // width: "50%",
         borderColor: "#FFFFFF",
         flexDirection: "row",
-        justifyContent: "space-between"
+        justifyContent: "space-between",
+        
     },
     openBox: {
         backgroundColor: 'rgba(255,255,255,0.6)',
@@ -90,7 +94,7 @@ const styles = StyleSheet.create({
         zIndex: 100,
         // paddingHorizontal: 20,
         paddingVertical: 10,
-        width: "80%",
+        width: "100%",
         borderColor: "#FFFFFF",
     }
 
