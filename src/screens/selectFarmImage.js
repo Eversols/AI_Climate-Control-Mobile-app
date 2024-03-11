@@ -52,6 +52,7 @@ const FarmImageSelection = () => {
         navigation.replace('bottom_navigation');
       }
     } catch (error) {
+      navigation.replace('bottom_navigation');
       console.error('Error uploading image:', error);
     }
   };

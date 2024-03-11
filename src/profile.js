@@ -32,6 +32,8 @@ const Profile = ({ navigation }) => {
   const navigateToUserProfile = () => {
     navigation.navigate('UserProfileView', { user });
   };
+
+  console.log('UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU', user)
   return (
     <ImageBackground
       source={require('../asssets/profileBack.png')} // Replace with the path to your image
@@ -49,7 +51,7 @@ const Profile = ({ navigation }) => {
       </View>
       <View style={{ flexDirection: "row", marginTop: 40, justifyContent: "center" }}>
       <View style={styles.circularBorder}>
-        <Image style={{ width: "85%", borderRadius: 200, height: 100, resizeMode: "contain" }} source={user.avatar ? { uri: user.avatar } : require('../asssets/profilePic.png')} />
+        <Image style={{ width: "85%", borderRadius: 200, height: 100, resizeMode: "contain" }} source={user?.avatar ? { uri: user.avatar } : require('../asssets/profilePic.png')} />
         </View>
       </View>
       <View style={{ marginTop: 25 }}>

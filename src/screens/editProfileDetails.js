@@ -3,8 +3,8 @@ import { View, Text, TouchableOpacity, Modal, StyleSheet, Image, ImageBackground
 import { useDispatch, useSelector } from 'react-redux';
 import Svg, { Path, Circle } from 'react-native-svg';
 import * as ImagePicker from 'react-native-image-picker';
-import { put } from '../utils/axios';
-import { setUser } from '../redux/slices/authSlice';
+import { post, put } from '../utils/axios';
+import { IMAGE_BASE_URL, setUser } from '../redux/slices/authSlice';
 
 const EditProfileDetails = ({navigation}) => {
     const { user } = useSelector((state) => state.authReducer)
@@ -55,6 +55,7 @@ const EditProfileDetails = ({navigation}) => {
             if (!response.didCancel && response.assets && response.assets.length > 0) {
                 const selectedUri = response.assets[0].uri;
                 setSelectedImage(selectedUri); // Update selected image with URI
+                // uploadImage(selectedUri)
             } else {
                 console.log('No image selected from camera');
             }
@@ -69,6 +70,7 @@ const EditProfileDetails = ({navigation}) => {
             if (!response.didCancel && response.assets && response.assets.length > 0) {
                 const selectedUri = response.assets[0].uri;
                 setSelectedImage(selectedUri);
+                // uploadImage(selectedUri)
             }
             setModalVisible(false); // Close modal after selecting image
         });
@@ -99,11 +101,28 @@ const EditProfileDetails = ({navigation}) => {
         }
     };
 
+    const uploadImage = async (imageUri) => {
+        try {
+          const formData = new FormData();
+          formData.append('avatar', {
+            uri: imageUri,
+            type: 'image/jpg', // Modify according to your image type
+            name: 'profile_image.jpg', // Modify the name if needed
+          });
+    
+          const response = await post('/profileImage', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          });
+    
+          console.log('Upload response:', response.data);
+        } catch (error) {
+          console.error('Error uploading image:', error);
+        }
+      };
 
-
-
-
-
+console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX', `${IMAGE_BASE_URL}/${user?.avatar}`)
     return (
         <ImageBackground
             source={require('../../asssets/profileBack.png')}
@@ -123,7 +142,7 @@ const EditProfileDetails = ({navigation}) => {
                 <View style={styles.container}>
                     <View style={styles.profileImageContainer}>
                         <TouchableOpacity style={styles.circularBorder} onPress={openImagePicker}>
-                            <Image source={{ uri: selectedImage }} style={styles.profileImage} />
+                            <Image source={{ uri: selectedImage? selectedImage: `${IMAGE_BASE_URL}/${user?.avatar}` }} style={styles.profileImage} />
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.uploadIcon} onPress={openImagePicker}>
                             <Svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
