@@ -8,6 +8,9 @@ import {
   ImageBackground,
   ScrollView,
   ToastAndroid,
+  Alert,
+  Image,
+  PanResponder,
 } from 'react-native';
 import React, { useState, useEffect, useRef } from 'react';
 import MapView, {
@@ -25,6 +28,7 @@ import { storeFarmData } from './redux/slices/farmSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import CropList from './components/List';
 import { LongPressGesture } from 'react-native-gesture-handler/lib/typescript/handlers/gestures/longPressGesture';
+import { doesLineIntersect } from './utils/geometry';
 
 const HomeScreen = ({ navigation }) => {
   const [farmStep, setFarmStep] = useState(0);
@@ -47,6 +51,7 @@ const HomeScreen = ({ navigation }) => {
   const [innerPolygonButtonPressed, setInnerPolygonButtonPressed] =
     useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isTouching, setIsTouching] = useState(false);
   const [isAddFarmPressed, setIsAddFarmPressed] = useState(false);
   const [cropModel, setCropModel] = useState(false);
   const [cropAlartModal, setCropAlartModal] = useState(false);
@@ -65,13 +70,14 @@ const HomeScreen = ({ navigation }) => {
   const { farmData } = useSelector(state => state.farm);
   const dispatch = useDispatch();
   const [timer, setTimer] = useState(0);
-  const markerRef = useRef(null);
   const [currentLocation, setCurrentLocation] = useState({
     latitude: 31.5948548,
     longitude: 74.3640665,
     latitudeDelta: 0.015,
     longitudeDelta: 0.0121,
   });
+  const [mapEvent, setMapEvent] = useState(null)
+  const mapRef = useRef(null);
 
   const reset = () => {
     setPolygon(prev => ({ ...prev, coordinates: [] }))
@@ -297,16 +303,23 @@ const HomeScreen = ({ navigation }) => {
     // }
   };
 
-  const handleMapPress = event => {
-    console.log('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', polygon)
-    console.log('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT LLLL ', innerPolygon)
+  const handleMapPress = (event) => {
+    console.log('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT sssssssssssss', event)
     if (polygon.isAddFarmPressed || innerPolygon.isAddCropPressed) {
       if (polygon.isAddFarmVisible) {
+        console.log('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', event)
+        console.log('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT LLLL ', innerPolygon)
         const newCoordinate = {
           latitude: event.nativeEvent.coordinate.latitude,
           longitude: event.nativeEvent.coordinate.longitude,
         };
-        setPolygon((prev) => ({ ...prev, coordinates: [...prev.coordinates, newCoordinate] }))
+        if (!doesLineIntersect(polygon.coordinates, newCoordinate)) {
+          setPolygon((prev) => ({ ...prev, coordinates: [...prev.coordinates, newCoordinate] }))
+          console.log('GOOOD ::::::::::::::::::::::::::::::::::::::::::::::::::: ::::::::::')
+        } else {
+          Alert.alert("Cannot add this point.")
+          console.log('NOT GOOOD :::::::::::::::::::::::::::::::::::::::::::::::::::')
+        }
         // setInnerPolygonCoordinates(prevCoordinates => [
         //   ...prevCoordinates,
         //   newCoordinate,
@@ -320,14 +333,20 @@ const HomeScreen = ({ navigation }) => {
             longitude: event.nativeEvent.coordinate.longitude,
           };
           const lastIndex = innerPolygon.selectedCoordinates.length > 0 ? innerPolygon.coordinates.length - 1 : (innerPolygon.coordinates.length - 1) + 1
-
-          setInnerPolygon((prev) => ({
-            ...prev,
-            coordinates: prev.coordinates[lastIndex]
-              ? [...prev.coordinates.slice(0, lastIndex), [...prev.coordinates[lastIndex], newCoordinate], ...prev.coordinates.slice(lastIndex + 1)]
-              : [...prev.coordinates, [newCoordinate]],
-            selectedCoordinates: [...prev.selectedCoordinates, newCoordinate]
-          }));
+          const coordinates = innerPolygon.coordinates.length > 0 ? innerPolygon.coordinates[0] : []
+          if (!doesLineIntersect(coordinates, newCoordinate)) {
+            setInnerPolygon((prev) => ({
+              ...prev,
+              coordinates: prev.coordinates[lastIndex]
+                ? [...prev.coordinates.slice(0, lastIndex), [...prev.coordinates[lastIndex], newCoordinate], ...prev.coordinates.slice(lastIndex + 1)]
+                : [...prev.coordinates, [newCoordinate]],
+              selectedCoordinates: [...prev.selectedCoordinates, newCoordinate]
+            }));
+            console.log('GOOOD for inner polygon ::::::::::::::::::::::::::::::::::::::::::::::::::: ::::::::::')
+          } else {
+            Alert.alert("Cannot add this point.")
+            console.log('NOT GOOOD for inner polygon :::::::::::::::::::::::::::::::::::::::::::::::::::')
+          }
           console.log('IIIIIIIIIIIIIIIIIIIIIIIIII', innerPolygon.coordinates)
         } else {
           setCropAlartModal(true)
@@ -339,6 +358,25 @@ const HomeScreen = ({ navigation }) => {
       }
     }
   };
+
+  const checkIntersections = (existingCoordinates, newCoordinate) => {
+    // Check also from last point to the first to close the polygon
+    if (existingCoordinates.length > 2) {
+      if (doIntersect(existingCoordinates[existingCoordinates.length - 1], existingCoordinates[0], existingCoordinates[existingCoordinates.length - 1], newCoordinate)) {
+        console.log('INTERSECTED ::::::: 2 ', existingCoordinates[existingCoordinates.length - 1], existingCoordinates[0], existingCoordinates[existingCoordinates.length - 1], newCoordinate)
+        return true;
+      }
+    }
+    for (let i = 0; i < existingCoordinates.length - 1; i++) {
+      console.log('INDEXXXXXXXXXXXXXXX ::::::: 1 ', i)
+      if (doIntersect(existingCoordinates[i], existingCoordinates[i + 1], existingCoordinates[existingCoordinates.length - 1], newCoordinate)) {
+        console.log('INTERSECTED ::::::: 1 ', existingCoordinates[i], existingCoordinates[i + 1], existingCoordinates[existingCoordinates.length - 1], newCoordinate, i)
+        return true;
+      }
+    }
+    return false;
+  };
+
   const handleMarkerDrag = (event, i) => {
     console.log('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', i)
     console.log('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT LLLL ')
@@ -801,13 +839,47 @@ const HomeScreen = ({ navigation }) => {
     }
   }
 
+  const onPanDrag = (event) => {
+    setMapEvent(event)
+    const { latitude, longitude } = event.nativeEvent.coordinate;
+    console.log("Map panned to: ", event.nativeEvent);
+    // console.log("Map panned to 121212: ", event);
+    // You can update the region state here if needed
+  };
+
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onPanResponderGrant: (evt, gestureState) => {
+        setIsTouching(true);
+        console.log('Touch started');
+
+      },
+      onPanResponderRelease: (evt, gestureState) => {
+        setIsTouching(false);
+        // handleMapPress(mapEvent, true)
+        console.log('Touch ended', mapEvent);
+
+      },
+    })
+  ).current;
+
   return (
     <View style={styles.container}>
       <MapView
+        ref={mapRef}
         provider={PROVIDER_GOOGLE}
         style={styles.map}
         region={currentLocation}
-        onPress={handleMapPress}>
+        onPanDrag={onPanDrag}
+        onRegionChangeComplete={(region) => handleMapPress({nativeEvent: {coordinate: {latitude: region.latitude, longitude: region.longitude}}})}
+        // onMarkerDrag={handleMarkerDrag}                                                                   
+        // onMarkerDragStart={handleMarkerDragStart}
+       
+
+        onPress={handleMapPress}
+        {...panResponder.panHandlers}
+        >
         <Marker
           coordinate={{
             latitude: currentLocation.latitude,
@@ -816,6 +888,7 @@ const HomeScreen = ({ navigation }) => {
             longitudeDelta: currentLocation.longitudeDelta,
           }}
         />
+
         {polygon.coordinates.length > 0 && (
           <Polygon
             coordinates={[...polygon.coordinates, polygon.coordinates[0]]}
@@ -878,6 +951,23 @@ const HomeScreen = ({ navigation }) => {
           ))
         ))}
       </MapView>
+
+      {isTouching ?
+        <View style={styles.pointerContainer} >
+
+          <Image style={styles.pointer} source={{ uri: 'https://img.icons8.com/ios-filled/50/000000/marker.png' }} />
+        </View>
+
+        :
+
+        <View style={styles.pointerInner}>
+          <Text style={styles.pointerText}>DRAG & DROP</Text>
+          <View style={styles.textPointer} />
+        </View>
+
+
+      }
+
       {isBottomSheet && (
         <View style={{ position: 'absolute', width: '100%', height: '38%' }}>
           <ImageBackground
@@ -1250,7 +1340,6 @@ const HomeScreen = ({ navigation }) => {
               },
             }),
           }}>
-          {console.log('OOOOOOOOOOOOOOOOOOO ::: ', addCrops)}
           {(!isBottomSheet && polygon.isAddFarmPressed) &&
             <TouchableOpacity
               onPress={() => setIsModalVisible(true)}
@@ -1329,7 +1418,7 @@ const styles = StyleSheet.create({
     // marginTop:30,
     width: '100%',
     height: '100%',
-   
+
 
   },
 
@@ -1367,6 +1456,60 @@ const styles = StyleSheet.create({
       },
     }),
   },
+  pointerContainer: {
+    position: 'absolute',
+    top: '40%',
+    left: '50%',
+    transform: [{ translateX: -25 }, { translateY: -25 }], // Adjust based on your pointer size
+  },
+  pointer: {
+    width: 50, // Adjust based on your pointer size
+    height: 50, // Adjust based on your pointer size
+  },
+  markerFixed: {
+    left: '50%',
+    top: '50%',
+    marginLeft: -24,
+    marginTop: -48,
+    position: 'absolute',
+  },
+  marker: {
+    height: 40,
+    width: 30,
+  },
+
+  pointerInner: {
+    position: 'absolute',
+    top: '40%',
+    left: '30%',
+    transform: [{ translateX: -25 }, { translateY: -25 }], // Adjust based on your pointer size
+
+    backgroundColor: 'yellow',
+    borderRadius: 4,
+    // padding: 12,
+    width: 200, // adjust width as needed
+    height: 50, // adjust width as needed
+    zIndex: 1,
+    flex: 1,
+    justifyContent: 'end',
+    alignItems: "center",
+    // borderWidth: 2,
+    // borderColor: 'red'
+  },
+  pointerText: {
+    fontSize: 16,
+    marginBottom: 8,
+    fontWeight: "600",
+    paddingVertical: 4,
+
+  },
+  textPointer: {
+    backgroundColor: 'yellow',
+    width: 20,
+    height: 20,
+    transform: [{ rotate: '45deg' }],
+  },
+
   shadow: {
     shadowColor: '#000',
     shadowOffset: {
