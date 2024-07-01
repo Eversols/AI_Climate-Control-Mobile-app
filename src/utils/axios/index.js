@@ -54,7 +54,7 @@ import axios from "axios";
 import { GetToken } from '../StorageToken';
 
 const axiosInstant = axios.create({
-  baseURL: "https://smartpest.godepth.com/backend/api/v1"
+  baseURL: "https://climate.finitrek.com/api/v1"
   // baseURL: "https://digitalmining.axiscodingsolutions.com/demo/api/user"
 })
 

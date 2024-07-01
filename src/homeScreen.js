@@ -872,14 +872,14 @@ const HomeScreen = ({ navigation }) => {
         style={styles.map}
         region={currentLocation}
         onPanDrag={onPanDrag}
-        onRegionChangeComplete={(region) => handleMapPress({nativeEvent: {coordinate: {latitude: region.latitude, longitude: region.longitude}}})}
+        // onRegionChangeComplete={(region) => handleMapPress({ nativeEvent: { coordinate: { latitude: region.latitude, longitude: region.longitude } } })}
         // onMarkerDrag={handleMarkerDrag}                                                                   
         // onMarkerDragStart={handleMarkerDragStart}
-       
+
 
         onPress={handleMapPress}
         {...panResponder.panHandlers}
-        >
+      >
         <Marker
           coordinate={{
             latitude: currentLocation.latitude,
@@ -907,13 +907,18 @@ const HomeScreen = ({ navigation }) => {
             tappable={true}
             onPress={(e) => setMarkerDelete({ isModal: true, index: index, event: e })}
             zIndex={9999}
-            // onLongPress={() => console.log('djsfjoeswajeorjoerjoje:::::::::::::::::::::::')}
-            title={`Point ${index + 1}`}
-            description={`Marker at ${coordinate.latitude}, ${coordinate.longitude}`}
-            pinColor="green"
-          />
+          // onLongPress={() => console.log('djsfjoeswajeorjoerjoje:::::::::::::::::::::::')}
+          // title={`Point ${index + 1}`}
+          // description={`Marker at ${coordinate.latitude}, ${coordinate.longitude}`}
+          // pinColor="green"
 
-
+          >
+            <Image
+              src='https://cdn-icons-png.flaticon.com/512/2710/2710253.png'
+              style={{ width: 100, height: 42, }} // Set your desired width and height here
+              resizeMode="contain"
+            />
+          </Marker>
         ))}
         {(innerPolygon.coordinates.length > 0) && (
           innerPolygon.coordinates.map((coordinates, i) => (
@@ -951,22 +956,27 @@ const HomeScreen = ({ navigation }) => {
           ))
         ))}
       </MapView>
+      {!polygon.isAddFarmPressed && !innerPolygon.isAddCropPressed && farmStep == 0 &&
+        <>
 
-      {isTouching ?
-        <View style={styles.pointerContainer} >
+          {isTouching ?
+            <View style={styles.pointerContainer} >
 
-          <Image style={styles.pointer} source={{ uri: 'https://img.icons8.com/ios-filled/50/000000/marker.png' }} />
-        </View>
+              <Image style={styles.pointer} source={{ uri: 'https://img.icons8.com/ios-filled/50/000000/marker.png' }} />
+            </View>
 
-        :
+            :
 
-        <View style={styles.pointerInner}>
-          <Text style={styles.pointerText}>DRAG & DROP</Text>
-          <View style={styles.textPointer} />
-        </View>
+            <View style={styles.pointerInner}>
+              <Text style={styles.pointerText}>DRAG & DROP</Text>
+              <View style={styles.textPointer} />
+            </View>
 
 
+          }
+        </>
       }
+
 
       {isBottomSheet && (
         <View style={{ position: 'absolute', width: '100%', height: '38%' }}>
@@ -1484,15 +1494,16 @@ const styles = StyleSheet.create({
     left: '30%',
     transform: [{ translateX: -25 }, { translateY: -25 }], // Adjust based on your pointer size
 
-    backgroundColor: 'yellow',
+    backgroundColor: 'linear-gradient(135deg, rgba(150,221,126,1) 38%, rgba(99,198,151,1) 54%)',
     borderRadius: 4,
     // padding: 12,
-    width: 200, // adjust width as needed
+    width: 180, // adjust width as needed
     height: 50, // adjust width as needed
     zIndex: 1,
     flex: 1,
     justifyContent: 'end',
     alignItems: "center",
+    borderRadius: 30,
     // borderWidth: 2,
     // borderColor: 'red'
   },
@@ -1500,14 +1511,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 8,
     fontWeight: "600",
-    paddingVertical: 4,
+    paddingVertical: 12,
 
   },
   textPointer: {
-    backgroundColor: 'yellow',
+    backgroundColor: 'linear-gradient(135deg, rgba(150,221,126,1) 38%, rgba(99,198,151,1) 54%)',
     width: 20,
     height: 20,
     transform: [{ rotate: '45deg' }],
+    position: 'absolute',
+    bottom: -10
   },
 
   shadow: {
