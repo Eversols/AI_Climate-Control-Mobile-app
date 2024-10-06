@@ -32,36 +32,49 @@ const PestScreen1 = ({ navigation, route }) => {
   const [corpOptions, setCorpOptions] = useState([])
   const [selectedFarm, setFarmName] = useState("")
   const [selectedcrop, setCropName] = useState("")
-  
+
   const handlefarmOptions = (i) => {
-    
+
     setCorpOptions(farmList[i].farmCrops.length > 0 ? farmList[i].farmCrops.map(item => { return { id: item.crop.id, name: item.crop.name } }) : [])
     setFarmName(farmList[i].farmName)
+    console.log('WWWWWWWWWWWWWWWWWWWW', farmList[i].id)
     dispatch(setSelectedFarm(farmList[i].id))
     setCropName("")
   }
   const handlecropOptions = (i) => {
-    
+
     setCropName(corpOptions[i].name)
+    console.log('WWWWWWWWWWWWWWWWWWWW', corpOptions[i]?.id)
     dispatch(setSelectedcorp(corpOptions[i]?.id))
   }
-  
+
   useEffect(() => {
     dispatch(GetMyFarms())
-    
+
   }, [])
   useEffect(() => {
-    
-    // console.log('WWWWWWWWWWWWWWWWWWWW', route.params.crop.crop.id)
-    if(farmList.length > 0 && route?.params?.farm && route?.params?.crop){
-      setFarmName(farmList.find((item)=> item.id === route.params.farm.id)?.farmName)
-      setCropName(corpOptions.find((item)=> item.id === route.params.crop.crop.id)?.name)
-    }else{
-      if(farmList.length > 0){
-        setCorpOptions(farmList[0].farmCrops.length > 0 ? farmList[0].farmCrops.map(item => { return { id: item.crop.id, name: item.crop.name } }) : [])
+
+    console.log('WWWWWWWWWWWWWWWWWWWW', route.params.crop)
+    if (farmList.length > 0 && route?.params?.farm && route?.params?.crop) {
+      const farm = farmList.find((item) => item.id === route.params.farm.id);
+      const crops = farmList[0].farmCrops.length > 0 ? farmList[0].farmCrops.map(item => ({ id: item.crop.id, name: item.crop.name })) : []
+      setCorpOptions(crops)
+      const crop = crops.find((item) => item.id === route.params.crop.crop.id);
+      setFarmName(farm?.farmName)
+      setCropName(crop?.name)
+      dispatch(setSelectedFarm(farm?.id))
+      console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX', crop?.id)
+      dispatch(setSelectedcorp(crop?.id))
+    } else {
+      if (farmList.length > 0) {
+        const crops = farmList[0].farmCrops.length > 0 ? farmList[0].farmCrops.map(item => ({ id: item.crop.id, name: item.crop.name })) : []
+        setCorpOptions(crops)
         setFarmName(farmList[0]?.farmName)
-        setCropName(corpOptions[0]?.name)
-        
+        setCropName(crops[0]?.name)
+        dispatch(setSelectedFarm(farmList[0]?.id))
+        console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 232333333333', crop?.id)
+        dispatch(setSelectedcorp(crops[0]?.id))
+
       }
     }
   }, [farmList])

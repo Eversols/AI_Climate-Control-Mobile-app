@@ -28,7 +28,7 @@ import { storeFarmData } from './redux/slices/farmSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import CropList from './components/List';
 import { LongPressGesture } from 'react-native-gesture-handler/lib/typescript/handlers/gestures/longPressGesture';
-import { doesLineIntersect } from './utils/geometry';
+import { doesLineIntersect, doesLineIntersectForDrag, sortPoints, sortPolygons } from './utils/geometry';
 
 const HomeScreen = ({ navigation }) => {
   const [farmStep, setFarmStep] = useState(0);
@@ -259,7 +259,7 @@ const HomeScreen = ({ navigation }) => {
 
   const handleOKPress = () => {
     setIsBottomSheet(false)
-    setPolygon((prev) => ({ ...prev, isAddFarmPressed: true }))
+    setPolygon((prev) => ({ ...prev, isAddFarmPressed: true, isAddFarmVisible: true }))
 
     setFarmStep(0);
     setScreenState(prevState => ({ ...prevState, showContinueButton: true }));
@@ -304,59 +304,68 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const handleMapPress = (event) => {
-    console.log('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT sssssssssssss', event)
-    if (polygon.isAddFarmPressed || innerPolygon.isAddCropPressed) {
-      if (polygon.isAddFarmVisible) {
-        console.log('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', event)
-        console.log('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT LLLL ', innerPolygon)
-        const newCoordinate = {
-          latitude: event.nativeEvent.coordinate.latitude,
-          longitude: event.nativeEvent.coordinate.longitude,
-        };
-        if (!doesLineIntersect(polygon.coordinates, newCoordinate)) {
-          setPolygon((prev) => ({ ...prev, coordinates: [...prev.coordinates, newCoordinate] }))
-          console.log('GOOOD ::::::::::::::::::::::::::::::::::::::::::::::::::: ::::::::::')
-        } else {
-          Alert.alert("Cannot add this point.")
-          console.log('NOT GOOOD :::::::::::::::::::::::::::::::::::::::::::::::::::')
-        }
-        // setInnerPolygonCoordinates(prevCoordinates => [
-        //   ...prevCoordinates,
-        //   newCoordinate,
-        // ]);
-      }
-      if (innerPolygon.isAddCropVisible) {
-        if (addCrops.length > 0) {
+    console.log('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT sssssssssssss', isTouching)
+    if (!isTouching) {
 
+      if (polygon.isAddFarmPressed || innerPolygon.isAddCropPressed) {
+        if (polygon.isAddFarmVisible) {
+          console.log('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT', event)
+          console.log('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT LLLL ', innerPolygon)
           const newCoordinate = {
             latitude: event.nativeEvent.coordinate.latitude,
             longitude: event.nativeEvent.coordinate.longitude,
           };
-          const lastIndex = innerPolygon.selectedCoordinates.length > 0 ? innerPolygon.coordinates.length - 1 : (innerPolygon.coordinates.length - 1) + 1
-          const coordinates = innerPolygon.coordinates.length > 0 ? innerPolygon.coordinates[0] : []
-          if (!doesLineIntersect(coordinates, newCoordinate)) {
-            setInnerPolygon((prev) => ({
-              ...prev,
-              coordinates: prev.coordinates[lastIndex]
-                ? [...prev.coordinates.slice(0, lastIndex), [...prev.coordinates[lastIndex], newCoordinate], ...prev.coordinates.slice(lastIndex + 1)]
-                : [...prev.coordinates, [newCoordinate]],
-              selectedCoordinates: [...prev.selectedCoordinates, newCoordinate]
-            }));
-            console.log('GOOOD for inner polygon ::::::::::::::::::::::::::::::::::::::::::::::::::: ::::::::::')
-          } else {
-            Alert.alert("Cannot add this point.")
-            console.log('NOT GOOOD for inner polygon :::::::::::::::::::::::::::::::::::::::::::::::::::')
-          }
-          console.log('IIIIIIIIIIIIIIIIIIIIIIIIII', innerPolygon.coordinates)
-        } else {
-          setCropAlartModal(true)
+          console.log('newCoordinate ::::::::::::::::::::::::::::::::::::::::::::::::::: :::::::::: 1111111', [...polygon.coordinates, newCoordinate])
+          console.log('newCoordinate ::::::::::::::::::::::::::::::::::::::::::::::::::: :::::::::: 222222', sortPoints([...polygon.coordinates, newCoordinate]))
+          // if (!doesLineIntersect(polygon.coordinates, newCoordinate)) {
+            setPolygon((prev) => ({ ...prev, coordinates: sortPoints([...prev.coordinates, newCoordinate]) }))
+            console.log('GOOOD ::::::::::::::::::::::::::::::::::::::::::::::::::: ::::::::::')
+          // } else {
+          //   Alert.alert("Cannot add this point.")
+          //   console.log('NOT GOOOD :::::::::::::::::::::::::::::::::::::::::::::::::::')
+          // }
+          // setInnerPolygonCoordinates(prevCoordinates => [
+          //   ...prevCoordinates,
+          //   newCoordinate,
+          // ]);
         }
-        // setPolygonCoordinates(prevCoordinates => [
-        //   ...prevCoordinates,
-        //   newCoordinate,
-        // ]);
+        if (innerPolygon.isAddCropVisible) {
+          if (addCrops.length > 0) {
+
+            const newCoordinate = {
+              latitude: event.nativeEvent.coordinate.latitude,
+              longitude: event.nativeEvent.coordinate.longitude,
+            };
+            const lastIndex = innerPolygon.selectedCoordinates.length > 0 ? innerPolygon.coordinates.length - 1 : (innerPolygon.coordinates.length - 1) + 1
+            const coordinates = innerPolygon.coordinates.length > 0 ? innerPolygon.coordinates[0] : []
+            console.log('newCoordinate ::::::::::::::::::::::::::::::::::::::::::::::::::: :::::::::: 1111111', innerPolygon.coordinates[lastIndex]
+              ? [...innerPolygon.coordinates.slice(0, lastIndex), [...innerPolygon.coordinates[lastIndex], newCoordinate], ...innerPolygon.coordinates.slice(lastIndex + 1)]
+              : [...innerPolygon.coordinates, [newCoordinate]])
+            // if (!doesLineIntersect(coordinates, newCoordinate)) {
+              setInnerPolygon((prev) => ({
+                ...prev,
+                coordinates: sortPolygons(prev.coordinates[lastIndex]
+                  ? [...prev.coordinates.slice(0, lastIndex), [...prev.coordinates[lastIndex], newCoordinate], ...prev.coordinates.slice(lastIndex + 1)]
+                  : [...prev.coordinates, [newCoordinate]]),
+                selectedCoordinates: [...prev.selectedCoordinates, newCoordinate]
+              }));
+              console.log('GOOOD for inner polygon ::::::::::::::::::::::::::::::::::::::::::::::::::: ::::::::::')
+            // } else {
+            //   Alert.alert("Cannot add this point.")
+            //   console.log('NOT GOOOD for inner polygon :::::::::::::::::::::::::::::::::::::::::::::::::::')
+            // }
+            console.log('IIIIIIIIIIIIIIIIIIIIIIIIII', innerPolygon.coordinates)
+          } else {
+            setCropAlartModal(true)
+          }
+          // setPolygonCoordinates(prevCoordinates => [
+          //   ...prevCoordinates,
+          //   newCoordinate,
+          // ]);
+        }
       }
     }
+
   };
 
   const checkIntersections = (existingCoordinates, newCoordinate) => {
@@ -374,6 +383,7 @@ const HomeScreen = ({ navigation }) => {
         return true;
       }
     }
+
     return false;
   };
 
@@ -387,8 +397,16 @@ const HomeScreen = ({ navigation }) => {
           longitude: event.nativeEvent.coordinate.longitude,
         };
         const coordinate = polygon.coordinates.filter((_, index) => index !== i);
-        setPolygon((prev) => ({ ...prev, coordinates: [...coordinate, newCoordinate] }))
-        // setInnerPolygonCoordinates(prevCoordinates => [
+
+        // if (!doesLineIntersectForDrag(coordinate, newCoordinate, i )) {
+        setPolygon((prev) => ({ ...prev, coordinates: sortPoints([...coordinate, newCoordinate]) }))
+        // setPolygon((prev) => ({ ...prev, coordinates: [...prev.coordinates, newCoordinate] }))
+        console.log('GOOOD ::::::::::::::::::::::::::::::::::::::::::::::::::: ::::::::::')
+        // } else {
+        //   Alert.alert("Cannot add this point.")
+        //   console.log('NOT GOOOD :::::::::::::::::::::::::::::::::::::::::::::::::::')
+        // }
+        // setInnerPolygonCoordinates(prevCoordinates => [ 
         //   ...prevCoordinates,
         //   newCoordinate,
         // ]);
@@ -401,7 +419,7 @@ const HomeScreen = ({ navigation }) => {
       //   const lastIndex = innerPolygon.selectedCoordinates.length > 0 ? innerPolygon.coordinates.length - 1 : (innerPolygon.coordinates.length - 1) + 1
       //   const coordinate = innerPolygon.coordinates.filter((_, index) => index !== i);
       //   console.log('FFFFFFFFFFFFFFFFFFFF', coordinate)
-      //   setInnerPolygon((prev) => ({ ...prev, coordinates: [...coordinate, prev.coordinates[lastIndex] ? [...coordinate[lastIndex], newCoordinate] : [newCoordinate]], selectedCoordinates: [...coordinate, newCoordinate] }))
+      //   setInnerPolygon((prev) => ({ ...prev, coordinates: sortPolygons([...coordinate, prev.coordinates[lastIndex] ? [...coordinate[lastIndex], newCoordinate] : [newCoordinate]]), selectedCoordinates: [...coordinate, newCoordinate] }))
       //   // setPolygonCoordinates(prevCoordinates => [
       //   //   ...prevCoordinates,
       //   //   newCoordinate,
@@ -432,7 +450,7 @@ const HomeScreen = ({ navigation }) => {
         });
         console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZ', twoDArray)
         console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZ :::::::: ', innerPolygon.coordinates)
-        setInnerPolygon((prev) => ({ ...prev, coordinates: twoDArray }))
+        setInnerPolygon((prev) => ({ ...prev, coordinates: sortPolygons(twoDArray) }))
         // const lastIndex = innerPolygon.selectedCoordinates.length > 0 ? innerPolygon.coordinates.length - 1 : (innerPolygon.coordinates.length - 1) + 1
         // const parnetCoordinate = innerPolygon.coordinates.filter((_, index) => index !== parentIndex);
         // console.log('GGGGGGGGGGGGGGGG', parnetCoordinate)
@@ -450,7 +468,7 @@ const HomeScreen = ({ navigation }) => {
   const renderFarmIcons = () => {
     const farmIcons = [
       <>
-        {polygon.isAddFarmPressed && (
+        {/* {polygon.isAddFarmPressed && (
           <View style={[styles.farmIconContainer]}>
             <TouchableOpacity onPress={handleAddPolygonPress}>
               {polygon.isAddFarmVisible ? (
@@ -537,7 +555,7 @@ const HomeScreen = ({ navigation }) => {
               )}
             </TouchableOpacity>
           </View>
-        )}
+        )} */}
         {innerPolygon.isAddCropPressed && (
           <View style={styles.farmIconContainer}>
             <TouchableOpacity onPress={handleAddPolygonPress}>
@@ -872,22 +890,23 @@ const HomeScreen = ({ navigation }) => {
         style={styles.map}
         region={currentLocation}
         onPanDrag={onPanDrag}
-        // onRegionChangeComplete={(region) => handleMapPress({ nativeEvent: { coordinate: { latitude: region.latitude, longitude: region.longitude } } })}
+        onTouchMove={() => console.log('CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC')}
+        onRegionChangeComplete={(region) => handleMapPress({ nativeEvent: { coordinate: { latitude: region.latitude, longitude: region.longitude } } })}
         // onMarkerDrag={handleMarkerDrag}                                                                   
         // onMarkerDragStart={handleMarkerDragStart}
 
 
-        onPress={handleMapPress}
+        // onPress={handleMapPress}
         {...panResponder.panHandlers}
       >
-        <Marker
+        {/* <Marker
           coordinate={{
             latitude: currentLocation.latitude,
             longitude: currentLocation.longitude,
             latitudeDelta: currentLocation.latitudeDelta,
             longitudeDelta: currentLocation.longitudeDelta,
           }}
-        />
+        /> */}
 
         {polygon.coordinates.length > 0 && (
           <Polygon
@@ -905,20 +924,15 @@ const HomeScreen = ({ navigation }) => {
             onDragEnd={(e) => handleMarkerDrag(e, index)}
             draggable={true}
             tappable={true}
-            onPress={(e) => setMarkerDelete({ isModal: true, index: index, event: e })}
+            onPress={(e) => { setIsTouching(true); setMarkerDelete({ isModal: true, index: index, event: e }) }}
             zIndex={9999}
-          // onLongPress={() => console.log('djsfjoeswajeorjoerjoje:::::::::::::::::::::::')}
-          // title={`Point ${index + 1}`}
-          // description={`Marker at ${coordinate.latitude}, ${coordinate.longitude}`}
-          // pinColor="green"
+            // onLongPress={() => console.log('djsfjoeswajeorjoerjoje:::::::::::::::::::::::')}
+            // title={`Point ${index + 1}`}
+            // description={`Marker at ${coordinate.latitude}, ${coordinate.longitude}`}
+            pinColor="green"
+          />
 
-          >
-            <Image
-              src='https://cdn-icons-png.flaticon.com/512/2710/2710253.png'
-              style={{ width: 100, height: 42, }} // Set your desired width and height here
-              resizeMode="contain"
-            />
-          </Marker>
+
         ))}
         {(innerPolygon.coordinates.length > 0) && (
           innerPolygon.coordinates.map((coordinates, i) => (
@@ -956,10 +970,10 @@ const HomeScreen = ({ navigation }) => {
           ))
         ))}
       </MapView>
-      {!polygon.isAddFarmPressed && !innerPolygon.isAddCropPressed && farmStep == 0 &&
+      {(((polygon.isAddFarmVisible || innerPolygon.isAddCropVisible) || farmStep == 1)) &&
         <>
 
-          {isTouching ?
+          {((polygon.coordinates.length > 0 || innerPolygon.coordinates.length > 0) || isTouching) ?
             <View style={styles.pointerContainer} >
 
               <Image style={styles.pointer} source={{ uri: 'https://img.icons8.com/ios-filled/50/000000/marker.png' }} />
@@ -1385,7 +1399,7 @@ const HomeScreen = ({ navigation }) => {
       <View style={[styles.farmIconsContainer, { zIndex: 101 }]}>
         {renderFarmIcons()}
         <View />
-        {(polygon.isAddFarmPressed && !polygon.isAddFarmVisible) && (
+        {/* {(polygon.isAddFarmPressed && !polygon.isAddFarmVisible) && (
           <View style={{ right: 60 }}>
             <View style={styles.popupContainer}>
               <View style={styles.arrowContainer}>
@@ -1396,7 +1410,7 @@ const HomeScreen = ({ navigation }) => {
               </Text>
             </View>
           </View>
-        )}
+        )} */}
         {(innerPolygon.isAddCropPressed && !innerPolygon.isAddCropVisible) && (
           <View style={{ right: 60 }}>
             <View style={styles.popupContainer}>
@@ -1468,7 +1482,7 @@ const styles = StyleSheet.create({
   },
   pointerContainer: {
     position: 'absolute',
-    top: '40%',
+    top: '47%',
     left: '50%',
     transform: [{ translateX: -25 }, { translateY: -25 }], // Adjust based on your pointer size
   },
@@ -1490,8 +1504,8 @@ const styles = StyleSheet.create({
 
   pointerInner: {
     position: 'absolute',
-    top: '40%',
-    left: '30%',
+    top: '45%',
+    left: '32%',
     transform: [{ translateX: -25 }, { translateY: -25 }], // Adjust based on your pointer size
 
     backgroundColor: 'linear-gradient(135deg, rgba(150,221,126,1) 38%, rgba(99,198,151,1) 54%)',
@@ -1605,9 +1619,9 @@ const styles = StyleSheet.create({
     width: '95%',
     padding: 10,
     paddingVertical: 25,
-    marginTop: 100,
+    marginTop: 150,
     backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    marginBottom: 30,
+    marginBottom: 0,
   },
   dropdownScroll: {
     flex: 1,

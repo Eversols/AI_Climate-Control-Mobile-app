@@ -20,14 +20,14 @@ import { postForm } from '../../utils/axios';
 import { setPestImage, setSelectedFarm, setSelectedcorp } from '../../redux/slices/pesticidesSlice';
 import { useToast } from "react-native-toast-notifications";
 
-const PestScreen3 = ({ navigation }) => {
+const PestScreen3 = ({ navigation, route }) => {
   // const navigation = useNavigation();
   const toast = useToast();
   const dispatch = useDispatch()
   const { pestImage } = useSelector((state) => state.pest)
 
   const [selectedPestOption, setSelectedPestOption] = useState(0)
-  const [pestOptions, setPestOptions] = useState(["Caterpillar", "White flies", "Caterpillars", "Slugs and Snails", "Japanese Beetles", "Spider Mites", "Trips", "Scale Insects", "Wireworms", "Deer"])
+  const [pestOptions, setPestOptions] = useState(["Pest", "Spider", "Fly", "Snail", "Aphid", "Slug", "Beetle"])
 
   const [selectedRcmdPest, setSelectedRcmdPest] = useState(0)
   const [rcmdPstOpts, setRcmdPstOpts] = useState([
@@ -48,6 +48,13 @@ const PestScreen3 = ({ navigation }) => {
   const [feedback, setFeedback] = useState("")
   const { selectedfarm, selectedCorp } = useSelector((state) => state.pest)
 
+  useEffect(()=>{
+    if(route?.params?.insectData){
+      console.log('NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN', route?.params?.insectData)
+      setSelectedPestOption(route?.params?.insectData[0].class_id)
+    }
+  }, [route])
+
   const addFormData = async () => {
     try {
       // toast.show("Hello World");
@@ -62,6 +69,7 @@ const PestScreen3 = ({ navigation }) => {
           });
         return
       }
+      console.log('IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII', selectedfarm, selectedCorp)
       const formData = new FormData()
       formData.append("farm", selectedfarm)
       formData.append("corp", selectedCorp)

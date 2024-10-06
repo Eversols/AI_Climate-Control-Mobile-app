@@ -40,6 +40,7 @@ const FarmSelectionModal = ({
   const getCrops = async () => {
     try {
       const response = await get('/get-crops');
+      console.log('VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV', response)
       setCropOptions(
         response?.data?.data?.crops.map(item => {
           return {

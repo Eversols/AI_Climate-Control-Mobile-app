@@ -10,6 +10,7 @@ import {
     Button,
     TextInput,
     ImageBackground,
+    FlatList,
 } from 'react-native';
 // import MapView, { Marker } from 'react-native-maps';
 import { Defs, G, Filter, Path, Rect, Svg } from 'react-native-svg';
@@ -22,7 +23,7 @@ const DropDown2 = ({ navigation, btnTitle, options, selectedOption = 0, setSelec
     return (
         <View style={{ zIndex: 2000 }}>
 
-            <TouchableOpacity onPress={() => setOpenDrop(!openDrop)} style={[styles.btn]}>
+            <TouchableOpacity onPress={() => setOpenDrop((prev) => !prev)} style={[styles.btn]}>
 
                 <Text style={{ fontWeight: "300", marginRight: 8, fontSize: 16, color: "#000" }}>{btnTitle}: {selectedOption}</Text>
                 {openDrop ?
@@ -41,11 +42,14 @@ const DropDown2 = ({ navigation, btnTitle, options, selectedOption = 0, setSelec
             {openDrop &&
                 <View style={styles.openBox}>
                     <Text style={{ textAlign: "center", fontWeight: "600" }}>Select a Farm</Text>
-                    <ScrollView nestedScrollEnabled={true}>
-                        {options?.map((item, i) => (
+
+                    <FlatList
+                        data={options}
+                        scrollEnabled={true}
+                        renderItem={({ item, index }) =>
                             <TouchableOpacity onPress={() => {
-                                setOpenDrop(!openDrop);
-                                setSelectedOption(i)
+                                setOpenDrop((prev) => !prev);
+                                setSelectedOption(index)
                             }} style={{ width: "100%", marginVertical: 10, flexDirection: "row", borderBottomWidth: 1, borderColor: "gray", height: 22, justifyContent: "space-between", paddingHorizontal: 10 }}>
                                 <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                                     {/* <View style={{ height: 5, alignSelf: "center", width: 5, borderRadius: 20, backgroundColor: "#000" }}></View> */}
@@ -56,9 +60,15 @@ const DropDown2 = ({ navigation, btnTitle, options, selectedOption = 0, setSelec
                                         <View style={{ height: 7, width: 7, alignSelf: "center", borderRadius: 20, backgroundColor: "#000" }}></View>}
                                 </View>
                             </TouchableOpacity>
+                        }
+                        keyExtractor={item => item.id}
+                    />
+                    {/* <ScrollView style={{ width: "100%" }}>
+                        {options?.map((item, i) => (
+                          
                         ))}
 
-                    </ScrollView>
+                    </ScrollView> */}
                 </View>
             }
         </View>
@@ -80,7 +90,7 @@ const styles = StyleSheet.create({
         borderColor: "#FFFFFF",
         flexDirection: "row",
         justifyContent: "space-between",
-        
+
     },
     openBox: {
         backgroundColor: 'rgba(255,255,255,0.6)',

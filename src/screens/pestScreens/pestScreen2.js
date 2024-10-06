@@ -28,6 +28,8 @@ import {
 import { Camera, useCameraDevices, useCameraFormat, } from 'react-native-vision-camera';
 import { setPestImage } from '../../redux/slices/pesticidesSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import { post } from '../../utils/axios';
+import axios from 'axios';
 
 const PestScreen2 = ({ navigation }) => {
   // const navigation = useNavigation();
@@ -71,6 +73,23 @@ const PestScreen2 = ({ navigation }) => {
 
 
 
+  const handleSubmit = async () => {
+    try {
+      const body = {
+        detection_list: [ "user-images/user-id-1/user-id-1-2023-11-26-15-48-11-00.JPG"],
+      }
+      const response = await axios.post('https://02egvwurf5.execute-api.eu-north-1.amazonaws.com/test_sagemaker/detect/pest/pest', {
+        ...body
+      });
+      if(response?.data){
+        navigation.navigate("pestScreen3", {insectData: response.data[0]})
+
+      }
+      console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ', response.data);
+    } catch (error) {
+
+    }
+  }
 
   return (
     <>
@@ -185,11 +204,7 @@ const PestScreen2 = ({ navigation }) => {
             <Text style={{ fontWeight: "700", fontSize: 18, color: "#000" }}>{pestImage ? "Retake" : "Take"} Image</Text>
           </TouchableOpacity>
           {pestImage &&
-            <TouchableOpacity onPress={() => {
-
-              navigation.navigate("pestScreen3")
-
-            }} style={[styles.btn, { width: "70%", }]}>
+            <TouchableOpacity onPress={handleSubmit} style={[styles.btn, { width: "70%", }]}>
               <Text style={{ fontWeight: "700", fontSize: 18, color: "#000" }}>Next</Text>
             </TouchableOpacity>
 
