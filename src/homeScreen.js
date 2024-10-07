@@ -112,12 +112,12 @@ const HomeScreen = ({ navigation }) => {
     }));
   };
 
-  const addFarm = async (farmName, corp, confirm) => {
+  const addFarm = async (farmName, color, corp, confirm) => {
     try {
       const formData = {
         farmName: farmName,
-        corp: corp,
         polygons: polygon.coordinates,
+        farmColor: color
         // "parentId": "65ad5977749943e6bc93793e"
       };
       const response = await post('create-farm', formData);
@@ -158,6 +158,7 @@ const HomeScreen = ({ navigation }) => {
       }
     } catch (err) {
       console.log('error', err);
+      setIsModalVisible(false);
     }
   };
 
@@ -318,8 +319,8 @@ const HomeScreen = ({ navigation }) => {
           console.log('newCoordinate ::::::::::::::::::::::::::::::::::::::::::::::::::: :::::::::: 1111111', [...polygon.coordinates, newCoordinate])
           console.log('newCoordinate ::::::::::::::::::::::::::::::::::::::::::::::::::: :::::::::: 222222', sortPoints([...polygon.coordinates, newCoordinate]))
           // if (!doesLineIntersect(polygon.coordinates, newCoordinate)) {
-            setPolygon((prev) => ({ ...prev, coordinates: sortPoints([...prev.coordinates, newCoordinate]) }))
-            console.log('GOOOD ::::::::::::::::::::::::::::::::::::::::::::::::::: ::::::::::')
+          setPolygon((prev) => ({ ...prev, coordinates: sortPoints([...prev.coordinates, newCoordinate]) }))
+          console.log('GOOOD ::::::::::::::::::::::::::::::::::::::::::::::::::: ::::::::::')
           // } else {
           //   Alert.alert("Cannot add this point.")
           //   console.log('NOT GOOOD :::::::::::::::::::::::::::::::::::::::::::::::::::')
@@ -342,14 +343,14 @@ const HomeScreen = ({ navigation }) => {
               ? [...innerPolygon.coordinates.slice(0, lastIndex), [...innerPolygon.coordinates[lastIndex], newCoordinate], ...innerPolygon.coordinates.slice(lastIndex + 1)]
               : [...innerPolygon.coordinates, [newCoordinate]])
             // if (!doesLineIntersect(coordinates, newCoordinate)) {
-              setInnerPolygon((prev) => ({
-                ...prev,
-                coordinates: sortPolygons(prev.coordinates[lastIndex]
-                  ? [...prev.coordinates.slice(0, lastIndex), [...prev.coordinates[lastIndex], newCoordinate], ...prev.coordinates.slice(lastIndex + 1)]
-                  : [...prev.coordinates, [newCoordinate]]),
-                selectedCoordinates: [...prev.selectedCoordinates, newCoordinate]
-              }));
-              console.log('GOOOD for inner polygon ::::::::::::::::::::::::::::::::::::::::::::::::::: ::::::::::')
+            setInnerPolygon((prev) => ({
+              ...prev,
+              coordinates: sortPolygons(prev.coordinates[lastIndex]
+                ? [...prev.coordinates.slice(0, lastIndex), [...prev.coordinates[lastIndex], newCoordinate], ...prev.coordinates.slice(lastIndex + 1)]
+                : [...prev.coordinates, [newCoordinate]]),
+              selectedCoordinates: [...prev.selectedCoordinates, newCoordinate]
+            }));
+            console.log('GOOOD for inner polygon ::::::::::::::::::::::::::::::::::::::::::::::::::: ::::::::::')
             // } else {
             //   Alert.alert("Cannot add this point.")
             //   console.log('NOT GOOOD for inner polygon :::::::::::::::::::::::::::::::::::::::::::::::::::')
@@ -993,206 +994,118 @@ const HomeScreen = ({ navigation }) => {
 
 
       {isBottomSheet && (
-        <View style={{ position: 'absolute', width: '100%', height: '38%' }}>
-          <ImageBackground
-            source={require('../assets/images/Rectangle13.png')}
-            style={styles.backgroundImage}>
-            <View
-              style={[
-                styles.selectFarmContainer,
-                { marginTop: dropdownVisible || cropDropdownVisible ? 10 : 20 },
-              ]}>
+        <View style={{ position: 'absolute', width: '100%', height: '20%' }}>
+          <View
+            style={[
+              styles.selectFarmContainer,
+              // { marginTop: dropdownVisible || cropDropdownVisible ? 100 : 200 },
+            ]}>
+            {!cropDropdownVisible && <View>
               <TouchableOpacity
-                style={styles.addFarmButton}
-                onPress={handleAddFarmPress}>
+                style={styles.selectFarmButton}
+                onPress={() => setDropdownVisible(!dropdownVisible)}>
                 <Text
                   style={{
                     fontSize: 14,
+                    alignItems: 'center',
+                    justifyContent: 'center',
                     textAlign: 'center',
                     color: 'black',
                     fontWeight: '600',
                     marginHorizontal: 30,
                   }}>
-                  Add A Farm
+                  {selectedFarm ? selectedFarm.farmName : 'Select A Farm'}
                 </Text>
-                <Svg
-                  style={{ position: 'absolute', right: 15, top: 15 }}
-                  width="14"
-                  height="14"
-                  viewBox="0 0 14 14"
-                  fill="black"
-                  xmlns="http://www.w3.org/2000/svg">
-                  <Path d="M14 8H8V14H6V8H0V6H6V0H8V6H14V8Z" fill="black" />
-                </Svg>
-              </TouchableOpacity>
-              {!cropDropdownVisible && <View>
-                <TouchableOpacity
-                  style={styles.selectFarmButton}
-                  onPress={() => setDropdownVisible(!dropdownVisible)}>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      textAlign: 'center',
-                      color: 'black',
-                      fontWeight: '600',
-                      marginHorizontal: 30,
-                    }}>
-                    {selectedFarm ? selectedFarm.farmName : 'Select A Farm'}
-                  </Text>
-                  <View style={{ position: 'absolute', right: 20, top: 15 }}>
-                    {!dropdownVisible ? (
-                      <Svg
-                        width="9"
-                        height="14"
-                        viewBox="0 0 9 14"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <Path
-                          d="M1 13L7 7L0.999999 1"
-                          stroke="black"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                        />
-                      </Svg>
-                    ) : (
-                      <Svg
-                        width="14"
-                        height="9"
-                        viewBox="0 0 14 9"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <Path
-                          d="M1 1L7 7L13 1"
-                          stroke="black"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                        />
-                      </Svg>
-                    )}
-                  </View>
-                </TouchableOpacity>
-                {dropdownVisible && (
-                  <View style={styles.dropdownContainer}>
-                    <CropList
-                      options={farmsData}
-                      onPress={farm => {
-                        console.log('dddddddddddddddddddddd', farm);
-                        handleFarmSelection(farm);
-                        // setDropdownVisible(false);
-                      }}
+                <View style={{ position: 'absolute', right: 20, top: 15 }}>
+                  <Svg
+                    width="9"
+                    height="14"
+                    viewBox="0 0 9 14"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <Path
+                      d="M1 13L7 7L0.999999 1"
+                      stroke="black"
+                      strokeWidth="2"
+                      strokeLinecap="round"
                     />
-                  </View>
-                )}
-              </View>}
-
-              {(cropData?.length > 0 && !dropdownVisible) && (
-                <View>
-                  <TouchableOpacity
-                    style={styles.selectFarmButton}
-                    onPress={() => {
-                      setCropDropdownVisible(!cropDropdownVisible);
-                      setDropdownVisible(false);
-                    }}>
-                    <Text
-                      style={{
-                        fontSize: 14,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        textAlign: 'center',
-                        color: 'black',
-                        fontWeight: '600',
-                        marginHorizontal: 30,
-                      }}>
-                      {selectedCrop?.crop ? selectedCrop.crop.crop.name : 'Select A Crop'}
-                    </Text>
-                    <View style={{ position: 'absolute', right: 20, top: 15 }}>
-                      {!cropDropdownVisible ? (
-                        <Svg
-                          width="9"
-                          height="14"
-                          viewBox="0 0 9 14"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg">
-                          <Path
-                            d="M1 13L7 7L0.999999 1"
-                            stroke="black"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                          />
-                        </Svg>
-                      ) : (
-                        <Svg
-                          width="14"
-                          height="9"
-                          viewBox="0 0 14 9"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg">
-                          <Path
-                            d="M1 1L7 7L13 1"
-                            stroke="black"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                          />
-                        </Svg>
-                      )}
-                    </View>
-                  </TouchableOpacity>
-
-                  {cropDropdownVisible && (
-                    <View style={styles.dropdownContainer}>
-                      <CropList
-                        options={cropData}
-                        onPress={(crop, index) => {
-                          console.log('dddddddddddddddddddddd', crop);
-                          handleCropSelection(crop, index);
-                          // setCropDropdownVisible(false);
-                        }}
+                  </Svg>
+                  {/* {!dropdownVisible ? (
+                    <Svg
+                      width="9"
+                      height="14"
+                      viewBox="0 0 9 14"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg">
+                      <Path
+                        d="M1 13L7 7L0.999999 1"
+                        stroke="black"
+                        strokeWidth="2"
+                        strokeLinecap="round"
                       />
-                    </View>
-                  )}
+                    </Svg>
+                  ) : (
+                    <Svg
+                      width="14"
+                      height="9"
+                      viewBox="0 0 14 9"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg">
+                      <Path
+                        d="M1 1L7 7L13 1"
+                        stroke="black"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                      />
+                    </Svg>
+                  )} */}
+                </View>
+              </TouchableOpacity>
+              {dropdownVisible && (
+                <View style={styles.dropdownContainer}>
+                  <CropList
+                    options={farmsData}
+                    onPress={farm => {
+
+                      handleFarmSelection(farm);
+                      // setDropdownVisible(false);
+                    }}
+                  />
                 </View>
               )}
-              {(!cropDropdownVisible && !dropdownVisible && isBottomSheet && (!innerPolygon.isAddCropPressed || !innerPolygon.isAddCropPressed) && farmsData.length > 0) && <View
+            </View>}
+            <TouchableOpacity
+              style={{
+                width: '65%',
+                height: '40%',
+                backgroundColor: "#FFFFFF",
+                borderRadius: 50,
+                fontSize: 14,
+                alignItems: 'center',
+                justifyContent: 'center',
+                textAlign: 'center',
+                fontWeight: '600',
+                color: selectedFarm ? '#000000' : 'gray',
+              }}
+              onPress={() => navigation.navigate('pestScreen1', { farm: selectedFarm, crop: selectedCrop.crop })}
+              disabled={!selectedFarm}
+            >
+              <Text
                 style={{
-                  position: 'absolute',
-                  bottom: -56,
-                  left: '20%',
-                  alignItems: 'center',
-                  backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                  borderRadius: 40,
-                  padding: 5,
-                  width: '60%',
-                  ...Platform.select({
-                    ios: {
-                      shadowColor: '#000000',
-                      shadowOffset: { width: 4, height: 4 },
-                      shadowOpacity: 0.2,
-                      shadowRadius: 19,
-                    },
-                    android: {
-                      elevation: 4,
-                    },
-                  }),
+                  fontSize: 14,
+                  textAlign: 'center',
+                  color: selectedFarm ? '#000000' : 'gray',
+                  fontWeight: '600',
+                  marginHorizontal: 30,
                 }}>
-                <TouchableOpacity
-                  onPress={() => navigation.navigate('pestScreen1', { farm: selectedFarm, crop: selectedCrop.crop })}
-                  disabled={!selectedCrop.crop && !selectedFarm}>
-                  <Text
-                    style={{
-                      marginVertical: 10,
-                      fontWeight: '600',
-                      fontSize: 18,
-                      color: selectedCrop.crop && selectedFarm ? '#000000' : 'gray',
-                    }}>
-                    Continue
-                  </Text>
-                </TouchableOpacity>
+                Continue
+              </Text>
 
-              </View>}
-            </View>
-          </ImageBackground>
+            </TouchableOpacity>
+
+
+
+          </View>
         </View>
       )}
       {farmStep === 1 && (
@@ -1397,6 +1310,34 @@ const HomeScreen = ({ navigation }) => {
         </View>
       )}
       <View style={[styles.farmIconsContainer, { zIndex: 101 }]}>
+        {!cropDropdownVisible && <View style={{ width: '100%', alignItems: 'center', }}>
+          <TouchableOpacity
+            style={styles.addFarmButton}
+            onPress={handleAddFarmPress}>
+            <Text
+              style={{
+                fontSize: 14,
+                textAlign: 'center',
+                color: 'black',
+                fontWeight: '600',
+                marginHorizontal: 30,
+                zIndex: 100,
+
+              }}>
+              Add A New Farm
+            </Text>
+            <Svg
+              style={{ position: 'absolute', right: 15, top: 15 }}
+              width="14"
+              height="14"
+              viewBox="0 0 14 14"
+              fill="black"
+              xmlns="http://www.w3.org/2000/svg">
+              <Path d="M14 8H8V14H6V8H0V6H6V0H8V6H14V8Z" fill="black" />
+            </Svg>
+          </TouchableOpacity>
+
+        </View>}
         {renderFarmIcons()}
         <View />
         {/* {(polygon.isAddFarmPressed && !polygon.isAddFarmVisible) && (
@@ -1548,8 +1489,7 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   farmIconsContainer: {
-    // borderWidth: 2,
-    // borderColor: "red",
+    width: '100%',
     flex: 1,
     position: 'absolute',
     top: 20,
@@ -1581,24 +1521,33 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   selectFarmContainer: {
+    flex: 1,
     flexDirection: 'column',
-    justifyContent: 'space-around',
-    marginTop: 12,
+    justifyContent: 'space-between',
+    alignItems: "center",
+    marginBottom: 12
   },
   selectFarmButton: {
-    padding: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    borderRadius: 15,
-    marginHorizontal: 40,
-    marginVertical: 10,
-    height: 45,
+    position: 'relative',
+    width: 170,
+    height: '60%',
+    backgroundColor: "#FFFFFF",
+    borderRadius: 18,
+    fontSize: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    textAlign: 'center'
+    // padding: 10,
+    // backgroundColor: '#FFFFFF',
+    // borderRadius: 15,
+    // marginHorizontal: 40,
+    // marginVertical: 10,
+    // height: 45,
   },
   addFarmButton: {
     padding: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    backgroundColor: '#FFFFFF',
     borderRadius: 50,
-    marginHorizontal: 70,
-    marginVertical: 10,
     height: 45,
   },
 
@@ -1609,6 +1558,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.9)',
     height: '100%',
     width: '100%',
+    zIndex: 102
     // lineHeight:6,
   },
 
@@ -1634,19 +1584,20 @@ const styles = StyleSheet.create({
   height: 45,
 
   dropdownContainer: {
+    flex: 1,
     position: 'absolute',
-    top: 60,
-    // top: '100%',
+    top: -190, // Adjust this value based on how far above you want the dropdown
     width: '80%',
-    height: '180%',
-    // marginTop: 130,
-    // marginHorizontal:70,
-    // alignItems: 'center',
+    height: 180, // Height should be a normal value, adjust as needed
     alignSelf: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-
-    borderRadius: 15,
-    // elevation: 5,
+    backgroundColor: '#ffffff',
+    borderRadius: 14,
+    // Optional: shadow/elevation for better appearance
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   dropdownScrollContent: {
     padding: 5,

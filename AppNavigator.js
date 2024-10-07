@@ -13,6 +13,8 @@ import PestScreen1 from './src/screens/pestScreens/pestScreen1';
 import PestScreen2 from './src/screens/pestScreens/pestScreen2';
 import Profile from './src/profile';
 import PestScreen3 from './src/screens/pestScreens/pestScreen3';
+import PestScreen4 from './src/screens/pestScreens/pestScreen4';
+import PestScreen5 from './src/screens/pestScreens/pestScreen5';
 import Dashboard from './src/screens/dashboard/dashboard';
 import Dashboard2 from './src/screens/dashboard/dashboard2';
 import LoginScreen from './src/screens/auth/LoginScreen';
@@ -52,8 +54,10 @@ const AppNavigator = () => {
                     <Stack.Screen name='pestScreen1' component={PestScreen1} options={{ headerShown: false }} />
                     <Stack.Screen name='pestScreen2' component={PestScreen2} options={{ headerShown: false }} />
                     <Stack.Screen name='pestScreen3' component={PestScreen3} options={{ headerShown: false }} />
+                    <Stack.Screen name='pestScreen4' component={PestScreen4} options={{ headerShown: false }} />
+                    <Stack.Screen name='pestScreen5' component={PestScreen5} options={{ headerShown: false }} />
                     <Stack.Screen name='profile' component={Profile} options={{ headerShown: false }} />
-                    <Stack.Screen name='UserProfileView' component={UserProfileScreen} options={{headerShown: false}} />
+                    <Stack.Screen name='UserProfileView' component={UserProfileScreen} options={{ headerShown: false }} />
                     <Stack.Screen name='editProfileDetails' component={editProfleDetails} options={{ headerShown: false }} />
 
                     <Stack.Screen name='dashboard' component={Dashboard} options={{ headerShown: false }} />

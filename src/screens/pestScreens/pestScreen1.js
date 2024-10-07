@@ -89,38 +89,39 @@ const PestScreen1 = ({ navigation, route }) => {
 
       </TouchableOpacity>
 
-      <View style={{ flexDirection: "row", justifyContent: "space-between", marginHorizontal: 16 }}>
+      <View style={{ flexDirection: "row", justifyContent: "flex-end", marginHorizontal: 16 }}>
         <DropDown2
           btnTitle="Farm"
           options={farmList.map(item => item.farmName)}
           selectedOption={selectedFarm}
           setSelectedOption={handlefarmOptions} />
 
-        <DropDown2
+        {/* <DropDown2
           btnTitle="Crop"
           options={corpOptions.map(item => item.name)}
           selectedOption={selectedcrop}
-          setSelectedOption={handlecropOptions} />
+          setSelectedOption={handlecropOptions} /> */}
       </View>
 
       <View style={{ flexDirection: "row", justifyContent: "center" }}>
         <Image source={require('../../../asssets/bee.png')} />
       </View>
 
-      <TouchableOpacity onPress={() => navigation.navigate("pestScreen2")} style={styles.btn}>
+      {/* <TouchableOpacity onPress={() => navigation.navigate("pestScreen2")} style={styles.btn}>
         <Text style={{ fontWeight: "700", fontSize: 18, color: "#000" }}>Send</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
-      <TouchableOpacity onPress={() => navigation.navigate("pestScreen2")} style={[styles.btn, { width: "65%", }]}>
-        <Text style={{ fontWeight: "700", fontSize: 18, color: "#000" }}>Take Image</Text>
-      </TouchableOpacity>
+      <View style={{ flexDirection: "column", justifyContent: "space-evenly", marginTop: 130 }}>
+        <TouchableOpacity onPress={() => navigation.navigate("pestScreen2")} style={[styles.btn, { width: "65%", }]}>
+          <Text style={{ fontWeight: "700", fontSize: 18, color: "#000" }}>Take Image</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity
-        onPress={() => navigation.navigate("pestScreen2")}
-        style={[styles.btn, { width: "65%", }]}>
-        <Text style={{ fontWeight: "700", fontSize: 18, color: "#000" }}>Upload Image</Text>
-      </TouchableOpacity>
-
+        <TouchableOpacity
+          onPress={() => navigation.navigate("pestScreen2")}
+          style={[styles.btn, { width: "65%", }]}>
+          <Text style={{ fontWeight: "700", fontSize: 18, color: "#000" }}>Upload Image</Text>
+        </TouchableOpacity>
+      </View>
     </ImageBackground>
 
   );

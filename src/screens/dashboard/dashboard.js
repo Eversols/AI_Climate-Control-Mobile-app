@@ -128,7 +128,7 @@ const Dashboard = ({ navigation }) => {
           {farms.length > 0 && farms.map(farm => (
             <TouchableOpacity
               key={farm?.id}
-              onPress={() => { setFarmModal(true); setFarm(farm); setFarmName(farm.farmName) }}
+              onPress={() => { navigation.navigate('dashboard2', { farm }) }}
               style={[styles.btn]}>
               <View style={{ flexDirection: "row", alignSelf: "center", justifyContent: "space-between", width: "100%" }}>
                 <View style={{ flexDirection: "row" }}>

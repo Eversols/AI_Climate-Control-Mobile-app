@@ -13,9 +13,12 @@ import {
 } from 'react-native';
 // import MapView, { Marker } from 'react-native-maps';
 import { Defs, G, Filter, Path, Rect, Svg } from 'react-native-svg';
+import { IMAGE_BASE_URL } from '../../redux/slices/authSlice';
 
-const Dashboard2 = ({ navigation }) => {
+const Dashboard2 = ({ navigation, route }) => {
   // const navigation = useNavigation();
+  const { params } = route
+  console.log('BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', `${IMAGE_BASE_URL}/${params.farm.image}`)
   const refRBSheet = useRef();
   const [locheigth, setLocheigth] = useState(80)
   return (
@@ -34,35 +37,48 @@ const Dashboard2 = ({ navigation }) => {
 
       </View>
 
-<ScrollView>
-  
-<View style={styles.container}>
-        <View style={{ flexDirection: "row", marginTop: -80, justifyContent: "center" }}>
-          <Image style={{ width: 100, borderRadius: 200, height: 100, resizeMode: "contain" }} source={require('../../../asssets/dash.png')} />
-        </View>
-        <View >
-          <Text style={{ textAlign: "center", color: "#000", fontSize: 24, fontWeight: "400" }}>Farm 1</Text>
-          <Text style={{ textAlign: "center", color: "#000", fontSize: 14, fontWeight: "400", marginTop: 10 }}>Reference site about Lorem Ipsum</Text>
-        </View>
+      <ScrollView>
+
+        <View style={styles.container}>
+          <View style={{ flexDirection: "row", marginTop: -80, justifyContent: "center" }}>
+            <Image style={{ width: 100, borderRadius: 200, height: 100, resizeMode: "contain" }} source={params?.farm?.image ? { uri: `${IMAGE_BASE_URL}/${params.farm.image}` } : require('../../../asssets/dash.png')} />
+          </View>
+          <View >
+            <Text style={{ textAlign: "left", color: "#000", fontSize: 24, fontWeight: "400" }}>Field: {params?.farm?.farmName || ''}</Text>
+            {/* <Text style={{ textAlign: "center", color: "#000", fontSize: 14, fontWeight: "400", marginTop: 10 }}>Reference site about Lorem Ipsum</Text> */}
+          </View>
 
 
-        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <Text style={{ color: "#000", fontSize: 20, fontWeight: "400", marginTop: 10 }}>Crop: Rice</Text>
-          <Text style={{ color: "#000", fontSize: 20, fontWeight: "400", marginTop: 10 }}>Location: XYZ</Text>
-        </View>
-        <Text style={{ textAlign: "center", color: "#000", fontSize: 18, fontWeight: "600", marginTop: 10 }}>Used Pesticide</Text>
+          {/* <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+            <Text style={{ color: "#000", fontSize: 20, fontWeight: "400", marginTop: 10 }}>Crop: Rice</Text>
+            <Text style={{ color: "#000", fontSize: 20, fontWeight: "400", marginTop: 10 }}>Location: XYZ</Text>
+          </View> */}
+          {/* <Text style={{ textAlign: "center", color: "#000", fontSize: 18, fontWeight: "600", marginTop: 10 }}>Used Pesticide</Text> */}
 
-        <View style={styles.shadow}>
-          <Text style={{fontSize:13}}>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting.</Text>
-        </View>
+          <View style={styles.shadow}>
+            <Image style={{ width: 100, height: 100, }} source={!params?.farm?.image ? { uri: `${IMAGE_BASE_URL}/${params.farm.image}` } : require('../../../asssets/dashboardCard.png')} />
+            <View style={{ marginLeft: 10, }}>
+              <Text style={{ fontSize: 14, fontWeight: "600" }}>class ID: { }</Text>
+              <Text style={{ fontSize: 14, fontWeight: "600" }}>class Name: { }</Text>
+              <Text style={{ fontSize: 14, fontWeight: "600" }}>confidence: { }</Text>
+            </View>
+          </View>
+          <View style={styles.shadow}>
+            <Image style={{ width: 100, height: 100, }} source={!params?.farm?.image ? { uri: `${IMAGE_BASE_URL}/${params.farm.image}` } : require('../../../asssets/dashboardCard.png')} />
+            <View style={{ marginLeft: 10, }}>
+              <Text style={{ fontSize: 14, fontWeight: "600" }}>class ID: { }</Text>
+              <Text style={{ fontSize: 14, fontWeight: "600" }}>class Name: { }</Text>
+              <Text style={{ fontSize: 14, fontWeight: "600" }}>confidence: { }</Text>
+            </View>
+          </View>
 
-        <Text style={{ textAlign: "center", color: "#000", fontSize: 18, fontWeight: "600", marginTop: 10 }}>Detected Pesticide</Text>
+          {/* <Text style={{ textAlign: "center", color: "#000", fontSize: 18, fontWeight: "600", marginTop: 10 }}>Detected Pesticide</Text>
 
-        <View style={styles.shadow}>
-          <Text style={{fontSize:13}}>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting.</Text>
+          <View style={styles.shadow}>
+            <Text style={{ fontSize: 13 }}>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting.</Text>
+          </View> */}
         </View>
-      </View>
-</ScrollView>
+      </ScrollView>
 
     </ImageBackground>
 
@@ -91,6 +107,7 @@ const styles = StyleSheet.create({
   },
 
   shadow: {
+    flexDirection: "row",
     padding: 12,
     marginTop: 10,
     backgroundColor: 'rgba(255,255,255,0.5)',
@@ -101,7 +118,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.5)',
     marginHorizontal: 15,
     paddingHorizontal: 20,
-    marginTop:70,
+    marginTop: 70,
     borderRadius: 10,
     borderWidth: 2,
     borderColor: "#fff"

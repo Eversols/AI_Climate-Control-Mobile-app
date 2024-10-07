@@ -3,8 +3,8 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { get, post } from '../../utils/axios';
 import { storeToken } from '../../utils/StorageToken';
 
- const BASE_URL = 'https://smartpest.godepth.com/backend/api/v1';
-export const IMAGE_BASE_URL = 'https://smartpest.godepth.com/backend/uploads/images';
+ const BASE_URL = 'https://climate.finitrek.com/backend/api/v1';
+export const IMAGE_BASE_URL = 'https://climate.finitrek.com/uploads/images';
 
 export const signUpAsync = createAsyncThunk('auth/signUp', async (userData) => {
   try {

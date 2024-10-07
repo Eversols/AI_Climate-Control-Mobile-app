@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Modal,
   View,
@@ -12,11 +12,11 @@ import {
   ImageBackground,
 } from 'react-native';
 import CustomComponent from './customComponent';
-import {Path, Svg} from 'react-native-svg';
-import {useNavigation} from '@react-navigation/native';
-import {useSelector} from 'react-redux';
-import {storeFarmData} from '../redux/slices/farmSlice';
-import {get} from '../utils/axios';
+import { Path, Svg } from 'react-native-svg';
+import { useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
+import { storeFarmData } from '../redux/slices/farmSlice';
+import { get } from '../utils/axios';
 import CropList from './List';
 
 const FarmSelectionModal = ({
@@ -32,7 +32,7 @@ const FarmSelectionModal = ({
   const [selectedCorp, setSelectedCorp] = useState('');
   const [showConfirmation, setShowConfirmation] = useState(false);
   const navigation = useNavigation();
-  const {farmData} = useSelector(state => state.farm);
+  const { farmData } = useSelector(state => state.farm);
 
   const [cropOptions, setCropOptions] = useState([]);
   console.log('selectedCorp', selectedCorp);
@@ -66,7 +66,7 @@ const FarmSelectionModal = ({
       const updatedOptions = [...prevCropOptions]; // Copy the array
       const isSelected = updatedOptions[index].selected;
 
-      updatedOptions[index] = {...updatedOptions[index], selected: !isSelected}; // Toggle selected
+      updatedOptions[index] = { ...updatedOptions[index], selected: !isSelected }; // Toggle selected
 
       return updatedOptions; // Return the updated array
     });
@@ -85,34 +85,39 @@ const FarmSelectionModal = ({
   };
 
   const [farmName, setFarmName] = useState('');
+  const [color, setColor] = useState('');
   const handleContinue = () => {
     const isAnyCropSelected = cropOptions.some(crop => crop.selected);
     const isFarmNameProvided = !!farmName;
-    if (!isFarmNameProvided && !isAnyCropSelected) {
-      alert(
-        'Please provide a farm name and choose at least one crop before continuing.',
-      );
-    } else if (!isFarmNameProvided) {
+    // if (!isFarmNameProvided && !isAnyCropSelected) {
+    //   alert(
+    //     'Please provide a farm name and choose at least one crop before continuing.',
+    //   );
+    // } else 
+    if (!isFarmNameProvided) {
       alert('Please provide a farm name before continuing.');
-    } else if (!isAnyCropSelected) {
-      alert('Please choose at least one crop before continuing.');
-    } else {
-      setShowConfirmation(true);
+    } 
+    // else if (!isAnyCropSelected) {
+    //   alert('Please choose at least one crop before continuing.');
+    // } else {
+    //   setShowConfirmation(true);
 
-      // navigation.navigate('FarmImageSelection')
-    }
+    //   // navigation.navigate('FarmImageSelection')
+    // }
+
+    onSubmit(farmName, color, selectedCorp, false);
   };
 
   const handleYes = () => {
     // setShowConfirmation(false);
     // onClose()
     console.log('ineeeeeeeeeeeeeeeee');
-    onSubmit( farmName, selectedCorp, true);
+    onSubmit(farmName, selectedCorp, true);
   };
 
   const handleNo = () => {
     // setShowConfirmation(false);
-    onSubmit( farmName, selectedCorp, false);
+    onSubmit(farmName, selectedCorp, false);
     // dispatch(storeFarmData(null))
     // navigation.navigate('FarmImageSelection');
     reset();
@@ -121,6 +126,10 @@ const FarmSelectionModal = ({
   useEffect(() => {
     getCrops();
   }, []);
+
+  const handleColorChange = (newColor) => {
+    setColor(newColor);
+  };
 
   return (
     // <Modal
@@ -133,54 +142,35 @@ const FarmSelectionModal = ({
       source={require('../../assets/images/image145.png')}
       style={styles.imageBackground}
       blurRadius={9}>
-      <View style={styles.topContainer}>
-        <Text style={styles.modalTitle}>Name for the farm</Text>
-        <CustomComponent>
-          <TextInput
-            style={styles.textInput}
-            placeholder="Farm 01"
-            onChangeText={text => setFarmName(text)}
-            value={farmName}
-          />
-        </CustomComponent>
+      <View style={{ marginVertical: 52 }}>
+        <View style={styles.topContainer}>
+          <Text style={styles.modalTitle}>Name for the farm</Text>
+          <CustomComponent>
+            <TextInput
+              style={styles.textInput}
+              placeholder="E.G. Rice, Corn, Wheat, Pulses..."
+              onChangeText={text => setFarmName(text)}
+              value={farmName}
+            />
+          </CustomComponent>
+        </View>
+        <View style={[styles.topContainer, { marginTop: 0, marginBottom: 32 }]}>
+          <Text style={styles.modalTitle}>Field Colour</Text>
+         
+          <CustomComponent>
+            <TextInput
+              style={styles.textInput}
+              placeholder="Choose or Default "
+              onChangeText={text => setColor(text)}
+              value={color}
+            />
+          </CustomComponent>
+        </View>
       </View>
 
       <View style={styles.bottomContainer}>
-        <View style={styles.modalContent}>
-          <View style={{alignItems: 'center'}}>
-            <Text style={styles.modalTitle}>Select the Crops of the farm</Text>
-          </View>
-          <CropList options={cropOptions}  onPress={(_, index)=>handleCropOptionSelect(index)} />
-          {/* <FlatList
-            data={cropOptions}
-            keyExtractor={item => item.value}
-            scrollEnabled={true} 
-            renderItem={({item, index}) => (
-              <>
-                <TouchableOpacity
-                  style={styles.checkboxContainer}
-                  onPress={() => handleCropOptionSelect(index)}>
-                  <Text style={styles.cropOptionText}>{item.label}</Text>
-                  {item.selected && (
-                    <Svg
-                      width="16"
-                      height="12"
-                      viewBox="0 0 16 12"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg">
-                      <Path
-                        d="M16 1.26174L5.02857 12L0 7.0783L1.28914 5.81656L5.02857 9.46756L14.7109 0L16 1.26174Z"
-                        fill="black"
-                      />
-                    </Svg>
-                  )}
-                </TouchableOpacity>
-                {item.label !== 'Sugar' && <View style={styles.whiteLine} />}
-              </>
-            )}
-          /> */}
-        </View>
-        <View style={{width: '60%'}}>
+
+        <View style={{ width: '60%' }}>
           <TouchableOpacity
             onPress={handleContinue}
             style={{
@@ -190,7 +180,7 @@ const FarmSelectionModal = ({
               borderRadius: 30,
               alignItems: 'center',
             }}>
-            <Text style={{fontSize: 16, color: '#000000', fontWeight: '600'}}>
+            <Text style={{ fontSize: 16, color: '#000000', fontWeight: '600' }}>
               Continue
             </Text>
           </TouchableOpacity>
@@ -205,7 +195,7 @@ const FarmSelectionModal = ({
     // </Modal>
   );
 };
-const ConfirmationModal = ({visible, onYes, onNo}) => {
+const ConfirmationModal = ({ visible, onYes, onNo }) => {
   if (!visible) {
     return null;
   }
@@ -215,7 +205,7 @@ const ConfirmationModal = ({visible, onYes, onNo}) => {
       transparent={true}
       animationType="slide"
       visible={visible}
-      onRequestClose={() => {}}>
+      onRequestClose={() => { }}>
       {/* <ImageBackground
                 source={require('../../assets/images/image145.png')}
                 style={styles.imageBackground}
@@ -235,11 +225,11 @@ const ConfirmationModal = ({visible, onYes, onNo}) => {
             Do You Want To Draw The Area Of The Crops In Your Farm?
           </Text>
           <TouchableOpacity style={styles.confirmationOption} onPress={onYes}>
-            <Text style={{color: '#1D2324', fontSize: 14}}>Yes</Text>
+            <Text style={{ color: '#1D2324', fontSize: 14 }}>Yes</Text>
           </TouchableOpacity>
           <View style={styles.blackLine} />
           <TouchableOpacity style={styles.confirmationOption} onPress={onNo}>
-            <Text style={{color: '#1D2324', fontSize: 14}}>Skip</Text>
+            <Text style={{ color: '#1D2324', fontSize: 14 }}>Skip</Text>
           </TouchableOpacity>
         </View>
       </View>

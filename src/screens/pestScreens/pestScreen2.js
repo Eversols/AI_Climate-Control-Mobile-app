@@ -76,13 +76,13 @@ const PestScreen2 = ({ navigation }) => {
   const handleSubmit = async () => {
     try {
       const body = {
-        detection_list: [ "user-images/user-id-1/user-id-1-2023-11-26-15-48-11-00.JPG"],
+        detection_list: [ pestImage?.path],
       }
       const response = await axios.post('https://02egvwurf5.execute-api.eu-north-1.amazonaws.com/test_sagemaker/detect/pest/pest', {
         ...body
       });
       if(response?.data){
-        navigation.navigate("pestScreen3", {insectData: response.data[0]})
+        navigation.navigate("pestScreen4", {insectData: response.data[0]})
 
       }
       console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ', response.data);
@@ -205,7 +205,7 @@ const PestScreen2 = ({ navigation }) => {
           </TouchableOpacity>
           {pestImage &&
             <TouchableOpacity onPress={handleSubmit} style={[styles.btn, { width: "70%", }]}>
-              <Text style={{ fontWeight: "700", fontSize: 18, color: "#000" }}>Next</Text>
+              <Text style={{ fontWeight: "700", fontSize: 18, color: "#000" }}>Send</Text>
             </TouchableOpacity>
 
 
