@@ -1,4 +1,3 @@
-
 // import axios from 'axios';
 
 // const axiosInstance = axios.create({
@@ -10,7 +9,6 @@
 
 // export const put = (api, body) => axiosInstance.put(api, body);
 // export const del = (api, body) => axiosInstance.delete(api, body);
-
 
 // import axios from 'axios';
 
@@ -33,7 +31,6 @@
 //   Promise.reject(error);
 // });
 
-
 // const post = (url, body, options) => axiosInstance.post(url, body, {
 //   ...options, headers: {
 //     ...options?.headers,
@@ -46,48 +43,48 @@
 
 // export { axiosInstance, post, get, put, del };
 
-
-
-
-
-import axios from "axios";
-import { GetToken } from '../StorageToken';
+import axios from 'axios';
+import {GetToken} from '../StorageToken';
 
 const axiosInstant = axios.create({
-  baseURL: "https://climate.finitrek.com/api/v1"
+  baseURL: 'https://climate.finitrek.co.uk/api/v1',
   // baseURL: "https://digitalmining.axiscodingsolutions.com/demo/api/user"
-})
-
-
-axiosInstant.interceptors.request.use(async config => {
-  const token = await GetToken('token');
-  if (token) {
-    console.log('JJJJJJJJJJJJJJJJJJJJJ', token)
-    config.headers['Authorization'] = 'Bearer ' + token;
-  }
-  // console.log("tokem............", config.headers['Authorization'])
-  return config;
-}, error => {
-  Promise.reject(error);
-
 });
+
+axiosInstant.interceptors.request.use(
+  async config => {
+    console.log('url is: ', `${config.baseURL}${config.url}`);
+    const token = await GetToken('token');
+    if (token) {
+      console.log('JJJJJJJJJJJJJJJJJJJJJ', token);
+      config.headers['Authorization'] = 'Bearer ' + token;
+    }
+    // console.log("tokem............", config.headers['Authorization'])
+    return config;
+  },
+  error => {
+    Promise.reject(error);
+  },
+);
 
 export const get = (api, body) => axiosInstant.get(api);
 export const post = (api, body) => axiosInstant.post(api, body);
-export const postForm = (url, body, options) => axiosInstant.post(url, body, {
-  ...options, headers: {
-    ...options?.headers,
-    'Content-Type': 'multipart/form-data', // Set Content-Type for the specific request
-  },
-});
+export const postForm = (url, body, options) =>
+  axiosInstant.post(url, body, {
+    ...options,
+    headers: {
+      ...options?.headers,
+      'Content-Type': 'multipart/form-data', // Set Content-Type for the specific request
+    },
+  });
 
-export const putForm = (url, body, options) => axiosInstant.put(url, body, {
-  ...options, headers: {
-    ...options?.headers,
-    'Content-Type': 'multipart/form-data', // Set Content-Type for the specific request
-  },
-});
+export const putForm = (url, body, options) =>
+  axiosInstant.put(url, body, {
+    ...options,
+    headers: {
+      ...options?.headers,
+      'Content-Type': 'multipart/form-data', // Set Content-Type for the specific request
+    },
+  });
 export const put = (api, body) => axiosInstant.put(api, body);
 export const del = (api, body) => axiosInstant.delete(api, body);
-
-
