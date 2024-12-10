@@ -19,7 +19,8 @@ const UserProfileScreen = ({ navigation }) => {
 
     return (
         <ImageBackground
-            source={require('../../asssets/profileBack.png')}
+        blurRadius={32}
+            source={require('../../asssets/dashboard-bg.jpg')}
             style={styles.backgroundImage}>
             <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                 <TouchableOpacity style={{ padding: 20, marginTop: 10, marginLeft: 10 }} onPress={() => navigation.goBack()}>

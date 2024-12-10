@@ -56,19 +56,26 @@ axiosInstant.interceptors.request.use(
     console.log('url is: ', `${config.baseURL}${config.url}`);
     const token = await GetToken('token');
     if (token) {
-      console.log('JJJJJJJJJJJJJJJJJJJJJ', token);
+      console.log('request token is: ', token);
       config.headers['Authorization'] = 'Bearer ' + token;
     }
     // console.log("tokem............", config.headers['Authorization'])
     return config;
   },
   error => {
+    console.error('request error', error);
     Promise.reject(error);
   },
 );
 
-export const get = (api, body) => axiosInstant.get(api);
-export const post = (api, body) => axiosInstant.post(api, body);
+export const get = (api, body) =>
+  axiosInstant.get(api).catch(error => console.error('request error', error));
+export const post = (api, body) => {
+  console.log('endpoint', api, 'body', body);
+  return axiosInstant
+    .post(api, body)
+    .catch(error => console.error('request error', error));
+};
 export const postForm = (url, body, options) =>
   axiosInstant.post(url, body, {
     ...options,

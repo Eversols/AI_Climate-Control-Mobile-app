@@ -36,7 +36,8 @@ const Profile = ({ navigation }) => {
   console.log('UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU', user)
   return (
     <ImageBackground
-      source={require('../asssets/profileBack.png')} // Replace with the path to your image
+      blurRadius={32}
+      source={require('../asssets/dashboard-bg.jpg')} // Replace with the path to your image
       style={styles.backgroundImage}>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <TouchableOpacity style={{ padding: 20, marginTop: 10, marginLeft: 10 }} onPress={() => navigation.goBack()}>
@@ -63,11 +64,11 @@ const Profile = ({ navigation }) => {
 
       <TouchableOpacity style={[styles.btn]} onPress={navigateToUserProfile}>
         <Svg width="20" height="22" viewBox="0 0 20 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <Path d="M9.5 12C12.5376 12 15 9.53757 15 6.5C15 3.46243 12.5376 1 9.5 1C6.46243 1 4 3.46243 4 6.5C4 9.53757 6.46243 12 9.5 12Z" stroke="gray" stroke-opacity="0.47" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          <Path d="M9.5 12C12.5376 12 15 9.53757 15 6.5C15 3.46243 12.5376 1 9.5 1C6.46243 1 4 3.46243 4 6.5C4 9.53757 6.46243 12 9.5 12Z" stroke="#000000" stroke-opacity="0.47" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
           <Path d="M19 21C19 18.6131 18.0518 16.3239 16.364 14.636C14.6761 12.9482 12.3869 12 10 12C7.61305 12 5.32387 12.9482 3.63604 14.636C1.94821 16.3239 1 18.6131 1 21" stroke="gray" stroke-opacity="0.47" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
         </Svg>
 
-        <Text style={{ fontWeight: "400", marginLeft: 20, fontSize: 15, color: "gray" }}>View Profile</Text>
+        <Text style={{ fontWeight: "400", marginLeft: 20, fontSize: 15, color: "#000000" }}>View Profile</Text>
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => navigation.navigate("dashboard")} style={[styles.btn]}>
@@ -76,24 +77,24 @@ const Profile = ({ navigation }) => {
         </Svg>
 
 
-        <Text style={{ fontWeight: "400", marginLeft: 20, fontSize: 15, color: "gray" }}>Dash Board</Text>
+        <Text style={{ fontWeight: "400", marginLeft: 20, fontSize: 15, color: "#000000" }}>Dash Board</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={[styles.btn]}>
         <Svg width="25" height="17" viewBox="0 0 25 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <Path d="M16.3333 6L22.1511 3.155C22.3458 3.05979 22.5622 3.01485 22.7797 3.02443C22.9972 3.03402 23.2086 3.09781 23.3938 3.20976C23.5791 3.32171 23.732 3.4781 23.8381 3.66409C23.9441 3.85008 23.9999 4.05951 24 4.2725V12.7275C23.9999 12.9405 23.9441 13.1499 23.8381 13.3359C23.732 13.5219 23.5791 13.6783 23.3938 13.7902C23.2086 13.9022 22.9972 13.966 22.7797 13.9756C22.5622 13.9851 22.3458 13.9402 22.1511 13.845L16.3333 11V6ZM1 3.5C1 2.83696 1.26925 2.20107 1.7485 1.73223C2.22776 1.26339 2.87778 1 3.55556 1H13.7778C14.4556 1 15.1056 1.26339 15.5848 1.73223C16.0641 2.20107 16.3333 2.83696 16.3333 3.5V13.5C16.3333 14.163 16.0641 14.7989 15.5848 15.2678C15.1056 15.7366 14.4556 16 13.7778 16H3.55556C2.87778 16 2.22776 15.7366 1.7485 15.2678C1.26925 14.7989 1 14.163 1 13.5V3.5Z" stroke="gray" stroke-opacity="0.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          <Path d="M16.3333 6L22.1511 3.155C22.3458 3.05979 22.5622 3.01485 22.7797 3.02443C22.9972 3.03402 23.2086 3.09781 23.3938 3.20976C23.5791 3.32171 23.732 3.4781 23.8381 3.66409C23.9441 3.85008 23.9999 4.05951 24 4.2725V12.7275C23.9999 12.9405 23.9441 13.1499 23.8381 13.3359C23.732 13.5219 23.5791 13.6783 23.3938 13.7902C23.2086 13.9022 22.9972 13.966 22.7797 13.9756C22.5622 13.9851 22.3458 13.9402 22.1511 13.845L16.3333 11V6ZM1 3.5C1 2.83696 1.26925 2.20107 1.7485 1.73223C2.22776 1.26339 2.87778 1 3.55556 1H13.7778C14.4556 1 15.1056 1.26339 15.5848 1.73223C16.0641 2.20107 16.3333 2.83696 16.3333 3.5V13.5C16.3333 14.163 16.0641 14.7989 15.5848 15.2678C15.1056 15.7366 14.4556 16 13.7778 16H3.55556C2.87778 16 2.22776 15.7366 1.7485 15.2678C1.26925 14.7989 1 14.163 1 13.5V3.5Z" stroke="#000000" stroke-opacity="0.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
         </Svg>
 
 
-        <Text style={{ fontWeight: "400", marginLeft: 20, fontSize: 15, color: "gray" }}>Watch Video To Guide This App</Text>
+        <Text style={{ fontWeight: "400", marginLeft: 20, fontSize: 15, color: "#000000" }}>Watch Video To Guide This App</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={[styles.btn]} onPress={logout}>
         <Svg width="24" height="22" viewBox="0 0 24 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <Path d="M13 8V1H1V21H13V14M22 11H5M22 11L17 6M22 11L17 16" stroke="gray" stroke-opacity="0.5" stroke-width="2" />
+          <Path d="M13 8V1H1V21H13V14M22 11H5M22 11L17 6M22 11L17 16" stroke="#000000" stroke-opacity="0.5" stroke-width="2" />
         </Svg>
 
-        <Text style={{ fontWeight: "400", marginLeft: 20, fontSize: 15, color: "gray" }}>Log Out</Text>
+        <Text style={{ fontWeight: "400", marginLeft: 20, fontSize: 15, color: "#000000" }}>Log Out</Text>
       </TouchableOpacity>
 
 
@@ -111,7 +112,7 @@ const styles = StyleSheet.create({
     // justifyContent: 'center',
   },
   btn: {
-    backgroundColor: 'rgba(255,255,255,0.4)',
+    backgroundColor: 'rgba(255,255,255,0.8)',
     alignSelf: "center",
     marginTop: 20,
     borderRadius: 30,

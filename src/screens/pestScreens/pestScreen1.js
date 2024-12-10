@@ -5,19 +5,11 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
-  ScrollView,
-  Dimensions,
-  Button,
-  TextInput,
   ImageBackground,
 } from 'react-native';
-import RBSheet from 'react-native-raw-bottom-sheet';
-import LinearGradient from 'react-native-linear-gradient';
-import {useNavigation} from '@react-navigation/native';
 // import MapView, { Marker } from 'react-native-maps';
 // import Mapbox, { UserLocation, Camera } from '@rnmapbox/maps';
-import {Defs, G, Filter, Path, Rect, Svg} from 'react-native-svg';
-import {SelectList} from 'react-native-dropdown-select-list';
+import {Path, Svg} from 'react-native-svg';
 import DropDown2 from '../../components/dropDown2';
 import {useDispatch, useSelector} from 'react-redux';
 import {GetMyFarms} from '../../redux/slices/farmSlice';
@@ -70,7 +62,9 @@ const PestScreen1 = ({navigation, route}) => {
             }))
           : [];
       setCorpOptions(crops);
-      const crop = crops?.find(item => item.id === route.params?.crop?.crop?.id);
+      const crop = crops?.find(
+        item => item.id === route.params?.crop?.crop?.id,
+      );
       setFarmName(farm?.farmName);
       setCropName(crop?.name);
       dispatch(setSelectedFarm(farm?.id));

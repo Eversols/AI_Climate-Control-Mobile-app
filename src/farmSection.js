@@ -1,13 +1,18 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 const FarmSection = () => {
   const navigation = useNavigation();
 
   return (
-
-    <LinearGradient colors={['#1e90ff', '#f0e68c']} style={{ flex: 1 }}>
+    <LinearGradient colors={['#1e90ff', '#f0e68c']} style={{flex: 1}}>
       <ScrollView>
         <View style={styles.container}>
           <Text style={styles.title}>My Farm Section</Text>
@@ -17,12 +22,14 @@ const FarmSection = () => {
           </View>
 
           <View style={styles.touchablesContainer}>
-            <TouchableOpacity style={styles.touchable1} onPress={() => navigation.navigate('detectedPests')} >
-
+            <TouchableOpacity
+              style={styles.touchable1}
+              onPress={() => navigation.navigate('detectedPests')}>
               <Text style={styles.touchableText}>Detected Pests</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.touchable1} onPress={() => navigation.navigate('usedPesticides')} >
-
+            <TouchableOpacity
+              style={styles.touchable1}
+              onPress={() => navigation.navigate('usedPesticides')}>
               <Text style={styles.touchableText}>Used Pesticides</Text>
             </TouchableOpacity>
           </View>
@@ -32,19 +39,21 @@ const FarmSection = () => {
           </View>
 
           <View style={styles.touchablesContainer}>
-            <TouchableOpacity style={styles.touchable2} >
+            <TouchableOpacity style={styles.touchable2}>
               <Text style={styles.touchableText2}>Saved Locations</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.touchable2} >
+            <TouchableOpacity style={styles.touchable2}>
               <Text style={styles.touchableText2}>Feedback</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.touchable2} >
+            <TouchableOpacity style={styles.touchable2}>
               <Text style={styles.touchableText2}>User Account</Text>
             </TouchableOpacity>
           </View>
 
-          <TouchableOpacity style={styles.fullWidthTouchable} >
-            <Text style={styles.fullWidthTouchableText}>Terms and Conditions</Text>
+          <TouchableOpacity style={styles.fullWidthTouchable}>
+            <Text style={styles.fullWidthTouchableText}>
+              Terms and Conditions
+            </Text>
           </TouchableOpacity>
 
           <View style={styles.betaSection}>
@@ -54,7 +63,6 @@ const FarmSection = () => {
         </View>
       </ScrollView>
     </LinearGradient>
-
   );
 };
 
@@ -77,7 +85,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     // marginLeft: 20,
     paddingVertical: 20,
-    width: "90%",
+    width: '90%',
 
     // marginRight: 20,
     alignItems: 'center',
@@ -91,7 +99,7 @@ const styles = StyleSheet.create({
     height: 200,
     // marginLeft: 20,
     // marginRight: 20,
-    width: "90%",
+    width: '90%',
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 30,
@@ -120,7 +128,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 20,
 
-    marginHorizontal: 2
+    marginHorizontal: 2,
   },
   touchableText: {
     color: '#464647',
