@@ -165,7 +165,10 @@ const HomeScreen = ({navigation}) => {
       farms: prev.farms.map(e => ({
         ...e,
         farmName: farmName,
-        color: color,
+        color:
+          '#000000'.replace(/0/g, function () {
+            return (~~(Math.random() * 16)).toString(16);
+          }) + 'aa',
         corp: corp,
         confirm: confirm,
       })),
@@ -187,7 +190,10 @@ const HomeScreen = ({navigation}) => {
       const fd = {
         farmName: farmName,
         polygons: coordinates,
-        farmColor: color,
+        farmColor:
+          '#000000'.replace(/0/g, function () {
+            return (~~(Math.random() * 16)).toString(16);
+          }) + 'aa',
         // "parentId": "65ad5977749943e6bc93793e"
       };
       console.log('formData is ', fd);
@@ -968,7 +974,9 @@ const HomeScreen = ({navigation}) => {
                 <Polygon
                   key={`${c.farmName}-${i}`}
                   coordinates={[...c.coordinates, c.coordinates[0]]}
-                  fillColor={c.color}
+                  fillColor={
+                    c?.color ?? `#${Math.random().toString(16).substr(-6)}`
+                  }
                   strokeColor="#FF0000"
                   strokeWidth={1}
                 />
@@ -1176,12 +1184,14 @@ const HomeScreen = ({navigation}) => {
                 height: '40%',
                 backgroundColor:
                   '#FFFFFF' +
-                  (!(!polygon.isAddFarmPressed &&
-                  polygon.farms.length < 1 &&
-                  !polygon.isAddCropPressed &&
-                  addCrops.length < 1 &&
-                  innerPolygon.selectedCoordinates.length < 1 &&
-                  !selectedFarm)
+                  (!(
+                    !polygon.isAddFarmPressed &&
+                    polygon.farms.length < 1 &&
+                    !polygon.isAddCropPressed &&
+                    addCrops.length < 1 &&
+                    innerPolygon.selectedCoordinates.length < 1 &&
+                    !selectedFarm
+                  )
                     ? 'FF'
                     : 'AA'),
                 borderRadius: 50,

@@ -130,8 +130,9 @@ const PestScreen4 = ({navigation, route}) => {
   };
   return (
     <ImageBackground
-      source={require('../../../asssets/pestScreen3.png')} // Replace with the path to your image
-      style={styles.backgroundImage}>
+      source={require('../../../asssets/dashboard-bg.jpg')} // Replace with the path to your image
+      style={styles.backgroundImage}
+      blurRadius={32}>
       <TouchableOpacity
         style={{padding: 20, marginHorizontal: 10}}
         onPress={() => navigation.goBack()}>
@@ -152,11 +153,15 @@ const PestScreen4 = ({navigation, route}) => {
         <View
           style={{
             flexDirection: 'row',
-            marginTop: -20,
             justifyContent: 'center',
           }}>
           <Image
-            style={{width: '85%', height: 250, resizeMode: 'contain'}}
+            style={{
+              width: 183,
+              height: 163,
+              resizeMode: 'contain',
+              borderRadius: 10,
+            }}
             source={
               pestImage
                 ? {uri: `${pestImage?.path}`}
@@ -193,7 +198,7 @@ const PestScreen4 = ({navigation, route}) => {
               // addFormData()
               navigation.navigate('bottom_navigation');
             }}
-            style={[styles.btn, {width: '70%'}]}>
+            style={[styles.btn, {width: '70%', elevation: 4}]}>
             <Text style={{fontWeight: '700', fontSize: 18, color: '#000'}}>
               Save To Dashboard
             </Text>
@@ -211,7 +216,7 @@ const styles = StyleSheet.create({
     // justifyContent: 'center',
   },
   btn: {
-    backgroundColor: 'rgba(255,255,255,0.4)',
+    backgroundColor: 'rgba(255,255,255,0.8)',
     alignSelf: 'center',
     marginTop: 20,
     borderRadius: 30,

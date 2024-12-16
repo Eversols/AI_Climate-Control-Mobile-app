@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, {useRef, useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -10,7 +10,7 @@ import {
   Button,
   TextInput,
   ImageBackground,
-  ActivityIndicator
+  ActivityIndicator,
 } from 'react-native';
 // import MapView, { Marker } from 'react-native-maps';
 import {
@@ -25,42 +25,47 @@ import {
 } from 'react-native-svg';
 
 // import { CameraRoll } from "@react-native-camera-roll/camera-roll";
-import { Camera, useCameraDevices, useCameraFormat, } from 'react-native-vision-camera';
-import { setPestImage } from '../../redux/slices/pesticidesSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { post } from '../../utils/axios';
+import {
+  Camera,
+  useCameraDevices,
+  useCameraFormat,
+} from 'react-native-vision-camera';
+import {setPestImage} from '../../redux/slices/pesticidesSlice';
+import {useDispatch, useSelector} from 'react-redux';
+import {post} from '../../utils/axios';
 import axios from 'axios';
 
-const PestScreen2 = ({ navigation }) => {
+const PestScreen2 = ({navigation, route}) => {
   // const navigation = useNavigation();
   const refRBSheet = useRef();
-  const [locheigth, setLocheigth] = useState(80)
-  const [camerOn, setCamerOn] = useState(true)
+  const [locheigth, setLocheigth] = useState(80);
+  const [camerOn, setCamerOn] = useState(true);
+  const {farm} = route.params;
 
   const camera = useRef(null); // Create a ref
-  const [currentImage, setImage] = useState()
+  const [currentImage, setImage] = useState();
 
-  const { pestImage } = useSelector((state) => state.pest)
+  const {pestImage} = useSelector(state => state.pest);
 
   const devices = useCameraDevices('wide-angle-camera');
   const device = devices.back || devices[0];
   const format = useCameraFormat(device, [
-    { videoResolution: 'max' },
-    { photoResolution: 'max' }
-  ])
-  const dispatch = useDispatch()
+    {videoResolution: 'max'},
+    {photoResolution: 'max'},
+  ]);
+  const dispatch = useDispatch();
   const takePhoto = async () => {
     try {
       const path = await camera.current.takePhoto();
-      dispatch(setPestImage(
-        { ...path, path: `file://${path.path}` }));
-      setCamerOn(false)
+      dispatch(setPestImage({...path, path: `file://${path.path}`}));
+      setCamerOn(false);
     } catch (err) {
-      console.log("camera error", err);
+      console.log('camera error', err);
     }
   };
 
   useEffect(() => {
+    console.log('image for farm to be processed by AI', farm);
     checkPermission();
   }, []);
   const checkPermission = async () => {
@@ -68,32 +73,40 @@ const PestScreen2 = ({ navigation }) => {
     // const newMicrophonePermission = await Camera.requestMicrophonePermission();
     console.log(newCameraPermission);
   };
-  console.log("kkkkkkkkkkkkkkkkkkkkk", pestImage)
-  if (device == null) return <ActivityIndicator style={{ marginTop: 300, alignSelf: "center" }} color={"gray"} size={100} />
-
-
+  console.log('kkkkkkkkkkkkkkkkkkkkk', pestImage);
+  if (device == null)
+    return (
+      <ActivityIndicator
+        style={{marginTop: 300, alignSelf: 'center'}}
+        color={'gray'}
+        size={100}
+      />
+    );
 
   const handleSubmit = async () => {
     try {
       const body = {
-        detection_list: [ pestImage?.path],
+        detection_list: [pestImage?.path],
+      };
+      const response = await axios.post(
+        'https://02egvwurf5.execute-api.eu-north-1.amazonaws.com/test_sagemaker/detect/pest/pest',
+        {
+          ...body,
+        },
+      );
+      if (response?.data) {
+        navigation.navigate('pestScreen4', {insectData: response.data[0]});
       }
-      const response = await axios.post('https://02egvwurf5.execute-api.eu-north-1.amazonaws.com/test_sagemaker/detect/pest/pest', {
-        ...body
-      });
-      if(response?.data){
-        navigation.navigate("pestScreen4", {insectData: response.data[0]})
-
-      }
-      console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ', response.data);
-    } catch (error) {
-
-    }
-  }
+      console.log(
+        'ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ',
+        response.data,
+      );
+    } catch (error) {}
+  };
 
   return (
     <>
-      {camerOn ?
+      {camerOn ? (
         <>
           <Camera
             // {...props}
@@ -146,9 +159,7 @@ const PestScreen2 = ({ navigation }) => {
                   fill="#6b9d5f"
                 />
               </Svg>
-              <TouchableOpacity
-                onPress={takePhoto}
-              >
+              <TouchableOpacity onPress={takePhoto}>
                 <View>
                   <Svg
                     width="72"
@@ -178,42 +189,91 @@ const PestScreen2 = ({ navigation }) => {
               </Svg>
             </View>
           </View>
-        </> :
-
+        </>
+      ) : (
         <ImageBackground
-          source={require('../../../asssets/pestScreen1.png')} // Replace with the path to your image
-          style={styles.backgroundImage}>
-          <TouchableOpacity style={{ padding: 20, margin: 10 }} onPress={() => navigation.goBack()}>
-            <Svg width="8" height="16" viewBox="0 0 8 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <Path d="M6.41475 15.6834L0.202776 8.59103C0.129044 8.5066 0.0766934 8.41513 0.0457257 8.31662C0.014758 8.21812 -0.00048003 8.11258 1.15207e-05 8C1.15207e-05 7.88742 0.0154954 7.78188 0.0464631 7.68338C0.0774308 7.58487 0.129535 7.4934 0.202776 7.40897L6.41475 0.295514C6.58679 0.0985048 6.80185 0 7.05991 0C7.31797 0 7.53917 0.105541 7.7235 0.316623C7.90783 0.527704 8 0.773967 8 1.05541C8 1.33685 7.90783 1.58311 7.7235 1.7942L2.30416 8L7.7235 14.2058C7.89555 14.4028 7.98157 14.6457 7.98157 14.9345C7.98157 15.2232 7.8894 15.4729 7.70507 15.6834C7.52074 15.8945 7.30569 16 7.05991 16C6.81413 16 6.59908 15.8945 6.41475 15.6834Z" fill="black" />
+          source={require('../../../asssets/dashboard-bg.jpg')} // Replace with the path to your image
+          style={styles.backgroundImage}
+          blurRadius={32}>
+          <View
+            style={{
+              backgroundColor: '#ffffff33',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+            }}
+          />
+          <TouchableOpacity
+            style={{padding: 20, margin: 10}}
+            onPress={() => navigation.goBack()}>
+            <Svg
+              width="8"
+              height="16"
+              viewBox="0 0 8 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg">
+              <Path
+                d="M6.41475 15.6834L0.202776 8.59103C0.129044 8.5066 0.0766934 8.41513 0.0457257 8.31662C0.014758 8.21812 -0.00048003 8.11258 1.15207e-05 8C1.15207e-05 7.88742 0.0154954 7.78188 0.0464631 7.68338C0.0774308 7.58487 0.129535 7.4934 0.202776 7.40897L6.41475 0.295514C6.58679 0.0985048 6.80185 0 7.05991 0C7.31797 0 7.53917 0.105541 7.7235 0.316623C7.90783 0.527704 8 0.773967 8 1.05541C8 1.33685 7.90783 1.58311 7.7235 1.7942L2.30416 8L7.7235 14.2058C7.89555 14.4028 7.98157 14.6457 7.98157 14.9345C7.98157 15.2232 7.8894 15.4729 7.70507 15.6834C7.52074 15.8945 7.30569 16 7.05991 16C6.81413 16 6.59908 15.8945 6.41475 15.6834Z"
+                fill="black"
+              />
             </Svg>
-
           </TouchableOpacity>
 
-          <View style={{ flexDirection: "row", marginTop: 40, justifyContent: "center" }}>
-            <Image style={{ width: "85%", height: 350, resizeMode: "contain" }} source={pestImage ? { uri: `${pestImage?.path}` } : require('../../../asssets/minibutter.png')} />
+          <View style={{flexDirection: "row-reverse", paddingHorizontal: 15}} >
+            <Text
+              style={{
+                backgroundColor: '#ffffffaa',
+                color: '#000000',
+                paddingVertical: 6,
+                paddingHorizontal: 15,
+                borderRadius: 8,
+                borderColor: '#ffffff',
+                borderWidth: 1,
+              }}>
+              {farm}
+            </Text>
           </View>
 
+          <View
+            style={{
+              flexDirection: 'row',
+              marginTop: 40,
+              justifyContent: 'center',
+            }}>
+            <Image
+              style={{width: '85%', height: 350, resizeMode: 'contain'}}
+              source={
+                pestImage
+                  ? {uri: `${pestImage?.path}`}
+                  : require('../../../asssets/minibutter.png')
+              }
+            />
+          </View>
 
-
-          <TouchableOpacity onPress={() => {
-            setCamerOn(true)
-            // navigation.navigate("pestScreen3")
-
-          }} style={[styles.btn, { width: "70%", }]}>
-            <Text style={{ fontWeight: "700", fontSize: 18, color: "#000" }}>{pestImage ? "Retake" : "Take"} Image</Text>
+          <TouchableOpacity
+            onPress={() => {
+              setCamerOn(true);
+              // navigation.navigate("pestScreen3")
+            }}
+            style={[styles.btn, {width: '70%'}]}>
+            <Text style={{fontWeight: '700', fontSize: 18, color: '#000'}}>
+              {pestImage ? 'Retake' : 'Take'} Image
+            </Text>
           </TouchableOpacity>
-          {pestImage &&
-            <TouchableOpacity onPress={handleSubmit} style={[styles.btn, { width: "70%", }]}>
-              <Text style={{ fontWeight: "700", fontSize: 18, color: "#000" }}>Send</Text>
+          {pestImage && (
+            <TouchableOpacity
+              onPress={handleSubmit}
+              style={[styles.btn, {width: '70%'}]}>
+              <Text style={{fontWeight: '700', fontSize: 18, color: '#000'}}>
+                Send
+              </Text>
             </TouchableOpacity>
-
-
-          }
+          )}
         </ImageBackground>
-      }
+      )}
     </>
-
   );
 };
 
@@ -224,17 +284,18 @@ const styles = StyleSheet.create({
     // justifyContent: 'center',
   },
   btn: {
-    backgroundColor: 'rgba(255,255,255,0.4)',
-    alignSelf: "center",
+    backgroundColor: 'rgba(255,255,255,0.8)',
+    alignSelf: 'center',
     marginTop: 40,
     borderRadius: 30,
     borderWidth: 1,
     padding: 15,
-    width: "90%",
-    borderColor: "#FFFFFF",
-    flexDirection: "row",
-    justifyContent: "center"
-  }
+    width: '90%',
+    borderColor: '#FFFFFF',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    elevation: 4,
+  },
 });
 
 export default PestScreen2;

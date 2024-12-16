@@ -28,6 +28,16 @@ const Dashboard2 = ({navigation, route}) => {
       source={require('../../../asssets/dashboard-bg.jpg')} // Replace with the path to your image
       style={styles.backgroundImage}
       blurRadius={32}>
+      <View
+        style={{
+          backgroundColor: '#ffffff33',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+        }}
+      />
       <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
         <TouchableOpacity
           style={{padding: 20, marginTop: 10, marginLeft: 10}}

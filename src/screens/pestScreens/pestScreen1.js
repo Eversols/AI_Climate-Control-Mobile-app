@@ -89,8 +89,19 @@ const PestScreen1 = ({navigation, route}) => {
   }, [farmList]);
   return (
     <ImageBackground
-      source={require('../../../asssets/pestScreen1.png')} // Replace with the path to your image
-      style={styles.backgroundImage}>
+      source={require('../../../asssets/dashboard-bg.jpg')} // Replace with the path to your image
+      style={styles.backgroundImage}
+      blurRadius={32}>
+      <View
+        style={{
+          backgroundColor: '#ffffff33',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+        }}
+      />
       <TouchableOpacity
         style={{padding: 20, margin: 10}}
         onPress={() => navigation.goBack()}>
@@ -142,7 +153,9 @@ const PestScreen1 = ({navigation, route}) => {
           marginTop: 130,
         }}>
         <TouchableOpacity
-          onPress={() => navigation.navigate('pestScreen2')}
+          onPress={() =>
+            navigation.navigate('pestScreen2', {farm: selectedFarm})
+          }
           style={[styles.btn, {width: '65%'}]}>
           <Text style={{fontWeight: '700', fontSize: 18, color: '#000'}}>
             Take Image
@@ -150,7 +163,9 @@ const PestScreen1 = ({navigation, route}) => {
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() => navigation.navigate('pestScreen2')}
+          onPress={() =>
+            navigation.navigate('pestScreen2', {farm: selectedFarm})
+          }
           style={[styles.btn, {width: '65%'}]}>
           <Text style={{fontWeight: '700', fontSize: 18, color: '#000'}}>
             Upload Image
@@ -168,7 +183,7 @@ const styles = StyleSheet.create({
     // justifyContent: 'center',
   },
   btn: {
-    backgroundColor: 'rgba(255,255,255,0.4)',
+    backgroundColor: 'rgba(255,255,255,0.8)',
     alignSelf: 'center',
     marginTop: 30,
     borderRadius: 30,
@@ -178,6 +193,7 @@ const styles = StyleSheet.create({
     borderColor: '#FFFFFF',
     flexDirection: 'row',
     justifyContent: 'center',
+    elevation: 4,
   },
 });
 
