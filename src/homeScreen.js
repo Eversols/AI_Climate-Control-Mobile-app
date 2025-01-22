@@ -1063,7 +1063,7 @@ const HomeScreen = ({navigation}) => {
             </View>
           ) : (
             <View style={styles.pointerInner}>
-              <Text style={styles.pointerText}>DRAG & DROP</Text>
+              <Text style={styles.pointerText}>Drag and drop the pin</Text>
               <View style={styles.textPointer} />
             </View>
           )}

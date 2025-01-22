@@ -150,7 +150,7 @@ const FarmSelectionModal = ({onFarmFieldSelect, onSubmit, onClose, reset}) => {
           <CustomComponent>
             <TextInput
               style={styles.textInput}
-              placeholder="Choose or Default "
+              placeholder="Default "
               onChangeText={text => setColor(text)}
               value={color}
             />
