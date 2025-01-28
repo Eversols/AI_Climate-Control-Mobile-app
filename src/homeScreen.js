@@ -84,6 +84,7 @@ const HomeScreen = ({navigation}) => {
   const [mapEvent, setMapEvent] = useState(null);
   const mapRef = useRef(null);
   const [currentlyAddingFarmIndex, setCurrentlyAddingFarmIndex] = useState(-1);
+  const [resetting, setResetting] = useState(false);
 
   const reset = () => {
     setCurrentlyAddingFarmIndex(-1);
@@ -106,7 +107,19 @@ const HomeScreen = ({navigation}) => {
       showContinueButton: false,
       isAddPolygonMode: false,
     });
+    // setResetting(true);
+    setSelectedFarm(null);
+    setSelectedFarmIndex(-1);
+    setFarmsData(prev => prev.map(e => ({...e, selected: false})));
   };
+
+  useEffect(() => {
+    console.log('resetting', resetting);
+    if (resetting) {
+      setResetting(false);
+      showOkModal();
+    }
+  }, [resetting]);
 
   useEffect(() => {
     if (
@@ -334,8 +347,19 @@ const HomeScreen = ({navigation}) => {
     //   handleOKPress();
     //   return;
     // }
+    reset();
+    setResetting(true);
+  };
+
+  const showOkModal = () => {
+    console.log('show ok modal');
     setFarmStep(1);
-    setPolygon(prev => ({...prev, farms: []}));
+    setPolygon(prev => ({
+      ...prev,
+      farms: [],
+      isAddFarmVisible: true,
+      isAddFarmPressed: true,
+    }));
     setInnerPolygon(prev => ({
       ...prev,
       coordinates: [],
@@ -845,8 +869,32 @@ const HomeScreen = ({navigation}) => {
     setCropDropdownVisible(!cropDropdownVisible);
   };
 
-  const handleMarkerDelete = (e, i) => {
-    console.log('JJJJJJJJJJJJJJJJJJJJJJJJJJJJ', e.index);
+  const handleMarkerDelete = (e, _) => {
+    console.log('JJJJJJJJJJJJJJJJJJJJJJJJJJJJ', markerDelete.index);
+    if (!polygon.isAddFarmPressed) {
+      const coordinate = polygon.farms?.[
+        currentlyAddingFarmIndex
+      ].coordinates.filter((_, index) => index !== markerDelete.index);
+      const newFarmData = polygon.farms.map((v, i) =>
+        i == currentlyAddingFarmIndex
+          ? {
+              ...v,
+              coordinates: sortPoints(coordinate),
+            }
+          : v,
+      );
+      const f = newFarmData[0];
+      setPolygon(prev => ({
+        ...prev,
+        farms: newFarmData,
+      }));
+      updateFarm({
+        ...f,
+        polygons: f.coordinates,
+        id: farmsData[selectedFarmIndex].id,
+      });
+      setMarkerDelete({isModal: false, index: null, event: null});
+    }
     if (polygon.isAddFarmPressed || innerPolygon.isAddCropPressed) {
       if ((polygon.isAddFarmVisible, markerDelete.isModal)) {
         setPolygon(prev => ({
@@ -1394,16 +1442,18 @@ const HomeScreen = ({navigation}) => {
                     zIndex: 100,
                     paddingRight: 45,
                   }}>
-                  Add A New Farm
+                  {selectedFarm ? 'Cancel Selection' : 'Add A New Farm'}
                 </Text>
-                <Svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 14 14"
-                  fill="black"
-                  xmlns="http://www.w3.org/2000/svg">
-                  <Path d="M14 8H8V14H6V8H0V6H6V0H8V6H14V8Z" fill="black" />
-                </Svg>
+                {!selectedFarm ? (
+                  <Svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 14 14"
+                    fill="black"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <Path d="M14 8H8V14H6V8H0V6H6V0H8V6H14V8Z" fill="black" />
+                  </Svg>
+                ) : null}
               </TouchableOpacity>
             ) : null}
           </View>
